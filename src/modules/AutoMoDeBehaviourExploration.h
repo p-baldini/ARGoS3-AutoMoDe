@@ -1,10 +1,11 @@
 /**
   * @file <src/modules/AutoMoDeBehaviourExploration.h>
-  *
+  * 
   * @author Antoine Ligot - <aligot@ulb.ac.be>
-  *
+  * @author Paolo Baldini - <paolo.baldini.phd@gmail.com>
+  * 
   * @package ARGoS3-AutoMoDe
-  *
+  * 
   * @license MIT License
   */
 
@@ -28,11 +29,12 @@ namespace argos {
 			virtual AutoMoDeBehaviourExploration* Clone();
 
 		private:
-			SInt32 m_unTurnSteps;
+			SInt32 m_unActionSteps;
 
 			enum ExplorationState {
+				GO_STRAIGHT,
 				RANDOM_WALK,
-				OBSTACLE_AVOIDANCE
+				TURN
 			};
 
 			enum TurnDirection {
@@ -40,11 +42,14 @@ namespace argos {
 				RIGHT
 			};
 
-			ExplorationState m_eExplorationState;
+			ExplorationState m_iStrategyType;
+			ExplorationState m_eAction;
 			TurnDirection m_eTurnDirection;
 
 			Real m_fProximityThreshold;
 			CRange<UInt32> m_cRandomStepsRange;
+			Real m_fDistributionMu;
+			Real m_fDistributionC;
             CColor m_cColorEmiterParameter;
 
 			bool IsObstacleInFront(CCI_EPuckProximitySensor::SReading s_prox_reading);

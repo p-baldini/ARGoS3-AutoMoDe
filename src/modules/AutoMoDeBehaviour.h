@@ -66,7 +66,8 @@ namespace argos {
 
 		public:
 
-		 virtual ~AutoMoDeBehaviour();
+			virtual ~AutoMoDeBehaviour();
+
 			/*
 			 * Execution of the behaviour. Based on the state of the robot,
 			 * the behaviour should update the output variables.
