@@ -1,7 +1,8 @@
-/*
+/**
  * @file <src/modules/AutoMoDeBehaviour.h>
  *
  * @author Antoine Ligot - <aligot@ulb.ac.be>
+ * @author Paolo Baldini - <paolo.baldini.phd@gmail.com>
  *
  * @package ARGoS3-AutoMoDe
  *
@@ -61,7 +62,41 @@ namespace argos {
 			 * Pointer to the state of the robot. Shared with the controller AutoMoDeController
 			 * and the finite state machine AutoMoDeFiniteStateMachine.
 			 */
-      EpuckDAO* m_pcRobotDAO;
+			EpuckDAO* m_pcRobotDAO;
+
+			/**
+			 * @brief Find a parameter in the set and return it. If the value is not present,
+			 * throws an exception.
+			 * 
+			 * @param[in] tag The name of the parameter to return.
+			 * @return The parsed parameter.
+			 */
+			template <typename T>
+			T GetParameter(const char tag[]) {
+				std::map<std::string, Real>::iterator it = m_mapParameters.find(tag);
+				if (it == m_mapParameters.end()) {
+					LOGERR << "[FATAL] Missing parameter for the following behaviour: " << m_strLabel << std::endl;
+					THROW_ARGOSEXCEPTION("Missing Parameter");
+				}
+				return it->second;
+			}
+
+			/**
+			 * @brief Find a parameter in the set and return it. If the value is not present,
+			 * returns the default value.
+			 * 
+			 * @param[in] tag The name of the parameter to return.
+			 * @param[in] defaultValue The value to be returned if the parameter does not exists.
+			 * @return The parsed parameter or default if it does not exists.
+			 */
+			template <typename T>
+			T GetParameter(const char tag[], T defaultValue) {
+				try {
+					return GetParameter<T>(tag);
+				} catch (CARGoSException ex) {
+					return defaultValue;
+				}
+			}
 
 		public:
 
@@ -170,10 +205,10 @@ namespace argos {
 			 */
 			void SetRobotDAO(EpuckDAO* pc_robot_dao);
 
-            /*
-             * Data transform for color of the omnidirectional camera and LEDs.
-             */
-            CColor GetColorParameter(const UInt32& un_value, const bool& b_emiter);
+			/*
+			 * Data transform for color of the omnidirectional camera and LEDs.
+			 */
+			CColor GetColorParameter(const UInt32& un_value, const bool& b_emiter);
 	};
 }
 
