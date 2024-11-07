@@ -7,9 +7,8 @@
  *
  * @license MIT License
  */
-
-#ifndef AUTOMODEBEHAVIOUR_H
-#define AUTOMODEBEHAVIOUR_H
+#ifndef AUTOMODE_BEHAVIOUR_H
+#define AUTOMODE_BEHAVIOUR_H
 
 #include <argos3/core/utility/math/vector2.h>
 #include <argos3/core/utility/logging/argos_log.h>
@@ -178,4 +177,4 @@ namespace argos {
 	};
 }
 
-#endif
+#endif /* AUTOMODE_BEHAVIOUR_H */
