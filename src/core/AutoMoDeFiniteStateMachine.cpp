@@ -1,13 +1,13 @@
- /*
-  * @file <src/core/AutoMoDeFiniteStateMachine.cpp>
-  *
-  * @author Antoine Ligot - <aligot@ulb.ac.be>
-  *
-  * @package ARGoS3-AutoMoDe
-  *
-  * @license MIT License
-  */
-
+/**
+ * @file <src/core/AutoMoDeFiniteStateMachine.cpp>
+ * 
+ * @author Antoine Ligot - <aligot@ulb.ac.be>
+ * @author Paolo Baldini - <paolo.baldini.phd@gmail.com>
+ * 
+ * @package ARGoS3-AutoMoDe
+ * 
+ * @license MIT License
+ */
 #include "AutoMoDeFiniteStateMachine.h"
 
 namespace argos {
@@ -37,7 +37,6 @@ namespace argos {
 		if (m_bMaintainHistory) {
 			delete m_pcHistory;
 		}
-
 	}
 
 	/****************************************/
@@ -150,6 +149,19 @@ namespace argos {
 		for (itB = m_vecBehaviours.begin(); itB != m_vecBehaviours.end(); ++itB) {
 			(*itB)->Reset();
 		}
+	}
+
+	/****************************************/
+	/****************************************/
+
+	void AutoMoDeFiniteStateMachine::Adapt(Real reward) {
+		for (auto behavior : m_vecBehaviours) {
+			behavior->Adapt(reward);
+		}
+		for (auto condition : m_vecConditions) {
+			condition->Adapt(reward);
+		}
+		// TODO manage history properly
 	}
 
 	/****************************************/
