@@ -1,15 +1,13 @@
 /**
-  * @file <src/modules/AutoMoDeBehaviourPhototaxis.cpp>
-  *
-  * @author Antoine Ligot - <aligot@ulb.ac.be>
-  *
-  * @package ARGoS3-AutoMoDe
-  *
-  * @license MIT License
-  */
-
+ * @file <src/modules/AutoMoDeBehaviourPhototaxis.cpp>
+ * 
+ * @author Antoine Ligot - <aligot@ulb.ac.be>
+ * 
+ * @package ARGoS3-AutoMoDe
+ * 
+ * @license MIT License
+ */
 #include "AutoMoDeBehaviourPhototaxis.h"
-
 
 namespace argos {
 

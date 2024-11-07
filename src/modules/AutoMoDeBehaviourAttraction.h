@@ -1,17 +1,18 @@
 /**
-  * @file <src/modules/AutoMoDeBehaviourAttraction.h>
-  *
-  * @author Antoine Ligot - <aligot@ulb.ac.be>
-  *
-  * @package ARGoS3-AutoMoDe
-  *
-  * @license MIT License
-  */
-
+ * @file <src/modules/AutoMoDeBehaviourAttraction.h>
+ * 
+ * @author Antoine Ligot - <aligot@ulb.ac.be>
+ * @author Paolo Baldini - <paolo.baldini.phd@gmail.com>
+ * 
+ * @package ARGoS3-AutoMoDe
+ * 
+ * @license MIT License
+ */
 #ifndef AUTOMODE_BEHAVIOUR_ATTRACTION_H
 #define AUTOMODE_BEHAVIOUR_ATTRACTION_H
 
 #include "AutoMoDeBehaviour.h"
+#include "AutoMoDeAdaptable.h"
 
 namespace argos {
 	class AutoMoDeBehaviourAttraction: public AutoMoDeBehaviour {
@@ -20,17 +21,40 @@ namespace argos {
 			AutoMoDeBehaviourAttraction(AutoMoDeBehaviourAttraction* pc_behaviour);
 			virtual ~AutoMoDeBehaviourAttraction();
 
+			/**
+			 * @see AutoMoDeBehavior::ControlStep
+			 */
 			virtual void ControlStep();
+
+			/**
+			 * @see AutoMoDeBehavior::Reset
+			 */
 			virtual void Reset();
+
+			/**
+			 * @see AutoMoDeBehavior::ResumeStep
+			 */
 			virtual void ResumeStep();
+
+			/**
+			 * @see AutoMoDeBehavior::Init
+			 */
 			virtual void Init();
 
+			/**
+			 * @see AutoMoDeBehavior::Clone
+			 */
 			virtual AutoMoDeBehaviourAttraction* Clone();
 
+			/**
+			 * @see AutoMoDeBehavior::Adapt
+			 */
+			virtual void Adapt(Real reward);
+
 		private:
-			UInt8 m_unAttractionParameter;
+			Adaptable<UInt8> m_unAttractionParameter;
             CColor m_cColorEmiterParameter;
 	};
 }
 
-#endif
+#endif /* AUTOMODE_BEHAVIOUR_ATTRACTION_H */

@@ -1,15 +1,14 @@
 /**
-  * @file <src/modules/AutoMoDeBehaviourStop.cpp>
-  *
-  * @author Antoine Ligot - <aligot@ulb.ac.be>
-  *
-  * @package ARGoS3-AutoMoDe
-  *
-  * @license MIT License
-  */
-
+ * @file <src/modules/AutoMoDeBehaviourStop.cpp>
+ * 
+ * @author Antoine Ligot - <aligot@ulb.ac.be>
+ * @author Paolo Baldini - <paolo.baldini.phd@gmail.com>
+ * 
+ * @package ARGoS3-AutoMoDe
+ * 
+ * @license MIT License
+ */
 #include "AutoMoDeBehaviourStop.h"
-
 
 namespace argos {
 
@@ -50,7 +49,7 @@ namespace argos {
 
 	void AutoMoDeBehaviourStop::ControlStep() {
 		m_pcRobotDAO->SetWheelsVelocity(0,0);
-        m_pcRobotDAO->SetLEDsColor(m_cColorEmiterParameter);
+		m_pcRobotDAO->SetLEDsColor(m_cColorEmitterParameter);
 		m_bLocked = false;
 	}
 
@@ -58,13 +57,7 @@ namespace argos {
 	/****************************************/
 
 	void AutoMoDeBehaviourStop::Init() {
-        std::map<std::string, Real>::iterator it = m_mapParameters.find("cle");
-        if (it != m_mapParameters.end()) {
-            m_cColorEmiterParameter = GetColorParameter(it->second, true);
-        } else {
-            LOGERR << "[FATAL] Missing parameter for the following behaviour:" << m_strLabel << std::endl;
-            THROW_ARGOSEXCEPTION("Missing Parameter");
-        }
+		m_cColorEmitterParameter = GetColorParameter(FindParameter<Real>("cle"), true);
 	}
 
 	/****************************************/

@@ -1,38 +1,61 @@
 /**
-  * @file <src/modules/AutoMoDeBehaviourRepulsionColor.h>
-  *
-  * @author Antoine Ligot - <aligot@ulb.ac.be>
-  *
-  * @package ARGoS3-AutoMoDe
-  *
-  * @license MIT License
-  */
-
-#ifndef AUTOMODE_BEHAVIOUR_GOAWAY_COLOR_H
-#define AUTOMODE_BEHAVIOUR_GOAWAY_COLOR_H
+ * @file <src/modules/AutoMoDeBehaviourRepulsionColor.h>
+ * 
+ * @author Antoine Ligot - <aligot@ulb.ac.be>
+ * @author Paolo Baldini - <paolo.baldini.phd@gmail.com>
+ * 
+ * @package ARGoS3-AutoMoDe
+ * 
+ * @license MIT License
+ */
+#ifndef AUTOMODE_BEHAVIOUR_GO_AWAY_COLOR_H
+#define AUTOMODE_BEHAVIOUR_GO_AWAY_COLOR_H
 
 #include "AutoMoDeBehaviour.h"
+#include "AutoMoDeAdaptable.h"
 
 namespace argos {
-    class AutoMoDeBehaviourGoAwayColor: public AutoMoDeBehaviour {
+	class AutoMoDeBehaviourGoAwayColor: public AutoMoDeBehaviour {
 		public:
-            AutoMoDeBehaviourGoAwayColor();
-            AutoMoDeBehaviourGoAwayColor(AutoMoDeBehaviourGoAwayColor* pc_behaviour);
-            virtual ~AutoMoDeBehaviourGoAwayColor();
+			AutoMoDeBehaviourGoAwayColor();
+			AutoMoDeBehaviourGoAwayColor(AutoMoDeBehaviourGoAwayColor* pc_behaviour);
+			virtual ~AutoMoDeBehaviourGoAwayColor();
 
+			/**
+			 * @see AutoMoDeBehavior::ControlStep
+			 */
 			virtual void ControlStep();
+
+			/**
+			 * @see AutoMoDeBehavior::Reset
+			 */
 			virtual void Reset();
+
+			/**
+			 * @see AutoMoDeBehavior::ResumeStep
+			 */
 			virtual void ResumeStep();
+
+			/**
+			 * @see AutoMoDeBehavior::Init
+			 */
 			virtual void Init();
 
-            virtual AutoMoDeBehaviourGoAwayColor* Clone();
+			/**
+			 * @see AutoMoDeBehavior::Clone
+			 */
+			virtual AutoMoDeBehaviourGoAwayColor* Clone();
+
+			/**
+			 * @see AutoMoDeBehavior::Adapt
+			 */
+			virtual void Adapt(Real reward);
 
 		private:
-            CColor m_cColorEmiterParameter;
-            CColor m_cColorReceiverParameter;
-            Real m_unRepulsionParameter;
+			CColor m_cColorEmitterParameter;
+			CColor m_cColorReceiverParameter;
+			Adaptable<Real> m_unRepulsionParameter;
 	};
 }
 
-
-#endif
+#endif /* AUTOMODE_BEHAVIOUR_GO_AWAY_COLOR_H */

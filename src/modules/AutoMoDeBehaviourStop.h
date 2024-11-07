@@ -1,14 +1,13 @@
 /**
-  * @file <src/modules/AutoMoDeBehaviourStop.h>
-  *
-  * @author Antoine Ligot - <aligot@ulb.ac.be>
-  *
-  * @package ARGoS3-AutoMoDe
-  *
-  * @license MIT License
-  */
-
-
+ * @file <src/modules/AutoMoDeBehaviourStop.h>
+ * 
+ * @author Antoine Ligot - <aligot@ulb.ac.be>
+ * @author Paolo Baldini - <paolo.baldini.phd@gmail.com>
+ * 
+ * @package ARGoS3-AutoMoDe
+ * 
+ * @license MIT License
+ */
 #ifndef AUTOMODE_BEHAVIOUR_STOP_H
 #define AUTOMODE_BEHAVIOUR_STOP_H
 
@@ -21,18 +20,39 @@ namespace argos {
 			AutoMoDeBehaviourStop(AutoMoDeBehaviourStop* pc_behaviour);
 			virtual ~AutoMoDeBehaviourStop();
 
+			/**
+			 * @see AutoMoDeBehavior::ControlStep
+			 */
 			virtual void ControlStep();
+
+			/**
+			 * @see AutoMoDeBehavior::Reset
+			 */
 			virtual void Reset();
+
+			/**
+			 * @see AutoMoDeBehavior::ResumeStep
+			 */
 			virtual void ResumeStep();
+
+			/**
+			 * @see AutoMoDeBehavior::Init
+			 */
 			virtual void Init();
 
-
+			/**
+			 * @see AutoMoDeBehavior::Clone
+			 */
 			virtual AutoMoDeBehaviourStop* Clone();
 
-        private:
-            CColor m_cColorEmiterParameter;
+			/**
+			 * @see AutoMoDeBehavior::Adapt
+			 */
+			virtual void Adapt(Real reward) {};
+
+		private:
+			CColor m_cColorEmitterParameter;
 	};
 }
 
-
-#endif
+#endif /* AUTOMODE_BEHAVIOUR_STOP_H */

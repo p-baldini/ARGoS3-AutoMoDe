@@ -1,15 +1,14 @@
 /**
-  * @file <src/modules/AutoMoDeBehaviourRepulsion.cpp>
-  *
-  * @author Antoine Ligot - <aligot@ulb.ac.be>
-  *
-  * @package ARGoS3-AutoMoDe
-  *
-  * @license MIT License
-  */
-
+ * @file <src/modules/AutoMoDeBehaviourRepulsion.cpp>
+ * 
+ * @author Antoine Ligot - <aligot@ulb.ac.be>
+ * @author Paolo Baldini - <paolo.baldini.phd@gmail.com>
+ * 
+ * @package ARGoS3-AutoMoDe
+ * 
+ * @license MIT License
+ */
 #include "AutoMoDeBehaviourRepulsion.h"
-
 
 namespace argos {
 
@@ -66,7 +65,7 @@ namespace argos {
 		}
 
 		m_pcRobotDAO->SetWheelsVelocity(ComputeWheelsVelocityFromVector(sResultVector));
-        m_pcRobotDAO->SetLEDsColor(m_cColorEmiterParameter);
+		m_pcRobotDAO->SetLEDsColor(m_cColorEmitterParameter);
 
 		m_bLocked = false;
 	}
@@ -75,20 +74,8 @@ namespace argos {
 	/****************************************/
 
 	void AutoMoDeBehaviourRepulsion::Init() {
-		std::map<std::string, Real>::iterator it = m_mapParameters.find("rep");
-		if (it != m_mapParameters.end()) {
-			m_unRepulsionParameter = it->second;
-		} else {
-			LOGERR << "[FATAL] Missing parameter for the following behaviour:" << m_strLabel << std::endl;
-			THROW_ARGOSEXCEPTION("Missing Parameter");
-		}
-        it = m_mapParameters.find("cle");
-        if (it != m_mapParameters.end()) {
-            m_cColorEmiterParameter = GetColorParameter(it->second, true);
-        } else {
-            LOGERR << "[FATAL] Missing parameter for the following behaviour:" << m_strLabel << std::endl;
-            THROW_ARGOSEXCEPTION("Missing Parameter");
-        }
+		m_unRepulsionParameter.Init(FindParameter<UInt8>("rep"));
+		m_cColorEmitterParameter = GetColorParameter(FindParameter<Real>("cle"), true);
 	}
 
 	/****************************************/
@@ -104,5 +91,12 @@ namespace argos {
 
 	void AutoMoDeBehaviourRepulsion::ResumeStep() {
 		m_bOperational = true;
+	}
+
+	/****************************************/
+	/****************************************/
+
+	void AutoMoDeBehaviourRepulsion::Adapt(Real reward) {
+		m_unRepulsionParameter.Adapt(reward);
 	}
 }
