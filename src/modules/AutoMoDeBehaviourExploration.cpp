@@ -58,40 +58,11 @@ namespace argos {
 		m_fProximityThreshold = 0.1;
 		m_bLocked = false;
 
-		std::map<std::string, Real>::iterator it = m_mapParameters.find("rwm");
-		if (it == m_mapParameters.end()) {
-			LOGERR << "[FATAL] Missing parameter for the following behaviour: " << m_strLabel << std::endl;
-			THROW_ARGOSEXCEPTION("Missing Parameter");
-		}
-		m_cRandomStepsRange.SetMax(it->second);
-
-		it = m_mapParameters.find("rwt");
-		if (it == m_mapParameters.end()) {
-			LOGERR << "[FATAL] Missing parameter for the following behaviour: " << m_strLabel << std::endl;
-			THROW_ARGOSEXCEPTION("Missing Parameter");
-		}
-		m_iStrategyType = it->second == 0 ? GO_STRAIGHT : RANDOM_WALK;
-
-		it = m_mapParameters.find("rwmu");
-		if (it == m_mapParameters.end()) {
-			LOGERR << "[FATAL] Missing parameter for the following behaviour: " << m_strLabel << std::endl;
-			THROW_ARGOSEXCEPTION("Missing Parameter");
-		}
-		m_fDistributionMu = it->second;
-
-		it = m_mapParameters.find("rwc");
-		if (it == m_mapParameters.end()) {
-			LOGERR << "[FATAL] Missing parameter for the following behaviour: " << m_strLabel << std::endl;
-			THROW_ARGOSEXCEPTION("Missing Parameter");
-		}
-		m_fDistributionC = it->second;
-
-		it = m_mapParameters.find("cle");
-		if (it == m_mapParameters.end()) {
-			LOGERR << "[FATAL] Missing parameter for the following behaviour: " << m_strLabel << std::endl;
-			THROW_ARGOSEXCEPTION("Missing Parameter");
-		}
-		m_cColorEmiterParameter = GetColorParameter(it->second, true);
+		m_iMaxTurningSteps.Init(FindParameter<Real>("rwm"));
+		m_iStrategyType.Init((SInt32)std::round(FindParameter<Real>("rwt")));
+		m_fDistributionMu.Init(FindParameter<Real>("rwmu"));
+		m_fDistributionC.Init(FindParameter<Real>("rwc"));
+		m_cColorEmitterParameter = GetColorParameter(FindParameter<Real>("cle"), true);
 	}
 
 	/****************************************/
@@ -119,7 +90,7 @@ namespace argos {
 		// if the "random_walk" time terminated, performs a turn
 		// for a random amount of steps (uniform distr) in a random direction
 		if (m_unActionSteps <= 0 && m_eAction == RANDOM_WALK) {
-			m_unActionSteps = (m_pcRobotDAO->GetRandomNumberGenerator())->Uniform(m_cRandomStepsRange) + 1;
+			m_unActionSteps = (m_pcRobotDAO->GetRandomNumberGenerator())->Uniform(CRange<UInt32>(0, m_iMaxTurningSteps)) + 1;
 			if ((m_pcRobotDAO->GetRandomNumberGenerator())->Uniform(CRange<UInt32>(0, 1)) < 0.5) {
 				m_eTurnDirection = LEFT;
 			}
@@ -132,13 +103,13 @@ namespace argos {
 		// if the "turn" time terminated, go straight for a random amount of steps (Levy distr)
 		if (m_unActionSteps <= 0 && m_eAction == TURN) {
 			m_unActionSteps = SampleLevy(m_pcRobotDAO->GetRandomNumberGenerator(), m_fDistributionMu, m_fDistributionC) + 1;
-			m_eAction = m_iStrategyType;
+			m_eAction = m_iStrategyType == 0 ? GO_STRAIGHT : RANDOM_WALK;
 		}
 
 		// if the robot perceives an obstacle while going straight, performs a turn
 		// for a random amount of steps (uniform distr) in a direction opposite to the obstacle
 		if (m_eAction != TURN && IsObstacleInFront(m_pcRobotDAO->GetProximityReading())) {
-			m_unActionSteps = (m_pcRobotDAO->GetRandomNumberGenerator())->Uniform(m_cRandomStepsRange);
+			m_unActionSteps = (m_pcRobotDAO->GetRandomNumberGenerator())->Uniform(CRange<UInt32>(0, m_iMaxTurningSteps));
 			CRadians cAngle = m_pcRobotDAO->GetProximityReading().Angle.SignedNormalize();
 			if (cAngle.GetValue() < 0) {
 				m_eTurnDirection = LEFT;
@@ -148,7 +119,7 @@ namespace argos {
 			m_eAction = TURN;
 		}
 
-		m_pcRobotDAO->SetLEDsColor(m_cColorEmiterParameter);
+		m_pcRobotDAO->SetLEDsColor(m_cColorEmitterParameter);
 		m_bLocked = false;
 	}
 
@@ -166,6 +137,16 @@ namespace argos {
 
 	void AutoMoDeBehaviourExploration::ResumeStep() {
 		m_bOperational = true;
+	}
+
+	/****************************************/
+	/****************************************/
+
+	void AutoMoDeBehaviourExploration::Adapt(Real reward) {
+		m_iStrategyType.Adapt(reward);
+		m_iMaxTurningSteps.Adapt(reward);
+		m_fDistributionMu.Adapt(reward);
+		m_fDistributionC.Adapt(reward);
 	}
 
 	/****************************************/

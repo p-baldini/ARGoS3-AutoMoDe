@@ -76,11 +76,6 @@ namespace argos {
 													///< behaviour: if instantiated with more than
 													///< one value, it can chose which to use at
 													///< runtime.
-			Adaptable<Real> m_fProximityThreshold;	///< The threshold upon which an object is
-													///< considered; adaptable parameter of the
-													///< behaviour: if instantiated with more than
-													///< one value, it can chose which to use at
-													///< runtime.
 			Adaptable<SInt32> m_iMaxTurningSteps;	///< Indicate the maximum number of steps the
 													///< robot can turn; adaptable parameter of the
 													///< behaviour: if instantiated with more than
@@ -100,6 +95,8 @@ namespace argos {
 			TurnDirection m_eTurnDirection;			///< The remaining step-duration of the current
 													///< action.
 			CColor m_cColorEmitterParameter;		///< The color emitted by the robot.
+			Real m_fProximityThreshold;				///< The threshold upon which an object is
+													///< considered a near obstacle.
 
 			/**
 			 * Return true is the robot perceives an obstacle in the proximity threshold.
