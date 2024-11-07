@@ -1,16 +1,16 @@
 /**
-  * @file <src/modules/AutoMoDeConditionInvertedNeighborsCount.cpp>
-  *
-  * @author Antoine Ligot - <aligot@ulb.ac.be>
-  *
-  * @package ARGoS3-AutoMoDe
-  *
-  * @license MIT License
-  */
+ * @file <src/modules/AutoMoDeConditionInvertedNeighborsCount.cpp>
+ * 
+ * @author Antoine Ligot - <aligot@ulb.ac.be>
+ * @author Paolo Baldini - <paolo.baldini.phd@gmail.com>
+ * 
+ * @package ARGoS3-AutoMoDe
+ * 
+ * @license MIT License
+ */
+#include "AutoMoDeConditionInvertedNeighborsCount.h"
 
- #include "AutoMoDeConditionInvertedNeighborsCount.h"
-
- namespace argos {
+namespace argos {
 
 	/****************************************/
 	/****************************************/
@@ -34,7 +34,7 @@
 		m_unFromBehaviourIndex = pc_condition->GetOrigin();
 		m_unToBehaviourIndex = pc_condition->GetExtremity();
 		m_mapParameters = pc_condition->GetParameters();
-    Init();
+    	Init();
 	}
 
 	/****************************************/
@@ -49,7 +49,7 @@
 
 	bool AutoMoDeConditionInvertedNeighborsCount::Verify() {
 		UInt32 unNumberNeighbors = m_pcRobotDAO->GetNumberNeighbors();
-                Real fProbability = 1 - (1/(1 + exp(m_fParameterEta * ((int)m_unParameterXi - (int)unNumberNeighbors))));
+        Real fProbability = 1 - (1/(1 + exp(m_fParameterEta * ((int)m_unParameterXi - (int)unNumberNeighbors))));
 		return EvaluateBernoulliProbability(fProbability);
 	}
 
@@ -64,15 +64,15 @@
 	/****************************************/
 
 	void AutoMoDeConditionInvertedNeighborsCount::Init() {
-		std::map<std::string, Real>::iterator itEta = m_mapParameters.find("w");
-		std::map<std::string, Real>::iterator itXi = m_mapParameters.find("p");
-		if ((itEta != m_mapParameters.end()) && (itXi != m_mapParameters.end())) {
-			m_fParameterEta = itEta->second;
-			m_unParameterXi = itXi->second;
-		} else {
-			LOGERR << "[FATAL] Missing parameter for the following condition:" << m_strLabel << std::endl;
-			THROW_ARGOSEXCEPTION("Missing Parameter");
-		}
+		m_fParameterEta.Init(FindParameter<Real>("w"));
+		m_unParameterXi.Init(FindParameter<UInt8>("p"));
 	}
 
- }
+	/****************************************/
+	/****************************************/
+
+	void AutoMoDeConditionInvertedNeighborsCount::Adapt(Real reward) {
+		m_fParameterEta.Adapt(reward);
+		m_unParameterXi.Adapt(reward);
+	}
+}

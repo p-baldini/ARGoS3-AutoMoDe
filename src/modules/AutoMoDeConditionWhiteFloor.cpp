@@ -1,16 +1,16 @@
 /**
-  * @file <src/modules/AutoMoDeConditionInvertedWhiteFloor.cpp>
-  *
-  * @author Antoine Ligot - <aligot@ulb.ac.be>
-  *
-  * @package ARGoS3-AutoMoDe
-  *
-  * @license MIT License
-  */
+ * @file <src/modules/AutoMoDeConditionInvertedWhiteFloor.cpp>
+ * 
+ * @author Antoine Ligot - <aligot@ulb.ac.be>
+ * @author Paolo Baldini - <paolo.baldini.phd@gmail.com>
+ * 
+ * @package ARGoS3-AutoMoDe
+ * 
+ * @license MIT License
+ */
+#include "AutoMoDeConditionWhiteFloor.h"
 
- #include "AutoMoDeConditionWhiteFloor.h"
-
- namespace argos {
+namespace argos {
 
 	/****************************************/
 	/****************************************/
@@ -28,12 +28,12 @@
 	/****************************************/
 
 	bool AutoMoDeConditionWhiteFloor::Verify() {
-    if (m_pcRobotDAO->GetGroundReading() >= m_fGroundThreshold) {
-      return EvaluateBernoulliProbability(m_fProbability);
-    }
-    else {
-      return false;
-    }
+		if (m_pcRobotDAO->GetGroundReading() >= m_fGroundThreshold) {
+			return EvaluateBernoulliProbability(m_fProbability);
+		}
+		else {
+			return false;
+		}
 	}
 
 	/****************************************/
@@ -46,7 +46,7 @@
 		m_unFromBehaviourIndex = pc_condition->GetOrigin();
 		m_unToBehaviourIndex = pc_condition->GetExtremity();
 		m_mapParameters = pc_condition->GetParameters();
-    Init();
+		Init();
 	}
 
 	/****************************************/
@@ -61,13 +61,7 @@
 
 	void AutoMoDeConditionWhiteFloor::Init() {
 		m_fGroundThreshold = 0.95;
-		std::map<std::string, Real>::iterator it = m_mapParameters.find("p");
-		if (it != m_mapParameters.end()) {
-			m_fProbability = it->second;
-		} else {
-			LOGERR << "[FATAL] Missing parameter for the following condition:" << m_strLabel << std::endl;
-			THROW_ARGOSEXCEPTION("Missing Parameter");
-		}
+		m_fProbability.Init(FindParameter<Real>("p"));
 	}
 
 	/****************************************/
@@ -75,4 +69,10 @@
 
 	void AutoMoDeConditionWhiteFloor::Reset() {}
 
- }
+	/****************************************/
+	/****************************************/
+
+	void AutoMoDeConditionWhiteFloor::Adapt(Real reward) {
+		m_fProbability.Adapt(reward);
+	}
+}

@@ -1,31 +1,31 @@
 /**
-  * @file <src/modules/AutoMoDeConditionBlackFloor.cpp>
-  *
-  * @author Antoine Ligot - <aligot@ulb.ac.be>
-  *
-  * @package ARGoS3-AutoMoDe
-  *
-  * @license MIT License
-  */
+ * @file <src/modules/AutoMoDeConditionBlackFloor.cpp>
+ * 
+ * @author Antoine Ligot - <aligot@ulb.ac.be>
+ * @author Paolo Baldini - <paolo.baldini.phd@gmail.com>
+ * 
+ * @package ARGoS3-AutoMoDe
+ * 
+ * @license MIT License
+ */
+#include "AutoMoDeConditionBlackFloor.h"
 
- #include "AutoMoDeConditionBlackFloor.h"
+namespace argos {
 
- namespace argos {
-
-  /****************************************/
-  /****************************************/
+	/****************************************/
+	/****************************************/
 
 	AutoMoDeConditionBlackFloor::AutoMoDeConditionBlackFloor() {
 		m_strLabel = "BlackFloor";
 	}
 
-  /****************************************/
-  /****************************************/
+	/****************************************/
+	/****************************************/
 
 	AutoMoDeConditionBlackFloor::~AutoMoDeConditionBlackFloor() {}
 
-  /****************************************/
-  /****************************************/
+	/****************************************/
+	/****************************************/
 
 	AutoMoDeConditionBlackFloor::AutoMoDeConditionBlackFloor(AutoMoDeConditionBlackFloor* pc_condition) {
 		m_strLabel = pc_condition->GetLabel();
@@ -34,47 +34,47 @@
 		m_unFromBehaviourIndex = pc_condition->GetOrigin();
 		m_unToBehaviourIndex = pc_condition->GetExtremity();
 		m_mapParameters = pc_condition->GetParameters();
-    Init();
+		Init();
 	}
 
-  /****************************************/
-  /****************************************/
+	/****************************************/
+	/****************************************/
 
-  void AutoMoDeConditionBlackFloor::Init() {
-    m_fGroundThreshold = 0.1;
-	  std::map<std::string, Real>::iterator it = m_mapParameters.find("p");
-    if (it != m_mapParameters.end()) {
-      m_fProbability = it->second;
-    } else {
-      LOGERR << "[FATAL] Missing parameter for the following condition:" << m_strLabel << std::endl;
-      THROW_ARGOSEXCEPTION("Missing Parameter");
-	  }
-  }
+	void AutoMoDeConditionBlackFloor::Init() {
+		m_fGroundThreshold = 0.1;
+		m_fProbability.Init(FindParameter<Real>("p"));
+	}
 
-  /****************************************/
-  /****************************************/
+	/****************************************/
+	/****************************************/
 
 	AutoMoDeConditionBlackFloor* AutoMoDeConditionBlackFloor::Clone() {
 		return new AutoMoDeConditionBlackFloor(this);
 	}
 
-  /****************************************/
-  /****************************************/
+	/****************************************/
+	/****************************************/
 
 	bool AutoMoDeConditionBlackFloor::Verify() {
 		if (m_pcRobotDAO->GetGroundReading() <= m_fGroundThreshold) {
-      return EvaluateBernoulliProbability(m_fProbability);
-    }
-    else {
-      return false;
-    }
+			return EvaluateBernoulliProbability(m_fProbability);
+		}
+		else {
+			return false;
+		}
 	}
 
-  /****************************************/
-  /****************************************/
+	/****************************************/
+	/****************************************/
 
 	void AutoMoDeConditionBlackFloor::Reset() {
-    Init();
-  }
+		Init();
+	}
 
- }
+	/****************************************/
+	/****************************************/
+
+	void AutoMoDeConditionBlackFloor::Adapt(Real reward) {
+		m_fProbability.Adapt(reward);
+	}
+}
