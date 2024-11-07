@@ -9,6 +9,7 @@ set(AUTOMODE_HEADERS
 	core/AutoMoDeFsmBuilder.h
 	core/AutoMoDeFsmHistory.h
 	# Behaviours
+	modules/AutoMoDeAdaptable.h
 	modules/AutoMoDeBehaviour.h
 	modules/AutoMoDeBehaviourAntiPhototaxis.h
 	modules/AutoMoDeBehaviourPhototaxis.h
