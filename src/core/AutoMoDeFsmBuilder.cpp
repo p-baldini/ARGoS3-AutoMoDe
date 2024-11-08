@@ -15,6 +15,45 @@ namespace argos {
 	/****************************************/
 	/****************************************/
 
+	/**
+	 * File reserved function. Given the FSM description, retrieves the value of a parameter with
+	 * the given tag.
+	 * 
+	 * @param[in] fsm The description of the FSM.
+	 * @param[in] tag The parameter identifier in the given behavior.
+	 * @param[out] result The value(s) of the required parameter, if exists.
+	 * @return True if the parameter exists, false otherwise.
+	 */
+	bool ParseParameter(
+		const std::vector<std::string>& fsm,
+		const std::ostringstream& tag,
+		Adaptable<Real>& result
+	) {
+		// find the first (and only) occurrence of the parameter in the FSM description
+		auto it = std::find(fsm.begin(), fsm.end(), tag.str());
+
+		// if the parameter does not exists, exit and notify the caller
+		if (it == fsm.end()) {
+			return false;
+		}
+
+		// if the are more sub-strings to evaluate and none contain "--", then
+		// we are considering a value of the parameter: save it and check the next
+		std::vector<Real> v;
+		for (
+			it = std::next(it);
+			it != fsm.end() && std::string((*it).c_str()).find("--") == std::string::npos;
+			it = std::next(it)
+		) {
+			v.push_back(strtod((*it).c_str(), NULL));
+		}
+		result.Init(v);
+		return !v.empty();
+	}
+
+	/****************************************/
+	/****************************************/
+
 	AutoMoDeFsmBuilder::AutoMoDeFsmBuilder() {}
 
 	/****************************************/
@@ -114,30 +153,16 @@ namespace argos {
 		// Checking for parameters
 		std::string vecPossibleParameters[] = {"rwt", "rwm", "rwmu", "rwc", "att", "rep", "cle", "clr", "vel"};
 		for (auto& strCurrentParameter : vecPossibleParameters) {
+			// set the name of the parameter that has to be found
 			std::ostringstream oss;
 			oss << "--" << strCurrentParameter << unBehaviourIndex;
-			it = std::find(vec_fsm_state_config.begin(), vec_fsm_state_config.end(), oss.str());
 
-			// if the parameter does not exists, ignore it and check the next
-			if (it == vec_fsm_state_config.end()) {
-				continue;
-			}
-
-			std::vector<Real> v;
-			it = std::next(it);
-
-			// if the are more sub-strings to evaluate and none contain "--", then
-			// we are considering a value of the parameter: save it and check the next
-			while (
-				it != vec_fsm_state_config.end() &&
-				std::string((*it).c_str()).find("--") == std::string::npos
-			) {
-				v.push_back(strtod((*it).c_str(), NULL));
-				it = std::next(it);
-			}
+			// search and possibly add the parameter to the behavior
 			Adaptable<Real> fCurrentParameterValue;
-			fCurrentParameterValue.Init(v);
-			cNewBehaviour->AddParameter(strCurrentParameter, fCurrentParameterValue);
+			bool found = ParseParameter(vec_fsm_state_config, oss, fCurrentParameterValue);
+			if (found) {
+				cNewBehaviour->AddParameter(strCurrentParameter, fCurrentParameterValue);
+			}
 		}
 		cNewBehaviour->Init();
 		// Add the constructed Behaviour to the FSM
@@ -226,11 +251,14 @@ namespace argos {
 			// Checking for parameters
 			std::string vecPossibleParameters[] = {"p", "w", "l"};
 			for (auto& strCurrentParameter : vecPossibleParameters) {
-				ss.str(std::string());
-				ss << "--" << strCurrentParameter << un_initial_state_index << "x" << un_condition_index;
-				it = std::find(vec_fsm_transition_config.begin(), vec_fsm_transition_config.end(), ss.str());
-				if (it != vec_fsm_transition_config.end()) {
-					Real fCurrentParameterValue = strtod((*(it+1)).c_str(), NULL);
+				// set the name of the parameter that has to be found
+				std::ostringstream oss;
+				oss << "--" << strCurrentParameter << un_initial_state_index << "x" << un_condition_index;
+
+				// search and possibly add the parameter to the behavior
+				Adaptable<Real> fCurrentParameterValue;
+				bool found = ParseParameter(vec_fsm_transition_config, oss, fCurrentParameterValue);
+				if (found) {
 					cNewCondition->AddParameter(strCurrentParameter, fCurrentParameterValue);
 				}
 			}
