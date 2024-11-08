@@ -1,13 +1,13 @@
-/*
+/**
  * @file <src/core/AutoMoDeFsmBuilder.cpp>
- *
+ * 
  * @author Antoine Ligot - <aligot@ulb.ac.be>
- *
+ * @author Paolo Baldini - <paolo.baldini.phd@gmail.com>
+ * 
  * @package ARGoS3-AutoMoDe
- *
+ * 
  * @license MIT License
  */
-
 #include "AutoMoDeFsmBuilder.h"
 
 namespace argos {
@@ -68,7 +68,6 @@ namespace argos {
 		}
 
 		return cFiniteStateMachine;
-
 	}
 
 	/****************************************/
@@ -102,28 +101,43 @@ namespace argos {
 			case 5:
 				cNewBehaviour = new AutoMoDeBehaviourRepulsion();
 				break;
-            case 8:
-                cNewBehaviour = new AutoMoDeBehaviourGoToColor();
-                break;
-            case 9:
-                cNewBehaviour = new AutoMoDeBehaviourGoAwayColor();
-                break;
+			case 8:
+				cNewBehaviour = new AutoMoDeBehaviourGoToColor();
+				break;
+			case 9:
+				cNewBehaviour = new AutoMoDeBehaviourGoAwayColor();
+				break;
 		}
 		cNewBehaviour->SetIndex(unBehaviourIndex);
 		cNewBehaviour->SetIdentifier(unBehaviourIdentifier);
 
 		// Checking for parameters
-        std::string vecPossibleParameters[] = {"rwt", "rwm", "rwmu", "rwc", "att", "rep", "cle", "clr", "vel"};
-		UInt8 unNumberPossibleParameters = sizeof(vecPossibleParameters) / sizeof(vecPossibleParameters[0]);
-		for (UInt8 i = 0; i < unNumberPossibleParameters; i++) {
-			std::string strCurrentParameter = vecPossibleParameters[i];
+		std::string vecPossibleParameters[] = {"rwt", "rwm", "rwmu", "rwc", "att", "rep", "cle", "clr", "vel"};
+		for (auto& strCurrentParameter : vecPossibleParameters) {
 			std::ostringstream oss;
-			oss << "--" <<strCurrentParameter << unBehaviourIndex;
+			oss << "--" << strCurrentParameter << unBehaviourIndex;
 			it = std::find(vec_fsm_state_config.begin(), vec_fsm_state_config.end(), oss.str());
-			if (it != vec_fsm_state_config.end()) {
-				Real fCurrentParameterValue = strtod((*(it+1)).c_str(), NULL);
-				cNewBehaviour->AddParameter(strCurrentParameter, fCurrentParameterValue);
+
+			// if the parameter does not exists, ignore it and check the next
+			if (it == vec_fsm_state_config.end()) {
+				continue;
 			}
+
+			std::vector<Real> v;
+			it = std::next(it);
+
+			// if the are more sub-strings to evaluate and none contain "--", then
+			// we are considering a value of the parameter: save it and check the next
+			while (
+				it != vec_fsm_state_config.end() &&
+				std::string((*it).c_str()).find("--") == std::string::npos
+			) {
+				v.push_back(strtod((*it).c_str(), NULL));
+				it = std::next(it);
+			}
+			Adaptable<Real> fCurrentParameterValue;
+			fCurrentParameterValue.Init(v);
+			cNewBehaviour->AddParameter(strCurrentParameter, fCurrentParameterValue);
 		}
 		cNewBehaviour->Init();
 		// Add the constructed Behaviour to the FSM
@@ -200,21 +214,18 @@ namespace argos {
 				case 5:
 					cNewCondition = new AutoMoDeConditionFixedProbability();
 					break;
-                case 7:
-                    cNewCondition = new AutoMoDeConditionProbColor();
-                    break;
+				case 7:
+					cNewCondition = new AutoMoDeConditionProbColor();
+					break;
 			}
 
 			cNewCondition->SetOriginAndExtremity(un_initial_state_index, unToBehaviour);
 			cNewCondition->SetIndex(un_condition_index);
 			cNewCondition->SetIdentifier(unConditionIdentifier);
 
-
 			// Checking for parameters
-            std::string vecPossibleParameters[] = {"p", "w", "l"};
-			UInt8 unNumberPossibleParameters = sizeof(vecPossibleParameters) / sizeof(vecPossibleParameters[0]);
-			for (UInt8 i = 0; i < unNumberPossibleParameters; i++) {
-				std::string strCurrentParameter = vecPossibleParameters[i];
+			std::string vecPossibleParameters[] = {"p", "w", "l"};
+			for (auto& strCurrentParameter : vecPossibleParameters) {
 				ss.str(std::string());
 				ss << "--" << strCurrentParameter << un_initial_state_index << "x" << un_condition_index;
 				it = std::find(vec_fsm_transition_config.begin(), vec_fsm_transition_config.end(), ss.str());
@@ -240,5 +251,4 @@ namespace argos {
 		}
 		return vecPossibleDestinationIndex;
 	}
-
 }
