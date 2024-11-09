@@ -146,12 +146,14 @@ namespace argos {
 			case 9:
 				cNewBehaviour = new AutoMoDeBehaviourGoAwayColor();
 				break;
+			case 10:
+				cNewBehaviour = new AutoMoDeBehaviourReactToColor();
 		}
 		cNewBehaviour->SetIndex(unBehaviourIndex);
 		cNewBehaviour->SetIdentifier(unBehaviourIdentifier);
 
 		// Checking for parameters
-		std::string vecPossibleParameters[] = {"rwt", "rwm", "rwmu", "rwc", "att", "rep", "cle", "clr", "vel"};
+		std::string vecPossibleParameters[] = {"rwt", "rwm", "rwmu", "rwc", "att", "rep", "crt", "cle", "clr", "vel"};
 		for (auto& strCurrentParameter : vecPossibleParameters) {
 			// set the name of the parameter that has to be found
 			std::ostringstream oss;
@@ -219,7 +221,6 @@ namespace argos {
 			it = std::find(vec_fsm_transition_config.begin(), vec_fsm_transition_config.end(), ss.str());
 
 			UInt8 unConditionIdentifier = atoi((*(it+1)).c_str());
-
 			switch(unConditionIdentifier) {
 				case 0:
 					cNewCondition = new AutoMoDeConditionBlackFloor();
