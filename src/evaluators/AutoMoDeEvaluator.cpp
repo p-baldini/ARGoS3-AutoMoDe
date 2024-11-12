@@ -1,3 +1,12 @@
+/**
+ * @file <src/modules/AutoMoDeEvaluator.cpp>
+ * 
+ * @author Paolo Baldini - <paolo.baldini.phd@gmail.com>
+ * 
+ * @package ARGoS3-AutoMoDe
+ * 
+ * @license MIT License
+ */
 #include "AutoMoDeEvaluator.hpp"
 #include "AutoMoDeEvaluatorForaging.hpp"
 
