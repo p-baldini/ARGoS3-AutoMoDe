@@ -102,7 +102,7 @@ namespace argos {
 				HandleState(cFiniteStateMachine, vecStateConfig);
 			}
 		}
-		catch (std::exception e) {
+		catch (std::exception& e) {
 			THROW_ARGOSEXCEPTION("Could not create the Finite State Machine: Error while parsing.");
 		}
 

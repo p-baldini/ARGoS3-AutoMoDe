@@ -85,7 +85,7 @@ namespace argos {
 			T FindParameter(const char tag[], T defaultValue) {
 				try {
 					return FindParameter<T>(tag);
-				} catch (CARGoSException ex) {
+				} catch (CARGoSException& ex) {
 					return defaultValue;
 				}
 			}
