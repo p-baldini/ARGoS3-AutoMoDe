@@ -12,7 +12,7 @@
 #define AUTOMODE_CONDITION_WHITE_FLOOR_H
 
 #include "AutoMoDeCondition.h"
-#include "AutoMoDeAdaptable.h"
+#include "AutoMoDeAdaptable.hpp"
 
 namespace argos {
 	class AutoMoDeConditionWhiteFloor: public AutoMoDeCondition {
@@ -49,7 +49,7 @@ namespace argos {
 
 		private:
 			Real m_fGroundThreshold;
-			Adaptable<Real> m_fProbability;
+			AutoMoDeAdaptable<Real> m_fProbability;
 	};
 }
 
