@@ -12,7 +12,6 @@
 #define AUTOMODE_BEHAVIOUR_EXPLORATION_H
 
 #include "AutoMoDeBehaviour.h"
-#include "AutoMoDeAdaptable.h"
 
 namespace argos {
 	class AutoMoDeBehaviourExploration: public AutoMoDeBehaviour {
@@ -51,6 +50,11 @@ namespace argos {
 			 */
 			void Adapt(Real reward);
 
+			/**
+			 * @see AutoMoDeBehavior::SetRobotDAO
+			 */
+			void SetRobotDAO(EpuckDAO* pc_robot_dao) override;
+
 		private:
 			SInt32 m_unActionSteps;
 
@@ -71,25 +75,27 @@ namespace argos {
 				RIGHT
 			};
 
-			Adaptable<SInt16> m_iStrategyType;		///< Indicate the exploration strategy
+			AutoMoDeAdaptable<Real> m_iStrategyType;///< Indicate the exploration strategy
 													///< employed; adaptable parameter of the
 													///< behaviour: if instantiated with more than
 													///< one value, it can chose which to use at
 													///< runtime.
-			Adaptable<SInt32> m_iMaxTurningSteps;	///< Indicate the maximum number of steps the
+			AutoMoDeAdaptable<Real> m_iMaxTurningSteps;	///< Indicate the maximum number of steps the
 													///< robot can turn; adaptable parameter of the
 													///< behaviour: if instantiated with more than
 													///< one value, it can chose which to use at
 													///< runtime.
-			Adaptable<Real> m_fDistributionMu;		///< The mean of the Levy distribution;
+			AutoMoDeAdaptable<Real> m_fDistributionMu;		///< The mean of the Levy distribution;
 													///< adaptable parameter of the behaviour: if
 													///< instantiated with more than one value, it
 													///< can chose which to use at runtime.
-			Adaptable<Real> m_fDistributionC;		///< The std dev of the Levy distribution;
+			AutoMoDeAdaptable<Real> m_fDistributionC;		///< The std dev of the Levy distribution;
 													///< adaptable parameter of the behaviour: if
 													///< instantiated with more than one value, it
 													///< can chose which to use at runtime.
 
+			bool m_bBasicPerceptionCapabilities;	///< True if the robot can only analyze raw
+													///< proximity data; False otherwise.
 			ExplorationState m_eAction;				///< The current action under use in [turn,
 													///< go_straight, random_walk]
 			TurnDirection m_eTurnDirection;			///< The remaining step-duration of the current
@@ -97,6 +103,14 @@ namespace argos {
 			CColor m_cColorEmitterParameter;		///< The color emitted by the robot.
 			Real m_fProximityThreshold;				///< The threshold upon which an object is
 													///< considered a near obstacle.
+
+			/**
+			 * Return true is the robot perceives an obstacle in the proximity threshold.
+			 * 
+			 * @param[in] s_prox_reading The proximity readings of the robot.
+			 * @return True if the robot perceives an obstacle in range, false otherwise.
+			 */
+			bool IsObstacleInFront(CCI_EPuckProximitySensor::TReadings t_prox_readings);
 
 			/**
 			 * Return true is the robot perceives an obstacle in the proximity threshold.

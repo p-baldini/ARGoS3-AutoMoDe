@@ -1,14 +1,21 @@
 /**
-  * @file <src/modules/AutoMoDeBehaviourExploration.cpp>
-  * 
-  * @author Antoine Ligot - <aligot@ulb.ac.be>
-  * @author Paolo Baldini - <paolo.baldini.phd@gmail.com>
-  * 
-  * @package ARGoS3-AutoMoDe
-  * 
-  * @license MIT License
-  */
+ * @file <src/modules/AutoMoDeBehaviourExploration.cpp>
+ * 
+ * @author Antoine Ligot - <aligot@ulb.ac.be>
+ * @author Paolo Baldini - <paolo.baldini.phd@gmail.com>
+ * 
+ * @package ARGoS3-AutoMoDe
+ * 
+ * @license MIT License
+ */
 #include "AutoMoDeBehaviourExploration.h"
+
+#include <argos3/demiurge/epuck-dao/ReferenceModel1Dot1.h>
+#include <argos3/demiurge/epuck-dao/ReferenceModel2Dot1.h>
+#include <argos3/demiurge/epuck-dao/ReferenceModel2Dot2.h>
+#include <argos3/demiurge/epuck-dao/ReferenceModel3DotS.hpp>
+
+#include <algorithm>
 
 namespace argos {
 
@@ -58,11 +65,11 @@ namespace argos {
 		m_fProximityThreshold = 0.1;
 		m_bLocked = false;
 
-		m_iMaxTurningSteps.Init(FindParameter<Real>("rwm"));
-		m_iStrategyType.Init((SInt32)std::round(FindParameter<Real>("rwt")));
-		m_fDistributionMu.Init(FindParameter<Real>("rwmu"));
-		m_fDistributionC.Init(FindParameter<Real>("rwc"));
-		m_cColorEmitterParameter = GetColorParameter(FindParameter<Real>("cle"), true);
+		m_iMaxTurningSteps = FindParameter("rwm");
+		m_iStrategyType = FindParameter("rwt");
+		m_fDistributionMu = FindParameter("rwmu");
+		m_fDistributionC = FindParameter("rwc");
+		m_cColorEmitterParameter = GetColorParameter(FindParameter("cle"), true);
 	}
 
 	/****************************************/
@@ -108,15 +115,33 @@ namespace argos {
 
 		// if the robot perceives an obstacle while going straight, performs a turn
 		// for a random amount of steps (uniform distr) in a direction opposite to the obstacle
-		if (m_eAction != TURN && IsObstacleInFront(m_pcRobotDAO->GetProximityReading())) {
-			m_unActionSteps = (m_pcRobotDAO->GetRandomNumberGenerator())->Uniform(CRange<UInt32>(0, m_iMaxTurningSteps));
-			CRadians cAngle = m_pcRobotDAO->GetProximityReading().Angle.SignedNormalize();
-			if (cAngle.GetValue() < 0) {
-				m_eTurnDirection = LEFT;
-			} else {
-				m_eTurnDirection = RIGHT;
+		if (m_bBasicPerceptionCapabilities) {
+			if (m_eAction != TURN && IsObstacleInFront(m_pcRobotDAO->GetProximityInput())) {
+				// set the number of steps the robot has to turn
+				CRange<UInt32> turnRange(0, m_iMaxTurningSteps);
+				m_unActionSteps = m_pcRobotDAO->GetRandomNumberGenerator()->Uniform(turnRange);
+
+				// set the direction of the turn: if the perceived object is on the right, turn
+				// left; otherwise turn right
+				auto values = m_pcRobotDAO->GetProximityInput();
+				CCI_EPuckProximitySensor::TReadings right(
+					values.begin(),
+					values.begin() + values.size() / 2
+				);
+				m_eTurnDirection = IsObstacleInFront(right) < 0 ? LEFT : RIGHT;
 			}
-			m_eAction = TURN;
+		}
+		else {
+			if (m_eAction != TURN && IsObstacleInFront(m_pcRobotDAO->GetProximityReading())) {
+				// set the number of steps the robot has to turn
+				CRange<UInt32> turnRange(0, m_iMaxTurningSteps);
+				m_unActionSteps = m_pcRobotDAO->GetRandomNumberGenerator()->Uniform(turnRange);
+
+				// set the direction of the turn according to the direction vector
+				CRadians cAngle = m_pcRobotDAO->GetProximityReading().Angle.SignedNormalize();
+				m_eTurnDirection = cAngle.GetValue() < 0 ? LEFT : RIGHT;
+				m_eAction = TURN;
+			}
 		}
 
 		m_pcRobotDAO->SetLEDsColor(m_cColorEmitterParameter);
@@ -151,6 +176,30 @@ namespace argos {
 
 	/****************************************/
 	/****************************************/
+
+	void AutoMoDeBehaviourExploration::SetRobotDAO(EpuckDAO* pc_robot_dao) {
+		AutoMoDeBehaviour::SetRobotDAO(pc_robot_dao);
+		m_bBasicPerceptionCapabilities = (
+			typeid(*m_pcRobotDAO) == typeid(ReferenceModel1Dot1) ||
+			typeid(*m_pcRobotDAO) == typeid(ReferenceModel2Dot1) ||
+			typeid(*m_pcRobotDAO) == typeid(ReferenceModel2Dot2) ||
+			typeid(*m_pcRobotDAO) == typeid(ReferenceModel3DotS)
+		);
+	}
+
+	/****************************************/
+	/****************************************/
+
+	bool AutoMoDeBehaviourExploration::IsObstacleInFront(
+		CCI_EPuckProximitySensor::TReadings t_prox_readings
+	) {
+		auto discriminator = [this](auto o){
+			return  o.Value >= m_fProximityThreshold &&
+					o.Angle <= CRadians::PI_OVER_TWO &&
+					o.Angle >= -CRadians::PI_OVER_TWO;
+		};
+		return std::any_of(t_prox_readings.begin(), t_prox_readings.end(), discriminator);
+	}
 
 	bool AutoMoDeBehaviourExploration::IsObstacleInFront(CCI_EPuckProximitySensor::SReading s_prox_reading) {
 		CRadians cAngle = s_prox_reading.Angle;
