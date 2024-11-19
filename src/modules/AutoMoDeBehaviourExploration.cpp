@@ -128,7 +128,8 @@ namespace argos {
 					values.begin(),
 					values.begin() + values.size() / 2
 				);
-				m_eTurnDirection = IsObstacleInFront(right) < 0 ? LEFT : RIGHT;
+				m_eTurnDirection = IsObstacleInFront(right) ? LEFT : RIGHT;
+				m_eAction = TURN;
 			}
 		}
 		else {
