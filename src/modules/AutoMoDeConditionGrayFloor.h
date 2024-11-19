@@ -12,7 +12,7 @@
 #define AUTOMODE_CONDITION_GRAY_FLOOR_H
 
 #include "AutoMoDeCondition.h"
-#include "AutoMoDeAdaptable.h"
+#include "AutoMoDeAdaptable.hpp"
 
 namespace argos {
 	class AutoMoDeConditionGrayFloor: public AutoMoDeCondition {
@@ -49,7 +49,7 @@ namespace argos {
 
 		private:
 			CRange<Real> m_fGroundThresholdRange;
-			Adaptable<Real> m_fProbability;
+			AutoMoDeAdaptable<Real> m_fProbability;
 	};
 }
 

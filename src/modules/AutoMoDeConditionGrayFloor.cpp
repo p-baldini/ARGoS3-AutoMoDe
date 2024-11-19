@@ -61,7 +61,7 @@ namespace argos {
 
 	void AutoMoDeConditionGrayFloor::Init() {
 		m_fGroundThresholdRange.Set(0.1, 0.95);
-		m_fProbability.Init(FindParameter<Real>("p"));
+		m_fProbability = FindParameter("p");
 	}
 
 	/****************************************/
