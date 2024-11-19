@@ -15,7 +15,6 @@
 #include <argos3/core/control_interface/ci_controller.h>
 
 #include <argos3/demiurge/epuck-dao/EpuckDAO.h>
-#include <argos3/demiurge/epuck-dao/ReferenceModel3Dot0.h>
 
 #include <argos3/plugins/robots/e-puck/control_interface/ci_epuck_wheels_actuator.h>
 #include <argos3/plugins/robots/e-puck/control_interface/ci_epuck_range_and_bearing_sensor.h>
@@ -28,7 +27,7 @@
 
 #include "AutoMoDeFiniteStateMachine.h"
 #include "AutoMoDeFsmBuilder.h"
-#include "../evaluators/AutoMoDeEvaluator.h"
+#include "../evaluators/AutoMoDeEvaluator.hpp"
 
 namespace argos{
     class AutoMoDeController: public CCI_Controller {
