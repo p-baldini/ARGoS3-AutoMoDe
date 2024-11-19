@@ -196,7 +196,7 @@ namespace argos {
 			/**
 			 * Setter for the shared pointer to the representation of the robot state.
 			 */
-			void SetRobotDAO(EpuckDAO* pc_robot_dao);
+			virtual void SetRobotDAO(EpuckDAO* pc_robot_dao);
 
 			/**
 			 * Data transform for color of the omnidirectional camera and LEDs.
