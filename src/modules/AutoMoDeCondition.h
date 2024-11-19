@@ -63,15 +63,7 @@ namespace argos {
 			 * @param[in] tag The name of the parameter to return.
 			 * @return The parsed parameter.
 			 */
-			template <typename T>
-			T FindParameter(const char tag[]) {
-				std::map<std::string, Real>::iterator it = m_mapParameters.find(tag);
-				if (it == m_mapParameters.end()) {
-					LOGERR << "[FATAL] Missing parameter for the following condition: " << m_strLabel << std::endl;
-					THROW_ARGOSEXCEPTION("Missing Parameter");
-				}
-				return it->second;
-			}
+			AutoMoDeAdaptable<Real> FindParameter(const char tag[]);
 
 			/**
 			 * Find a parameter in the set and return it. If the value is not present, returns the
@@ -81,14 +73,9 @@ namespace argos {
 			 * @param[in] defaultValue The value to be returned if the parameter does not exists.
 			 * @return The parsed parameter or default if it does not exists.
 			 */
-			template <typename T>
-			T FindParameter(const char tag[], T defaultValue) {
-				try {
-					return FindParameter<T>(tag);
-				} catch (CARGoSException& ex) {
-					return defaultValue;
-				}
-			}
+			AutoMoDeAdaptable<Real> FindParameter(
+				const char tag[], AutoMoDeAdaptable<Real> defaultValue
+			);
 
 		public:
 
