@@ -12,7 +12,7 @@
 #define AUTOMODE_BEHAVIOUR_GO_TO_COLOR_H
 
 #include "AutoMoDeBehaviour.h"
-#include "AutoMoDeAdaptable.h"
+#include "AutoMoDeAdaptable.hpp"
 
 namespace argos {
 	class AutoMoDeBehaviourGoToColor: public AutoMoDeBehaviour {
@@ -54,7 +54,7 @@ namespace argos {
 		private:
 			CColor m_cColorEmitterParameter;
 			CColor m_cColorReceiverParameter;
-			Adaptable<Real> m_unAttractionParameter;
+			AutoMoDeAdaptable<Real> m_unAttractionParameter;
 	};
 }
 
