@@ -10,6 +10,11 @@
  */
 #include "AutoMoDeConditionWhiteFloor.h"
 
+#include <argos3/demiurge/epuck-dao/ReferenceModel1Dot1.h>
+#include <argos3/demiurge/epuck-dao/ReferenceModel2Dot1.h>
+#include <argos3/demiurge/epuck-dao/ReferenceModel2Dot2.h>
+#include <argos3/demiurge/epuck-dao/ReferenceModel3DotS.hpp>
+
 namespace argos {
 
 	/****************************************/
@@ -28,12 +33,13 @@ namespace argos {
 	/****************************************/
 
 	bool AutoMoDeConditionWhiteFloor::Verify() {
-		if (m_pcRobotDAO->GetGroundReading() >= m_fGroundThreshold) {
-			return EvaluateBernoulliProbability(m_fProbability);
-		}
-		else {
-			return false;
-		}
+		// according to the robot capabilities, verify if the ground is white
+		bool whitePerceived = m_bBasicPerceptionCapabilities
+			? m_pcRobotDAO->GetGroundInput().Center >= m_fGroundThreshold
+			: m_pcRobotDAO->GetGroundReading() >= m_fGroundThreshold;
+
+		// if the ground is white, the transition depends on the sampled value
+		return whitePerceived && EvaluateBernoulliProbability(m_fProbability);
 	}
 
 	/****************************************/
@@ -74,5 +80,18 @@ namespace argos {
 
 	void AutoMoDeConditionWhiteFloor::Adapt(Real reward) {
 		m_fProbability.Adapt(reward);
+	}
+
+	/****************************************/
+	/****************************************/
+
+	void AutoMoDeConditionWhiteFloor::SetRobotDAO(EpuckDAO* pc_robot_dao) {
+		AutoMoDeCondition::SetRobotDAO(pc_robot_dao);
+		m_bBasicPerceptionCapabilities = (
+			typeid(*m_pcRobotDAO) == typeid(ReferenceModel1Dot1) ||
+			typeid(*m_pcRobotDAO) == typeid(ReferenceModel2Dot1) ||
+			typeid(*m_pcRobotDAO) == typeid(ReferenceModel2Dot2) ||
+			typeid(*m_pcRobotDAO) == typeid(ReferenceModel3DotS)
+		);
 	}
 }
