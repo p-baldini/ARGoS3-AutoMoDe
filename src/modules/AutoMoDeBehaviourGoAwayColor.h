@@ -12,7 +12,6 @@
 #define AUTOMODE_BEHAVIOUR_GO_AWAY_COLOR_H
 
 #include "AutoMoDeBehaviour.h"
-#include "AutoMoDeAdaptable.hpp"
 
 namespace argos {
 	class AutoMoDeBehaviourGoAwayColor: public AutoMoDeBehaviour {
