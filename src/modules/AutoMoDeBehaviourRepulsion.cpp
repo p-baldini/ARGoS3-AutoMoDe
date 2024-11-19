@@ -74,8 +74,8 @@ namespace argos {
 	/****************************************/
 
 	void AutoMoDeBehaviourRepulsion::Init() {
-		m_unRepulsionParameter.Init(FindParameter<UInt8>("rep"));
-		m_cColorEmitterParameter = GetColorParameter(FindParameter<Real>("cle"), true);
+		m_unRepulsionParameter = FindParameter("rep");
+		m_cColorEmitterParameter = GetColorParameter(FindParameter("cle"), true);
 	}
 
 	/****************************************/
