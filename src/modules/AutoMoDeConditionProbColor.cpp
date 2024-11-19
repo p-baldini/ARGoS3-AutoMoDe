@@ -41,8 +41,8 @@ namespace argos {
 	/****************************************/
 
 	void AutoMoDeConditionProbColor::Init() {
-		m_fProbability.Init(FindParameter<Real>("p"));
-		m_cColorParameter = GetColorParameter(FindParameter<Real>("l"));
+		m_fProbability = FindParameter("p");
+		m_cColorParameter = GetColorParameter(FindParameter("l");
 	}
 
 	/****************************************/

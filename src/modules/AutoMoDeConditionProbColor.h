@@ -12,7 +12,7 @@
 #define AUTOMODE_CONDITION_PROB_COLOR_H
 
 #include "AutoMoDeCondition.h"
-#include "AutoMoDeAdaptable.h"
+#include "AutoMoDeAdaptable.hpp"
 
 namespace argos {
 	class AutoMoDeConditionProbColor: public AutoMoDeCondition {
@@ -49,7 +49,7 @@ namespace argos {
 
 		private:
 			CColor m_cColorParameter;
-			Adaptable<Real> m_fProbability;
+			AutoMoDeAdaptable<Real> m_fProbability;
 	};
 }
 
