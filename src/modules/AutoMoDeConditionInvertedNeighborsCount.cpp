@@ -71,8 +71,5 @@ namespace argos {
 	/****************************************/
 	/****************************************/
 
-	void AutoMoDeConditionInvertedNeighborsCount::Adapt(Real reward) {
-		m_fParameterEta.Adapt(reward);
-		m_unParameterXi.Adapt(reward);
-	}
+	void AutoMoDeConditionInvertedNeighborsCount::Adapt(Real reward) {}
 }

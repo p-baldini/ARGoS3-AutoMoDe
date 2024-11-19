@@ -64,15 +64,12 @@ namespace argos {
 	/****************************************/
 
 	void AutoMoDeConditionNeighborsCount::Init() {
-		m_fParameterEta.Init(FindParameter<Real>("w"));
-		m_unParameterXi.Init(FindParameter<UInt8>("p"));
+		m_fParameterEta = FindParameter("w");
+		m_unParameterXi = FindParameter("p");
 	}
 
 	/****************************************/
 	/****************************************/
 
-	void AutoMoDeConditionNeighborsCount::Adapt(Real reward) {
-		m_fParameterEta.Adapt(reward);
-		m_unParameterXi.Adapt(reward);
-	}
+	void AutoMoDeConditionNeighborsCount::Adapt(Real reward) {}
 }
