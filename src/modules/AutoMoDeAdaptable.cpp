@@ -7,52 +7,6 @@
  * 
  * @license MIT License
  */
-
-/**
- * Selects the arm to pull according to the rewards obtained and the number of pulls.
- * Implementation of the UCB1 algorithm. This function is visible only in the current file.
- * 
- * @param[in] rewards The cumulative reward obtained by each arm.
- * @param[in] pulls The number of time each arm has been tried.
- * @param[in] arms_count The total number of possible arms.
- * @return The index of the arm (or value) selected to be used next.
- */
-static SInt32 SelectArm(
-    const std::vector<Real> rewards,
-    const std::vector<SInt32> pulls,
-    int arms_count
-) {
-    // accumulator variable for the total number of rounds
-    SInt32 pulls_count = 0;
-
-    // counts the total number of rounds
-    for (SInt32 pull : pulls) {
-        pulls_count += pull;
-    }
-
-    // the calculation of the confidence radius considers
-    // the same nominator for all the arms
-    Real nominator = 2 * log(pulls_count);
-
-    // setup auxiliary variables to find the arm to pull
-    Real max = 0;
-    SInt32 max_idx = -1;
-
-    // find the arm with the larger UCB
-    for (SInt32 i = 0; i < arms_count; i++) {
-        Real mu = rewards[i] / pulls[i];
-        Real r = sqrt(nominator / pulls[i]);
-
-        // if the arm “i” is more worth trying, select it
-        if (mu + r > max) {
-            max = mu + r;
-            max_idx = i;
-        }
-    }
-
-    return max_idx;
-}
-
 /****************************************/
 /****************************************/
 
@@ -107,6 +61,42 @@ void AutoMoDeAdaptable<T>::Adapt(Real reward) {
     if (m_tPossibleValues.size() > 1) {
         m_fRewards[m_iIndex] += reward;
         m_iPulls[m_iIndex]++;
-        m_iIndex = SelectArm(m_fRewards, m_iPulls, m_tPossibleValues.size());
+        m_iIndex = AutoMoDeAdaptable<T>::SelectArm();
     }
+}
+
+/****************************************/
+/****************************************/
+
+template <typename T>
+SInt32 AutoMoDeAdaptable<T>::SelectArm() {
+    // accumulator variable for the total number of rounds
+    SInt32 pullsCount = 0;
+
+    // counts the total number of rounds
+    for (SInt32 pull : m_iPulls) {
+        pullsCount += pull;
+    }
+
+    // the calculation of the confidence radius considers
+    // the same nominator for all the arms
+    Real nominator = 2 * log(pullsCount);
+
+    // setup auxiliary variables to find the arm to pull
+    Real max = 0;
+    SInt32 maxIdx = -1;
+
+    // find the arm with the larger UCB
+    for (long unsigned int i = 0; i < m_tPossibleValues.size(); i++) {
+        Real mu = m_fRewards[i] / m_iPulls[i];
+        Real r = sqrt(nominator / m_iPulls[i]);
+
+        // if the arm “i” is more worth trying, select it
+        if (mu + r > max) {
+            max = mu + r;
+            maxIdx = i;
+        }
+    }
+
+    return maxIdx;
 }

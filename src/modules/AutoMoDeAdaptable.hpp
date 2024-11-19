@@ -74,6 +74,14 @@ namespace argos {
                                                 ///< the reward it has received.
             std::vector<SInt32> m_iPulls;       ///< For each parameter-value, this array contains
                                                 ///< the number of times it has been tried.
+
+            /**
+             * Selects the arm to pull according to the rewards obtained and the number of pulls.
+             * Implementation of the UCB1 algorithm.
+             * 
+             * @return The index of the arm (or value) selected to be used next.
+             */
+            SInt32 SelectArm();
     };
 
     #include "AutoMoDeAdaptable.cpp"
