@@ -75,9 +75,9 @@ namespace argos {
 	/****************************************/
 
 	void AutoMoDeBehaviourGoToColor::Init() {
-		m_unAttractionParameter.Init(FindParameter<Real>("vel"));
-		m_cColorEmitterParameter = GetColorParameter(FindParameter<Real>("cle"), true);
-		m_cColorReceiverParameter = GetColorParameter(FindParameter<Real>("clr"), true);
+		m_unAttractionParameter = FindParameter("vel");
+		m_cColorEmitterParameter = GetColorParameter(FindParameter("cle"), true);
+		m_cColorReceiverParameter = GetColorParameter(FindParameter("clr"), true);
 	}
 
 	/****************************************/
