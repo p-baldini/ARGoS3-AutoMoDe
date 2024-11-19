@@ -47,9 +47,17 @@ namespace argos {
 			 */
 			virtual void Adapt(Real reward);
 
+			/**
+			 * @see AutoMoDeCondition::SetRobotDAO
+			 */
+			void SetRobotDAO(EpuckDAO* pc_robot_dao) override;
+
 		private:
 			CRange<Real> m_fGroundThresholdRange;
 			AutoMoDeAdaptable<Real> m_fProbability;
+
+			bool m_bBasicPerceptionCapabilities;	///< True if the robot can only analyze raw
+													///< ground data; False otherwise.
 	};
 }
 
