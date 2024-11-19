@@ -139,11 +139,6 @@ namespace argos {
 			);
 
 			/**
-			 * Returns the value of a given parameter from the parameters map.
-			 */
-			const AutoMoDeAdaptable<Real>& GetParameter(const std::string& str_identifier);
-
-			/**
 			 * Returns the whole parameters map.
 			 */
 			const std::map<std::string, AutoMoDeAdaptable<Real>> GetParameters();
