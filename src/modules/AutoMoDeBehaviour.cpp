@@ -224,4 +224,29 @@ namespace argos {
         return cColorParameter;
     }
 
+	/****************************************/
+    /****************************************/
+
+	AutoMoDeAdaptable<Real> AutoMoDeBehaviour::FindParameter(const char tag[]) {
+		auto it = m_mapParameters.find(tag);
+		if (it == m_mapParameters.end()) {
+			LOGERR << "[FATAL] Missing parameter '" << tag
+				   << "' for behaviour: " << m_strLabel << std::endl;
+			THROW_ARGOSEXCEPTION("Missing Parameter");
+		}
+		return it->second;
+	}
+
+	/****************************************/
+    /****************************************/
+
+	AutoMoDeAdaptable<Real> AutoMoDeBehaviour::FindParameter(
+		const char tag[], AutoMoDeAdaptable<Real> defaultValue
+	) {
+		try {
+			return FindParameter(tag);
+		} catch (CARGoSException& ex) {
+			return defaultValue;
+		}
+	}
 }
