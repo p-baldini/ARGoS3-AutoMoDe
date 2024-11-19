@@ -65,7 +65,7 @@ namespace argos {
 		}
 
 		m_pcRobotDAO->SetWheelsVelocity(ComputeWheelsVelocityFromVector(sResultVector));
-        m_pcRobotDAO->SetLEDsColor(m_cColorEmiterParameter);
+        m_pcRobotDAO->SetLEDsColor(m_cColorEmitterParameter);
 
 		m_bLocked = false;
 	}
@@ -74,8 +74,8 @@ namespace argos {
 	/****************************************/
 
 	void AutoMoDeBehaviourAttraction::Init() {
-		m_unAttractionParameter.Init(FindParameter<UInt8>("att"));
-		m_cColorEmiterParameter = GetColorParameter(FindParameter<Real>("cle"), true);
+		m_unAttractionParameter = FindParameter("att");
+		m_cColorEmitterParameter = GetColorParameter(FindParameter("cle"), true);
 	}
 
 	/****************************************/

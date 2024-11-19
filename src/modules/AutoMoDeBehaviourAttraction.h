@@ -12,7 +12,7 @@
 #define AUTOMODE_BEHAVIOUR_ATTRACTION_H
 
 #include "AutoMoDeBehaviour.h"
-#include "AutoMoDeAdaptable.h"
+#include "AutoMoDeAdaptable.hpp"
 
 namespace argos {
 	class AutoMoDeBehaviourAttraction: public AutoMoDeBehaviour {
@@ -52,8 +52,8 @@ namespace argos {
 			virtual void Adapt(Real reward);
 
 		private:
-			Adaptable<UInt8> m_unAttractionParameter;
-            CColor m_cColorEmiterParameter;
+			AutoMoDeAdaptable<Real> m_unAttractionParameter;
+            CColor m_cColorEmitterParameter;
 	};
 }
 
