@@ -160,7 +160,7 @@ namespace argos {
 			/**
 			 * Setter for the pointer to the robot state.
 			 */
-			void SetRobotDAO(EpuckDAO* pc_robot_dao);
+			virtual void SetRobotDAO(EpuckDAO* pc_robot_dao);
 
 			/**
 			 * Returns a random value from a Bernoulli distribution.
