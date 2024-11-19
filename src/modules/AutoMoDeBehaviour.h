@@ -22,6 +22,8 @@
 
 #include <map>
 
+#include "AutoMoDeAdaptable.hpp"
+
 namespace argos {
 	class AutoMoDeBehaviour {
 		protected:
@@ -41,7 +43,7 @@ namespace argos {
 			/**
 			 * Contains the parameters of the behaviours.
 			 */
-			std::map<std::string, Real> m_mapParameters;
+			std::map<std::string, AutoMoDeAdaptable<Real>> m_mapParameters;
 
 			/**
 			 * The name of the behaviour.
@@ -73,12 +75,13 @@ namespace argos {
 			 */
 			template <typename T>
 			T FindParameter(const char tag[]) {
-				std::map<std::string, Real>::iterator it = m_mapParameters.find(tag);
+				auto it = m_mapParameters.find(tag);
 				if (it == m_mapParameters.end()) {
-					LOGERR << "[FATAL] Missing parameter for the following behaviour: " << m_strLabel << std::endl;
+					LOGERR << "[FATAL] Missing parameter '" << tag
+						<< "' for behaviour: " << m_strLabel << std::endl;
 					THROW_ARGOSEXCEPTION("Missing Parameter");
 				}
-				return it->second;
+				return static_cast<T>(it->second);
 			}
 
 			/**
@@ -93,7 +96,7 @@ namespace argos {
 			T FindParameter(const char tag[], T defaultValue) {
 				try {
 					return FindParameter<T>(tag);
-				} catch (CARGoSException ex) {
+				} catch (CARGoSException& ex) {
 					return defaultValue;
 				}
 			}
@@ -145,17 +148,19 @@ namespace argos {
 			/**
 			 * Instert a pair <parameter, value> to the parameters map.
 			 */
-			void AddParameter(const std::string& str_identifier, const Real& f_value);
+			void AddParameter(
+				const std::string& str_identifier, const AutoMoDeAdaptable<Real>& f_value
+			);
 
 			/**
 			 * Returns the value of a given parameter from the parameters map.
 			 */
-			const Real& GetParameter(const std::string& str_identifier);
+			const AutoMoDeAdaptable<Real>& GetParameter(const std::string& str_identifier);
 
 			/**
 			 * Returns the whole parameters map.
 			 */
-			const std::map<std::string, Real> GetParameters();
+			const std::map<std::string, AutoMoDeAdaptable<Real>> GetParameters();
 
 			/**
 			 * Setter for the index of the behaviour.
