@@ -78,8 +78,8 @@ namespace argos {
 
 	void AutoMoDeBehaviourGoAwayColor::Init() {
 		m_unRepulsionParameter = FindParameter("vel");
-		m_cColorEmitterParameter = GetColorParameter(FindParameter<Real>("cle"), true);
-		m_cColorReceiverParameter = GetColorParameter(FindParameter<Real>("clr"), true);
+		m_cColorEmitterParameter = GetColorParameter(FindParameter("cle"), true);
+		m_cColorReceiverParameter = GetColorParameter(FindParameter("clr"), true);
 	}
 
 	/****************************************/
