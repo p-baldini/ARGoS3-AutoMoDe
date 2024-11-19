@@ -86,10 +86,10 @@ namespace argos {
     /****************************************/
 
     void AutoMoDeBehaviourReactToColor::Init() {
-        m_iReactionType.Init(FindParameter<Real>("crt"));
-        m_unReactionParameter.Init(FindParameter<Real>("vel"));
-        m_cColorEmitterParameter = GetColorParameter(FindParameter<Real>("cle"), true);
-        m_cColorReceiverParameter = GetColorParameter(FindParameter<Real>("clr"), true);
+        m_iReactionType = FindParameter("crt");
+        m_unReactionParameter = FindParameter("vel");
+        m_cColorEmitterParameter = GetColorParameter(FindParameter("cle"), true);
+        m_cColorReceiverParameter = GetColorParameter(FindParameter("clr"), true);
     }
 
     /****************************************/

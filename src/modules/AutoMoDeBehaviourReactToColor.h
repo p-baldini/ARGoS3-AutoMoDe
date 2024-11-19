@@ -11,7 +11,7 @@
 #define AUTOMODE_BEHAVIOUR_REACT_TO_COLOR_H
 
 #include "AutoMoDeBehaviour.h"
-#include "AutoMoDeAdaptable.h"
+#include "AutoMoDeAdaptable.hpp"
 
 namespace argos {
     class AutoMoDeBehaviourReactToColor: public AutoMoDeBehaviour {
@@ -74,8 +74,8 @@ namespace argos {
 
             CColor m_cColorEmitterParameter;
             CColor m_cColorReceiverParameter;
-            Adaptable<Real> m_iReactionType;
-            Adaptable<Real> m_unReactionParameter;
+            AutoMoDeAdaptable<Real> m_iReactionType;
+            AutoMoDeAdaptable<Real> m_unReactionParameter;
     };
 }
 
