@@ -1,15 +1,14 @@
-/*
+/**
  * @file <src/modules/AutoMoDeBehaviour.cpp>
- *
+ * 
  * @author Antoine Ligot - <aligot@ulb.ac.be>
- *
+ * @author Paolo Baldini - <paolo.baldini.phd@gmail.com>
+ * 
  * @package ARGoS3-AutoMoDe
- *
+ * 
  * @license MIT License
  */
-
 #include "AutoMoDeBehaviour.h"
-
 
 namespace argos {
 
@@ -56,11 +55,8 @@ namespace argos {
 	const std::string AutoMoDeBehaviour::GetDOTDescription() {
 		std::stringstream ss;
 		ss << m_strLabel;
-		if (!m_mapParameters.empty()) {
-			std::map<std::string, Real>::iterator it;
-			for (it = m_mapParameters.begin(); it != m_mapParameters.end(); it++) {
-				ss << "\\n" << it->first << "=" << it->second ;
-			}
+		for (auto& it : m_mapParameters) {
+			ss << "\\n" << it.first << "=" << it.second ;
 		}
 		return ss.str();
 	}
@@ -95,8 +91,12 @@ namespace argos {
 		}
 
 		// Transform relative velocity according to max velocity allowed
-		Real fVelocityFactor = m_pcRobotDAO->GetMaxVelocity() / Max<Real>(std::abs(fRightVelocity), std::abs(fLeftVelocity));
-		CVector2 cWheelsVelocity = CVector2(fVelocityFactor * fLeftVelocity, fVelocityFactor * fRightVelocity);
+		Real fVelocityFactor = m_pcRobotDAO->GetMaxVelocity();
+		fVelocityFactor /= Max<Real>(std::abs(fRightVelocity), std::abs(fLeftVelocity));
+		CVector2 cWheelsVelocity = CVector2(
+			fVelocityFactor * fLeftVelocity,
+			fVelocityFactor * fRightVelocity
+		);
 
 		return cWheelsVelocity;
 	}
@@ -115,8 +115,12 @@ namespace argos {
 	/****************************************/
 	/****************************************/
 
-	void AutoMoDeBehaviour::AddParameter(const std::string& str_identifier, const Real& f_value) {
-		m_mapParameters.insert(std::pair<std::string, Real>(str_identifier, f_value));
+	void AutoMoDeBehaviour::AddParameter(
+		const std::string& str_identifier, const AutoMoDeAdaptable<Real>& f_value
+	) {
+		m_mapParameters.insert(
+			std::pair<std::string, AutoMoDeAdaptable<Real>>(str_identifier, f_value)
+		);
 	}
 
 	/****************************************/
@@ -136,7 +140,7 @@ namespace argos {
 	/****************************************/
 	/****************************************/
 
-	const std::map<std::string, Real> AutoMoDeBehaviour::GetParameters() {
+	const std::map<std::string, AutoMoDeAdaptable<Real>> AutoMoDeBehaviour::GetParameters() {
 		return m_mapParameters;
 	}
 
@@ -150,7 +154,7 @@ namespace argos {
     /****************************************/
     /****************************************/
     // Return the color parameter
-    CColor AutoMoDeBehaviour::GetColorParameter(const UInt32& un_value, const bool& b_emiter) {
+    CColor AutoMoDeBehaviour::GetColorParameter(const UInt32& un_value, const bool& b_emitter) {
 
         CColor cColorParameter;
 
@@ -162,7 +166,7 @@ namespace argos {
 
         //********************************************************
 
-        if (b_real_robot && b_emiter){
+        if (b_real_robot && b_emitter){
             switch(un_value){
             case 0:
                 cColorParameter = CColor::BLACK;
