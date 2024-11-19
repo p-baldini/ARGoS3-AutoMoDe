@@ -18,13 +18,15 @@
 
 #include <map>
 
+#include "AutoMoDeAdaptable.hpp"
+
 namespace argos {
 	class AutoMoDeCondition {
 		protected:
 			/**
 			 * Map containing all parameters of the condition.
 			 */
-			std::map<std::string, Real> m_mapParameters;
+			std::map<std::string, AutoMoDeAdaptable<Real>> m_mapParameters;
 
 			/**
 			 * Index of the behaviour at the origin of the condition.
@@ -141,17 +143,14 @@ namespace argos {
 			/**
 			 * Adds a pair <parameter, value> to the parameters map.
 			 */
-			void AddParameter(const std::string& str_identifier, const Real& f_value);
-
-			/**
-			 * Returns the value of a given parameter from the parameters map.
-			 */
-			Real GetParameter(const std::string& str_identifier);
+			void AddParameter(
+				const std::string& str_identifier, const AutoMoDeAdaptable<Real>& f_value
+			);
 
 			/**
 			 * Returns the whole parameter map.
 			 */
-			std::map<std::string, Real> GetParameters() const;
+			const std::map<std::string, AutoMoDeAdaptable<Real>> GetParameters() const;
 
 			/**
 			 * Getter for the name of the label.

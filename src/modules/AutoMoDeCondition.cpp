@@ -18,8 +18,8 @@ namespace argos {
 	const std::string AutoMoDeCondition::GetDOTDescription() {
 		std::stringstream ss;
 		ss << m_strLabel;
-		for (auto it : m_mapParameters) {
-			ss << "\\n" << it->first << "=" << it->second ;
+		for (auto& it : m_mapParameters) {
+			ss << "\\n" << it.first << "=" << it.second ;
 		}
 		return ss.str();
 	}
@@ -27,8 +27,12 @@ namespace argos {
 	/****************************************/
 	/****************************************/
 
-	void AutoMoDeCondition::AddParameter(const std::string& str_identifier, const Real& f_value) {
-		m_mapParameters.insert(std::pair<std::string, Real>(str_identifier, f_value));
+	void AutoMoDeCondition::AddParameter(
+		const std::string& str_identifier, const AutoMoDeAdaptable<Real>& f_value
+	) {
+		m_mapParameters.insert(
+			std::pair<std::string, AutoMoDeAdaptable<Real>>(str_identifier, f_value)
+		);
 	}
 
 	/****************************************/
@@ -105,7 +109,7 @@ namespace argos {
 	/****************************************/
 	/****************************************/
 
-	std::map<std::string, Real> AutoMoDeCondition::GetParameters() const {
+	const std::map<std::string, AutoMoDeAdaptable<Real>> AutoMoDeCondition::GetParameters() const {
 		return m_mapParameters;
 	}
 
@@ -182,5 +186,4 @@ namespace argos {
 			return defaultValue;
 		}
 	}
-
 }
