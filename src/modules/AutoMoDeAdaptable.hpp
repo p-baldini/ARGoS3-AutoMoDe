@@ -84,6 +84,7 @@ namespace argos {
             SInt32 SelectArm();
     };
 
+    // a trick to allow separating class definition and implementation
     #include "AutoMoDeAdaptable.cpp"
 }
 
