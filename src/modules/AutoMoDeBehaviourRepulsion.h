@@ -12,7 +12,6 @@
 #define AUTOMODE_BEHAVIOUR_REPULSION_H
 
 #include "AutoMoDeBehaviour.h"
-#include "AutoMoDeAdaptable.hpp"
 
 namespace argos {
 	class AutoMoDeBehaviourRepulsion: public AutoMoDeBehaviour {
@@ -52,7 +51,7 @@ namespace argos {
 			virtual void Adapt(Real reward);
 
 		private:
-			AutoMoDeAdaptable<Real> m_unRepulsionParameter;
+			Real m_unRepulsionParameter;
             CColor m_cColorEmitterParameter;
 	};
 }

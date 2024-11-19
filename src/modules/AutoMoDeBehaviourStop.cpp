@@ -57,7 +57,7 @@ namespace argos {
 	/****************************************/
 
 	void AutoMoDeBehaviourStop::Init() {
-		m_cColorEmitterParameter = GetColorParameter(FindParameter<Real>("cle"), true);
+		m_cColorEmitterParameter = GetColorParameter(FindParameter("cle"), true);
 	}
 
 	/****************************************/

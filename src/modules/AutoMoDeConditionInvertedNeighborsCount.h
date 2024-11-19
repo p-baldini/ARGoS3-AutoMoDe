@@ -12,7 +12,6 @@
 #define AUTOMODE_CONDITION_INVERTED_NEIGHBORS_COUNT_H
 
 #include "AutoMoDeCondition.h"
-#include "AutoMoDeAdaptable.h"
 
 namespace argos {
 	class AutoMoDeConditionInvertedNeighborsCount: public AutoMoDeCondition {
@@ -48,8 +47,8 @@ namespace argos {
 			virtual void Adapt(Real reward);
 
 		private:
-			Adaptable<Real> m_fParameterEta;
-			Adaptable<UInt8> m_unParameterXi;
+			Real m_fParameterEta;
+			Real m_unParameterXi;
 	};
 }
 

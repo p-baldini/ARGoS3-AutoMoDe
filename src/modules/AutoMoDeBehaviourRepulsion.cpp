@@ -96,7 +96,5 @@ namespace argos {
 	/****************************************/
 	/****************************************/
 
-	void AutoMoDeBehaviourRepulsion::Adapt(Real reward) {
-		m_unRepulsionParameter.Adapt(reward);
-	}
+	void AutoMoDeBehaviourRepulsion::Adapt(Real reward) {}
 }

@@ -64,8 +64,8 @@ namespace argos {
 	/****************************************/
 
 	void AutoMoDeConditionInvertedNeighborsCount::Init() {
-		m_fParameterEta.Init(FindParameter<Real>("w"));
-		m_unParameterXi.Init(FindParameter<UInt8>("p"));
+		m_fParameterEta = FindParameter("w");
+		m_unParameterXi = FindParameter("p");
 	}
 
 	/****************************************/
