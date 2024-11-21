@@ -12,7 +12,7 @@
 #define AUTOMODE_CONDITION_FIXED_PROBABILITY_H
 
 #include "AutoMoDeCondition.h"
-#include "AutoMoDeAdaptable.h"
+#include "AutoMoDeAdaptable.hpp"
 
 namespace argos {
 	class AutoMoDeConditionFixedProbability: public AutoMoDeCondition {
@@ -48,7 +48,7 @@ namespace argos {
 			virtual void Adapt(Real reward);
 
 		private:
-			Adaptable<Real> m_fProbability;
+			AutoMoDeAdaptable<Real> m_fProbability;
 	};
 }
 

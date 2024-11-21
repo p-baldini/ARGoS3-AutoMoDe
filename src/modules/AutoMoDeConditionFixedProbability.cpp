@@ -48,7 +48,7 @@ namespace argos {
 	/****************************************/
 
 	void AutoMoDeConditionFixedProbability::Init() {
-		m_fProbability.Init(FindParameter<Real>("p"));
+		m_fProbability = FindParameter("p");
 	}
 
 	/****************************************/
@@ -71,4 +71,4 @@ namespace argos {
 	void AutoMoDeConditionFixedProbability::Adapt(Real reward) {
 		m_fProbability.Adapt(reward);
 	}
- }
+}
