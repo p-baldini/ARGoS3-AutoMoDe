@@ -9,6 +9,9 @@
  */
 #include "AutoMoDeEvaluator.hpp"
 #include "AutoMoDeEvaluatorForaging.hpp"
+#include "AutoMoDeEvaluatorRepair.hpp"
+
+#include <limits>
 
 namespace argos {
 
@@ -19,28 +22,56 @@ namespace argos {
         if (type == "foraging") {
             return new AutoMoDeEvaluatorForaging();
         }
+        if (type == "repair") {
+            return new AutoMoDeEvaluatorRepair();
+        }
         return new AutoMoDeEvaluator();
     }
 
     /****************************************/
     /****************************************/
 
-    void AutoMoDeEvaluator::Init() {}
+    AutoMoDeEvaluator::AutoMoDeEvaluator() {
+        m_uEvaluationTime = std::numeric_limits<UInt32>::max();
+    }
 
     /****************************************/
     /****************************************/
 
-    void AutoMoDeEvaluator::Reset() {}
+    void AutoMoDeEvaluator::Init() {
+        m_unEvaluationStep = 0;
+    }
 
     /****************************************/
     /****************************************/
 
-    void AutoMoDeEvaluator::ControlStep() {}
+    void AutoMoDeEvaluator::Reset() {
+        m_unEvaluationStep = 0;
+    }
 
     /****************************************/
     /****************************************/
 
-    void AutoMoDeEvaluator::NewEvaluation() {}
+    void AutoMoDeEvaluator::ControlStep() {
+        if (m_unEvaluationStep++ == m_uEvaluationTime) {
+            AutoMoDeEvaluator::NewEvaluation();
+        }
+    }
+
+    /****************************************/
+    /****************************************/
+
+    void AutoMoDeEvaluator::SetEvaluationTime(UInt32 evaluationTime) {
+        m_uEvaluationTime = evaluationTime;
+    }
+
+    /****************************************/
+    /****************************************/
+
+    void AutoMoDeEvaluator::NewEvaluation() {
+        LOG << "cumulative performance: " << CumulativePerformance() << std::endl;
+        m_unEvaluationStep = 0;
+    }
 
     /****************************************/
     /****************************************/

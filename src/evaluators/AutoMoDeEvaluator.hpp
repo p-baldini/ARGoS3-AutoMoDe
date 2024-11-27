@@ -32,6 +32,11 @@ namespace argos {
             static AutoMoDeEvaluator* Build(const std::string& type);
 
             /**
+             * The class constructor. It initializes the evaluation time to the highest value.
+             */
+            AutoMoDeEvaluator();
+
+            /**
              * Initialize the evaluator.
              */
             virtual void Init();
@@ -45,6 +50,13 @@ namespace argos {
              * Update the robot performance according to perception and action.
              */
             virtual void ControlStep();
+
+            /**
+             * The class constructor. It takes the indication on how often to adapt the parameter.
+             * 
+             * @param[in] evaluationTime The number of steps a parameter should be evaluated for.
+             */
+            virtual void SetEvaluationTime(UInt32 evaluationTime);
 
             /**
              * Start a new controller evaluation resetting the 'current performance' but
@@ -80,6 +92,9 @@ namespace argos {
         protected:
             const std::string m_strLabel = "Dummy"; ///< The name of the evaluator; the default is
                                                     ///< "Dummy".
+            UInt32 m_uEvaluationTime;               ///< The number of steps after which the
+                                                    ///< parameter should adapt.
+            UInt32 m_unEvaluationStep;              ///< The current evaluation step.
             EpuckDAO* m_pcRobotDAO;                 ///< Pointer to the state of the robot. Shared
                                                     ///< with the controller AutoMoDeController and
                                                     ///< the finite state machine
