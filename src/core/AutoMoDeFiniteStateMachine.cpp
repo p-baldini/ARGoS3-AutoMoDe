@@ -232,7 +232,7 @@ namespace argos {
 	/****************************************/
 	/****************************************/
 
-	void SetEvaluationTime(UInt32 unSteps) {
+	void AutoMoDeFiniteStateMachine::SetEvaluationTime(UInt32 unSteps) {
 		m_unEvaluationTime = unSteps;
 	}
 
