@@ -78,6 +78,13 @@ namespace argos {
 			void AddBehaviour(AutoMoDeBehaviour* pc_new_behaviour);
 
 			/**
+			 * Set the evaluation time for a FSM specialization.
+			 * 
+			 * @param[in] unSteps The time a FSM specialization can be evaluated for.
+			 */
+			void SetEvaluationTime(UInt32 unSteps);
+
+			/**
 			 * Core of the Finite State Machine. Responsible for the transitions between the
 			 * different states (behaviours). Works as follows:
 			 *   1. Execute current behaviour
@@ -130,6 +137,13 @@ namespace argos {
 			 * @return The step count since the start of the FSM.
 			 */
 			const UInt32& GetTimeStep() const;
+
+			/**
+			 * Returns the evaluation time of a FSM specialization when adapting.
+			 * 
+			 * @return The evaluation time of the FSM specialization under trial.
+			 */
+			const UInt32 GetEvaluationTime();
 
 			/**
 			 * Returns all the behaviours contained in the FSM.
@@ -212,6 +226,11 @@ namespace argos {
 			 * The current time step.
 			 */
 			UInt32 m_unTimeStep;
+
+			/**
+			 * The evaluation period for an adapting FSM.
+			 */
+			UInt32 m_unEvaluationTime;
 
 			/**
 			 * Map containing pointers to tested outgoing conditions and

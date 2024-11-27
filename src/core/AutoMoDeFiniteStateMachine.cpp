@@ -232,6 +232,13 @@ namespace argos {
 	/****************************************/
 	/****************************************/
 
+	void SetEvaluationTime(UInt32 unSteps) {
+		m_unEvaluationTime = unSteps;
+	}
+
+	/****************************************/
+	/****************************************/
+
 	const std::string AutoMoDeFiniteStateMachine::FillWithInitialState() {
 		std::stringstream ssUrl;
 		ssUrl << "node [shape = doublecircle]; " ;
@@ -312,6 +319,13 @@ namespace argos {
 
 	const UInt32& AutoMoDeFiniteStateMachine::GetTimeStep() const {
 		return m_unTimeStep;
+	}
+
+	/****************************************/
+	/****************************************/
+
+	const UInt32& AutoMoDeFiniteStateMachine::GetEvaluationTime() {
+		return m_unEvaluationTime;
 	}
 
 	/****************************************/
