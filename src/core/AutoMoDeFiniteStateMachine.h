@@ -45,7 +45,6 @@ namespace argos {
 	class AutoMoDeFiniteStateMachine {
 
 		public:
-
 			/**
 			 * Class constructor.
 			 */
@@ -143,7 +142,7 @@ namespace argos {
 			 * 
 			 * @return The evaluation time of the FSM specialization under trial.
 			 */
-			const UInt32 GetEvaluationTime();
+			UInt32 GetEvaluationTime() const;
 
 			/**
 			 * Returns all the behaviours contained in the FSM.

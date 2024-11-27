@@ -47,6 +47,7 @@ namespace argos {
 		m_bEnteringNewState = pc_fsm->GetEnteringNewStateFlag();
 		m_bMaintainHistory = pc_fsm->GetMaintainHistoryFlag();
 		m_unTimeStep = pc_fsm->GetTimeStep();
+		m_unEvaluationTime = pc_fsm->GetEvaluationTime();
 
 		std::vector<AutoMoDeBehaviour*> vecBehaviours = pc_fsm->GetBehaviours();
 		m_vecBehaviours.clear();
@@ -324,7 +325,7 @@ namespace argos {
 	/****************************************/
 	/****************************************/
 
-	const UInt32 AutoMoDeFiniteStateMachine::GetEvaluationTime() {
+	UInt32 AutoMoDeFiniteStateMachine::GetEvaluationTime() const {
 		return m_unEvaluationTime;
 	}
 
