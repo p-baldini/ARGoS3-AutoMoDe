@@ -11,7 +11,9 @@
 /****************************************/
 
 template <typename T>
-void AutoMoDeAdaptable<T>::Init(T value) {
+void AutoMoDeAdaptable<T>::Init(UInt32 evaluationSteps, T value) {
+    m_uEvaluationTime = evaluationSteps;
+    m_uEvaluationStep = 0;
     m_tPossibleValues.clear();
     m_tPossibleValues.push_back(value);
     m_fRewards.clear();
@@ -24,7 +26,9 @@ void AutoMoDeAdaptable<T>::Init(T value) {
 /****************************************/
 
 template <typename T>
-void AutoMoDeAdaptable<T>::Init(std::vector<T> possibleValues) {
+void AutoMoDeAdaptable<T>::Init(UInt32 evaluationSteps, std::vector<T> possibleValues) {
+    m_uEvaluationTime = evaluationSteps;
+    m_uEvaluationStep = 0;
     m_tPossibleValues = std::vector<T>(possibleValues);
     m_fRewards = std::vector<Real>(possibleValues.size(), 1);
     m_iPulls = std::vector<SInt32>(possibleValues.size(), 1);
@@ -45,6 +49,8 @@ template <typename T>
 AutoMoDeAdaptable<T> AutoMoDeAdaptable<T>::Clone(const AutoMoDeAdaptable<T>& origin) {
     auto instance = AutoMoDeAdaptable<T>();
 
+    instance.m_uEvaluationTime = origin.m_uEvaluationTime;
+    instance.m_uEvaluationStep = origin.m_uEvaluationStep;
     instance.m_iIndex = origin.m_iIndex;
     instance.m_tPossibleValues = origin.m_tPossibleValues;
     instance.m_fRewards = origin.m_fRewards;
@@ -58,7 +64,8 @@ AutoMoDeAdaptable<T> AutoMoDeAdaptable<T>::Clone(const AutoMoDeAdaptable<T>& ori
 
 template <typename T>
 void AutoMoDeAdaptable<T>::Adapt(Real reward) {
-    if (m_tPossibleValues.size() > 1) {
+    if (m_uEvaluationStep++ == m_uEvaluationTime && m_tPossibleValues.size() > 1) {
+        m_uEvaluationStep = 0;
         m_fRewards[m_iIndex] += reward;
         m_iPulls[m_iIndex]++;
         m_iIndex = AutoMoDeAdaptable<T>::SelectArm();

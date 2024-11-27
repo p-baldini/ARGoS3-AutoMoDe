@@ -33,23 +33,28 @@ namespace argos {
 
             /**
              * Take a single value that the parameter subject to adaptation can assume and
-             * initialize the support variables accordingly.
+             * initialize the support variables accordingly. Additionally, take an integer
+             * parameter specifying after how many steps of evaluation the parameter should be
+             * adapted.
              * @see CCI_Controller::Init for additional information.
              * 
+             * @param[in] evaluationTime The step-duration of a parameter evaluation.
              * @param[in] value The value that the parameter subject to adaptation can assume.
              */
-            void Init(T value);
+            void Init(UInt32 evaluationTime, T value);
 
             /**
              * Take multiple values that the parameter subject to adaptation can assume and
              * initialize the support variables accordingly. The first element of the index is the
-             * first that will be tried.
+             * first that will be tried. Additionally, take an integer parameter specifying after
+             * how many steps of evaluation the parameter should be adapted.
              * @see CCI_Controller::Init for additional information.
              * 
+             * @param[in] evaluationTime The step-duration of a parameter evaluation.
              * @param[in] possibleValues The possible values the parameter subject to adaptation
              * can assume.
              */
-            void Init(std::vector<T> possibleValues);
+            void Init(UInt32 evaluationTime, std::vector<T> possibleValues);
 
             /**
              * The operator that defines an implicit conversion between an instance of the class
@@ -67,6 +72,10 @@ namespace argos {
             void Adapt(Real reward);
 
         private:
+            UInt32 m_uEvaluationTime;           ///< The number of steps after which the parameter
+                                                ///< should adapt.
+            UInt32 m_uEvaluationStep;           ///< The current evaluation step.
+
             SInt32 m_iIndex = 0;                ///< The index of the parameter currently in use.
 
             std::vector<T> m_tPossibleValues;   ///< The possible values the parameter can assume.
