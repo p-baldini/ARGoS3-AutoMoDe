@@ -324,7 +324,7 @@ namespace argos {
 	/****************************************/
 	/****************************************/
 
-	const UInt32& AutoMoDeFiniteStateMachine::GetEvaluationTime() {
+	const UInt32 AutoMoDeFiniteStateMachine::GetEvaluationTime() {
 		return m_unEvaluationTime;
 	}
 
