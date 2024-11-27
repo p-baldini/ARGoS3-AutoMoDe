@@ -100,11 +100,12 @@ int main(int n_argc, char** ppch_argv) {
 				// Setting random seed. Only works with modified version of ARGoS3.
 				cSimulator.SetRandomSeed(unSeed);
 
+				// load the xml file of the experiment (i.e., the argos file)
 				cSimulator.LoadExperiment();
 
-				// get the experiment parameters
-				auto t_node = cSimulator.GetConfigurationRoot();
+				// get the experiment parameters and find the evaluator name
 				std::string strEvaluatorType;
+				auto t_node = GetNode(cSimulator.GetConfigForController("automode"), "params");
 				GetNodeAttributeOrDefault(t_node, "evaluator-type", strEvaluatorType, strEvaluatorType);
 
 				// Duplicate the finite state machine and pass it to all robots.
