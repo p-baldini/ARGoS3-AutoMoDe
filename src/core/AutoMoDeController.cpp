@@ -1,14 +1,23 @@
-/*
+/**
  * @file <src/core/AutoMoDeController.cpp>
- *
+ * 
  * @author Antoine Ligot - <aligot@ulb.ac.be>
- *
+ * @author Paolo Baldini - <paolo.baldini.phd@gmail.com>
+ * 
  * @package ARGoS3-AutoMoDe
- *
+ * 
  * @license MIT License
  */
-
 #include "AutoMoDeController.h"
+
+#include <argos3/demiurge/epuck-dao/ReferenceModel1Dot1.h>
+#include <argos3/demiurge/epuck-dao/ReferenceModel1Dot2.h>
+#include <argos3/demiurge/epuck-dao/ReferenceModel2Dot0.h>
+#include <argos3/demiurge/epuck-dao/ReferenceModel2Dot1.h>
+#include <argos3/demiurge/epuck-dao/ReferenceModel2Dot2.h>
+#include <argos3/demiurge/epuck-dao/ReferenceModel2Dot3.h>
+#include <argos3/demiurge/epuck-dao/ReferenceModel3Dot0.h>
+#include <argos3/demiurge/epuck-dao/ReferenceModel3DotS.hpp>
 
 namespace argos {
 
@@ -16,7 +25,7 @@ namespace argos {
 	/****************************************/
 
 	AutoMoDeController::AutoMoDeController() {
-        m_pcRobotState = new ReferenceModel3Dot0();
+		m_pcRobotState = new ReferenceModel3DotS();
 		m_unTimeStep = 0;
 		m_strFsmConfiguration = "";
 		m_bMaintainHistory = false;
@@ -42,6 +51,7 @@ namespace argos {
 		// Parsing parameters
 		try {
 			GetNodeAttributeOrDefault(t_node, "fsm-config", m_strFsmConfiguration, m_strFsmConfiguration);
+			GetNodeAttributeOrDefault(t_node, "evaluator-type", m_strEvaluatorType, m_strEvaluatorType);
 			GetNodeAttributeOrDefault(t_node, "history", m_bMaintainHistory, m_bMaintainHistory);
 			GetNodeAttributeOrDefault(t_node, "hist-folder", m_strHistoryFolder, m_strHistoryFolder);
 			GetNodeAttributeOrDefault(t_node, "readable", m_bPrintReadableFsm, m_bPrintReadableFsm);
@@ -70,37 +80,62 @@ namespace argos {
 			LOGERR << "Warning: No finite state machine configuration found in .argos" << std::endl;
 		}
 
-
+		// create an evaluator according to its name; if the name is unknown, create a dummy evaluator
+		SetEvaluator(AutoMoDeEvaluator::Build(m_strEvaluatorType, m_strFsmConfiguration));
 
 		/*
 		 *  Initializing sensors and actuators
 		 */
-		try{
+		try {
 			m_pcProximitySensor = GetSensor<CCI_EPuckProximitySensor>("epuck_proximity");
+		} catch (CARGoSException& ex) {
+			LOGERR << "Error while initializing sensor epuck_proximity" << std::endl;
+		}
+		try {
 			m_pcLightSensor = GetSensor<CCI_EPuckLightSensor>("epuck_light");
+		} catch (CARGoSException& ex) {
+			LOGERR << "Error while initializing sensor epuck_light" << std::endl;
+		}
+		try {
 			m_pcGroundSensor = GetSensor<CCI_EPuckGroundSensor>("epuck_ground");
-			 m_pcRabSensor = GetSensor<CCI_EPuckRangeAndBearingSensor>("epuck_range_and_bearing");
-			 m_pcCameraSensor = GetSensor<CCI_EPuckOmnidirectionalCameraSensor>("epuck_omnidirectional_camera");
-		} catch (CARGoSException ex) {
-			LOGERR<<"Error while initializing a Sensor!\n";
+		} catch (CARGoSException& ex) {
+			LOGERR << "Error while initializing sensor epuck_ground" << std::endl;
+		}
+		try {
+			m_pcRabSensor = GetSensor<CCI_EPuckRangeAndBearingSensor>("epuck_range_and_bearing");
+		} catch (CARGoSException& ex) {
+			LOGERR << "Error while initializing sensor epuck_range_and_bearing" << std::endl;
+		}
+		try {
+			m_pcCameraSensor = GetSensor<CCI_EPuckOmnidirectionalCameraSensor>("epuck_omnidirectional_camera");
+		} catch (CARGoSException& ex) {
+			LOGERR << "Error while initializing sensor epuck_omnidirectional_camera" << std::endl;
 		}
 
-        if(m_pcCameraSensor != NULL){
-            m_pcCameraSensor->Enable();
-        }
+		if (m_pcCameraSensor != NULL) {
+			m_pcCameraSensor->Enable();
+		}
 
-		try{
+		try {
 			m_pcWheelsActuator = GetActuator<CCI_EPuckWheelsActuator>("epuck_wheels");
+		} catch (CARGoSException& ex) {
+			LOGERR << "Error while initializing actuator epuck_wheels" << std::endl;
+		}
+		try {		
 			m_pcRabActuator = GetActuator<CCI_EPuckRangeAndBearingActuator>("epuck_range_and_bearing");
+		} catch (CARGoSException& ex) {
+			LOGERR << "Error while initializing actuator epuck_range_and_bearing" << std::endl;
+		}
+		try {
 			m_pcLEDsActuator = GetActuator<CCI_EPuckRGBLEDsActuator>("epuck_rgb_leds");
-		} catch (CARGoSException ex) {
-			LOGERR<<"Error while initializing an Actuator!\n";
+		} catch (CARGoSException& ex) {
+			LOGERR << "Error while initializing actuator epuck_rgb_leds" << std::endl;
 		}
 
 		/*
 		 * Starts actuation.
 		 */
-		 InitializeActuation();
+		InitializeActuation();
 	}
 
 	/****************************************/
@@ -110,7 +145,7 @@ namespace argos {
 		/*
 		 * 1. Update RobotDAO
 		 */
-		if(m_pcRabSensor != NULL){
+		if (m_pcRabSensor != NULL) {
 			const CCI_EPuckRangeAndBearingSensor::TPackets& packets = m_pcRabSensor->GetPackets();
 			//m_pcRobotState->SetNumberNeighbors(packets.size());
 			m_pcRobotState->SetRangeAndBearingMessages(packets);
@@ -127,10 +162,10 @@ namespace argos {
 			const CCI_EPuckProximitySensor::TReadings& readings = m_pcProximitySensor->GetReadings();
 			m_pcRobotState->SetProximityInput(readings);
 		}
-        if(m_pcCameraSensor != NULL){
-            const CCI_EPuckOmnidirectionalCameraSensor::SReadings& readings = m_pcCameraSensor->GetReadings();
-            m_pcRobotState->SetCameraInput(readings);
-        }
+		if (m_pcCameraSensor != NULL) {
+			const CCI_EPuckOmnidirectionalCameraSensor::SReadings& readings = m_pcCameraSensor->GetReadings();
+			m_pcRobotState->SetCameraInput(readings);
+		}
 
 		/*
 		 * 2. Execute step of FSM
@@ -143,10 +178,14 @@ namespace argos {
 		if (m_pcWheelsActuator != NULL) {
 			m_pcWheelsActuator->SetLinearVelocity(m_pcRobotState->GetLeftWheelVelocity(),m_pcRobotState->GetRightWheelVelocity());
 		}
-        if (m_pcLEDsActuator != NULL) {
-            m_pcLEDsActuator->SetColors(m_pcRobotState->GetLEDsColor());
-            //m_pcLEDsActuator->SetColor(2,m_pcRobotState->GetLEDsColor());
-        }
+		if (m_pcLEDsActuator != NULL) {
+			m_pcLEDsActuator->SetColors(m_pcRobotState->GetLEDsColor());
+			//m_pcLEDsActuator->SetColor(2,m_pcRobotState->GetLEDsColor());
+		}
+		if (m_pcRabActuator != NULL) {
+			const UInt8 message = m_pcRobotState->GetMessageToSend();
+			m_pcRabActuator->SetData(&message);
+		}
 
 		/*
 		 * 4. Update variables and sensors
@@ -156,6 +195,11 @@ namespace argos {
 		}
 		m_unTimeStep++;
 
+		/*
+		 * 5. Evaluate the robot performance and trigger the adaptation
+		 */
+		m_pcEvaluator->ControlStep();
+		m_pcFiniteStateMachine->Adapt(m_pcEvaluator->CurrentPerformance());
 	}
 
 	/****************************************/
@@ -168,6 +212,7 @@ namespace argos {
 
 	void AutoMoDeController::Reset() {
 		m_pcFiniteStateMachine->Reset();
+		m_pcEvaluator->Reset();
 		m_pcRobotState->Reset();
 		// Restart actuation.
 		InitializeActuation();
@@ -181,6 +226,15 @@ namespace argos {
 		m_pcFiniteStateMachine->SetRobotDAO(m_pcRobotState);
 		m_pcFiniteStateMachine->Init();
 		m_bFiniteStateMachineGiven = true;
+	}
+
+	/****************************************/
+	/****************************************/
+
+	void AutoMoDeController::SetEvaluator(AutoMoDeEvaluator* pcEvaluator) {
+		m_pcEvaluator = pcEvaluator;
+		m_pcEvaluator->SetRobotDAO(m_pcRobotState);
+		m_pcEvaluator->Init();
 	}
 
 	/****************************************/
