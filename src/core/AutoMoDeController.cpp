@@ -80,8 +80,14 @@ namespace argos {
 			LOGERR << "Warning: No finite state machine configuration found in .argos" << std::endl;
 		}
 
-		// create an evaluator according to its name; if the name is unknown, create a dummy evaluator
-		SetEvaluator(AutoMoDeEvaluator::Build(m_strEvaluatorType, m_strFsmConfiguration));
+		/*
+		 * Create an evaluator according to its name and set the evaluation period; if the name is
+		 * unknown, create a dummy evaluator
+		 */
+		SetEvaluator(AutoMoDeEvaluator::Build(m_strEvaluatorType));
+		if (m_bFiniteStateMachineGiven) {
+			m_pcEvaluator->SetEvaluationTime(m_pcFiniteStateMachine->GetEvaluationTime());
+		}
 
 		/*
 		 *  Initializing sensors and actuators
