@@ -10,6 +10,8 @@
  */
 #include "AutoMoDeFsmBuilder.h"
 
+#include <limits>
+
 namespace argos {
 
 	/****************************************/
@@ -21,13 +23,15 @@ namespace argos {
 	 * 
 	 * @param[in] fsm The description of the FSM.
 	 * @param[in] tag The parameter identifier in the given behavior.
+	 * @param[in] evaluationTime The step-duration of a parameter evaluation.
 	 * @param[out] result The value(s) of the required parameter, if exists.
 	 * @return True if the parameter exists, false otherwise.
 	 */
 	bool ParseParameter(
 		const std::vector<std::string>& fsm,
 		const std::ostringstream& tag,
-		Adaptable<Real>& result
+		UInt32 evaluationTime,
+		AutoMoDeAdaptable<Real>& result
 	) {
 		// find the first (and only) occurrence of the parameter in the FSM description
 		auto it = std::find(fsm.begin(), fsm.end(), tag.str());
@@ -47,7 +51,7 @@ namespace argos {
 		) {
 			v.push_back(strtod((*it).c_str(), NULL));
 		}
-		result.Init(v);
+		result.Init(evaluationTime, v);
 		return !v.empty();
 	}
 
@@ -66,23 +70,37 @@ namespace argos {
 	/****************************************/
 	/****************************************/
 
-	AutoMoDeFiniteStateMachine* AutoMoDeFsmBuilder::BuildFiniteStateMachine(const std::string& str_fsm_config) {
+	AutoMoDeFiniteStateMachine* AutoMoDeFsmBuilder::BuildFiniteStateMachine(
+		const std::string& str_fsm_config
+	) {
 		std::istringstream iss(str_fsm_config);
 		std::vector<std::string> tokens;
-		copy(std::istream_iterator<std::string>(iss),
+		std::copy(
+			std::istream_iterator<std::string>(iss),
 			std::istream_iterator<std::string>(),
-			std::back_inserter(tokens));
+			std::back_inserter(tokens)
+		);
 		return BuildFiniteStateMachine(tokens);
 	}
 
 	/****************************************/
 	/****************************************/
 
-	AutoMoDeFiniteStateMachine* AutoMoDeFsmBuilder::BuildFiniteStateMachine(std::vector<std::string>& vec_fsm_config) {
+	AutoMoDeFiniteStateMachine* AutoMoDeFsmBuilder::BuildFiniteStateMachine(
+		std::vector<std::string>& vec_fsm_config
+	) {
 		cFiniteStateMachine = new AutoMoDeFiniteStateMachine();
 
 		std::vector<std::string>::iterator it;
 		try {
+			// set the number of evaluation steps in for the adaptation
+			it = std::find(vec_fsm_config.begin(), vec_fsm_config.end(), "--evaluationsteps");
+			UInt32 un_EvaluationTime = it == vec_fsm_config.end()
+				? std::numeric_limits<int>::max()
+				: atoi((*(it+1)).c_str());
+			cFiniteStateMachine->SetEvaluationTime(un_EvaluationTime);
+
+			// find the number of states in the FSM
 			it = std::find(vec_fsm_config.begin(), vec_fsm_config.end(), "--nstates");
 			m_unNumberStates = atoi((*(it+1)).c_str());
 			std::vector<std::string>::iterator first_state;
@@ -112,7 +130,10 @@ namespace argos {
 	/****************************************/
 	/****************************************/
 
-	void AutoMoDeFsmBuilder::HandleState(AutoMoDeFiniteStateMachine* c_fsm, std::vector<std::string>& vec_fsm_state_config) {
+	void AutoMoDeFsmBuilder::HandleState(
+		AutoMoDeFiniteStateMachine* c_fsm,
+		std::vector<std::string>& vec_fsm_state_config
+	) {
 		AutoMoDeBehaviour* cNewBehaviour;
 		std::vector<std::string>::iterator it;
 		// Extraction of the index of the behaviour in the FSM
@@ -148,20 +169,21 @@ namespace argos {
 				break;
 			case 10:
 				cNewBehaviour = new AutoMoDeBehaviourReactToColor();
+				break;
 		}
 		cNewBehaviour->SetIndex(unBehaviourIndex);
 		cNewBehaviour->SetIdentifier(unBehaviourIdentifier);
 
 		// Checking for parameters
-		std::string vecPossibleParameters[] = {"rwt", "rwm", "rwmu", "rwc", "att", "rep", "crt", "cle", "clr", "vel"};
+		std::string vecPossibleParameters[] = {"rwt", "rwm", "rwmu", "rwc", "att", "rep", "crt", "cle", "clr", "vel", "wfd"};
 		for (auto& strCurrentParameter : vecPossibleParameters) {
 			// set the name of the parameter that has to be found
 			std::ostringstream oss;
 			oss << "--" << strCurrentParameter << unBehaviourIndex;
 
 			// search and possibly add the parameter to the behavior
-			Adaptable<Real> fCurrentParameterValue;
-			bool found = ParseParameter(vec_fsm_state_config, oss, fCurrentParameterValue);
+			AutoMoDeAdaptable<Real> fCurrentParameterValue;
+			bool found = ParseParameter(vec_fsm_state_config, oss, c_fsm->GetEvaluationTime(), fCurrentParameterValue);
 			if (found) {
 				cNewBehaviour->AddParameter(strCurrentParameter, fCurrentParameterValue);
 			}
@@ -203,7 +225,11 @@ namespace argos {
 	/****************************************/
 	/****************************************/
 
-	void AutoMoDeFsmBuilder::HandleTransition(std::vector<std::string>& vec_fsm_transition_config, const UInt32& un_initial_state_index, const UInt32& un_condition_index) {
+	void AutoMoDeFsmBuilder::HandleTransition(
+		std::vector<std::string>& vec_fsm_transition_config,
+		const UInt32& un_initial_state_index,
+		const UInt32& un_condition_index
+	) {
 		AutoMoDeCondition* cNewCondition;
 
 		std::stringstream ss;
@@ -240,9 +266,6 @@ namespace argos {
 				case 5:
 					cNewCondition = new AutoMoDeConditionFixedProbability();
 					break;
-				case 7:
-					cNewCondition = new AutoMoDeConditionProbColor();
-					break;
 			}
 
 			cNewCondition->SetOriginAndExtremity(un_initial_state_index, unToBehaviour);
@@ -250,15 +273,15 @@ namespace argos {
 			cNewCondition->SetIdentifier(unConditionIdentifier);
 
 			// Checking for parameters
-			std::string vecPossibleParameters[] = {"p", "w", "l"};
+			std::string vecPossibleParameters[] = {"p", "w", "l", "inv"};
 			for (auto& strCurrentParameter : vecPossibleParameters) {
 				// set the name of the parameter that has to be found
 				std::ostringstream oss;
 				oss << "--" << strCurrentParameter << un_initial_state_index << "x" << un_condition_index;
 
 				// search and possibly add the parameter to the behavior
-				Adaptable<Real> fCurrentParameterValue;
-				bool found = ParseParameter(vec_fsm_transition_config, oss, fCurrentParameterValue);
+				AutoMoDeAdaptable<Real> fCurrentParameterValue;
+				bool found = ParseParameter(vec_fsm_transition_config, oss, cFiniteStateMachine->GetEvaluationTime(), fCurrentParameterValue);
 				if (found) {
 					cNewCondition->AddParameter(strCurrentParameter, fCurrentParameterValue);
 				}
