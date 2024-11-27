@@ -1,13 +1,13 @@
-/*
+/**
  * @file <src/AutoMoDeMain.cpp>
- *
+ * 
  * @author Antoine Ligot - <aligot@ulb.ac.be>
- *
+ * @author Paolo Baldini - <paolo.baldini.phd@gmail.com>
+ * 
  * @package ARGoS3-AutoMoDe
- *
+ * 
  * @license MIT License
  */
-
 #include <argos3/core/simulator/simulator.h>
 #include <argos3/core/simulator/space/space.h>
 #include <argos3/core/simulator/entity/entity.h>
@@ -82,7 +82,7 @@ int main(int n_argc, char** ppch_argv) {
 		CSimulator& cSimulator = CSimulator::GetInstance();
 
 		switch(cACLAP.GetAction()) {
-    	case CARGoSCommandLineArgParser::ACTION_RUN_EXPERIMENT: {
+			case CARGoSCommandLineArgParser::ACTION_RUN_EXPERIMENT: {
 				CDynamicLoading::LoadAllLibraries();
 				cSimulator.SetExperimentFileName(cACLAP.GetExperimentConfigFile());
 
@@ -102,15 +102,23 @@ int main(int n_argc, char** ppch_argv) {
 
 				cSimulator.LoadExperiment();
 
+				// get the experiment parameters
+				auto t_node = cSimulator.GetConfigurationRoot();
+				std::string strEvaluatorType;
+				GetNodeAttributeOrDefault(t_node, "evaluator-type", strEvaluatorType, strEvaluatorType);
+
 				// Duplicate the finite state machine and pass it to all robots.
 				CSpace::TMapPerType cEntities = cSimulator.GetSpace().GetEntitiesByType("controller");
 				for (CSpace::TMapPerType::iterator it = cEntities.begin(); it != cEntities.end(); ++it) {
 					CControllableEntity* pcEntity = any_cast<CControllableEntity*>(it->second);
 					AutoMoDeFiniteStateMachine* pcPersonalFsm = new AutoMoDeFiniteStateMachine(pcFiniteStateMachine);
 					vecFsm.push_back(pcPersonalFsm);
+					auto pcEvaluator = AutoMoDeEvaluator::Build(strEvaluatorType);
+					pcEvaluator->SetEvaluationTime(pcPersonalFsm->GetEvaluationTime());
 					try {
 						AutoMoDeController& cController = dynamic_cast<AutoMoDeController&> (pcEntity->GetController());
 						cController.SetFiniteStateMachine(pcPersonalFsm);
+						cController.SetEvaluator(pcEvaluator);
 						cController.SetHistoryFlag(bHistory);
 					} catch (std::exception& ex) {
 						LOGERR << "Error while casting: " << ex.what() << std::endl;
@@ -126,39 +134,35 @@ int main(int n_argc, char** ppch_argv) {
 
 				break;
 			}
-
-    	case CARGoSCommandLineArgParser::ACTION_QUERY:
-        CDynamicLoading::LoadAllLibraries();
-        //QueryPlugins(cACLAP.GetQuery());
-        break;
-    	case CARGoSCommandLineArgParser::ACTION_SHOW_HELP:
-        cACLAP.PrintUsage(LOG);
-        break;
-		 	case CARGoSCommandLineArgParser::ACTION_SHOW_VERSION:
-        cACLAP.PrintVersion();
-        break;
-      case CARGoSCommandLineArgParser::ACTION_UNKNOWN:
-        // Should never get here
-        break;
+			case CARGoSCommandLineArgParser::ACTION_QUERY:
+				CDynamicLoading::LoadAllLibraries();
+				//QueryPlugins(cACLAP.GetQuery());
+				break;
+			case CARGoSCommandLineArgParser::ACTION_SHOW_HELP:
+				cACLAP.PrintUsage(LOG);
+				break;
+			case CARGoSCommandLineArgParser::ACTION_SHOW_VERSION:
+				cACLAP.PrintVersion();
+				break;
+			case CARGoSCommandLineArgParser::ACTION_UNKNOWN:
+				// Should never get here
+				break;
 		}
-
 		cSimulator.Destroy();
-
-	} catch(std::exception& ex) {
-    // A fatal error occurred: dispose of data, print error and exit
-    LOGERR << ex.what() << std::endl;
+	} catch (std::exception& ex) {
+		// A fatal error occurred: dispose of data, print error and exit
+		LOGERR << ex.what() << std::endl;
 #ifdef ARGOS_THREADSAFE_LOG
-    LOG.Flush();
-    LOGERR.Flush();
+		LOG.Flush();
+		LOGERR.Flush();
 #endif
-    return 1;
-  }
+    	return 1;
+  	}
 
 	for (unsigned int i = 0; i < vecFsm.size(); ++i) {
 		delete vecFsm.at(i);
 	}
 
-
 	/* Everything's ok, exit */
-  return 0;
+  	return 0;
 }
