@@ -53,7 +53,7 @@ namespace argos {
     /****************************************/
 
     void AutoMoDeEvaluator::ControlStep() {
-        if (m_unEvaluationStep++ == m_uEvaluationTime) {
+        if (++m_unEvaluationStep >= m_uEvaluationTime) {
             NewEvaluation();
         }
     }
