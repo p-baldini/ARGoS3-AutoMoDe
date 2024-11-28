@@ -64,9 +64,12 @@ AutoMoDeAdaptable<T> AutoMoDeAdaptable<T>::Clone(const AutoMoDeAdaptable<T>& ori
 
 template <typename T>
 void AutoMoDeAdaptable<T>::Adapt(Real reward) {
-    if (m_uEvaluationStep++ == m_uEvaluationTime && m_tPossibleValues.size() > 1) {
+    // update the reward of the current arm (i.e., parameter)
+    m_fRewards[m_iIndex] += reward;
+
+    // if the evaluation epoch terminated, start a new one
+    if (++m_uEvaluationStep >= m_uEvaluationTime && m_tPossibleValues.size() > 1) {
         m_uEvaluationStep = 0;
-        m_fRewards[m_iIndex] += reward;
         m_iPulls[m_iIndex]++;
         m_iIndex = AutoMoDeAdaptable<T>::SelectArm();
     }
