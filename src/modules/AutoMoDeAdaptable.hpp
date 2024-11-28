@@ -65,9 +65,11 @@ namespace argos {
             operator T () const;
 
             /**
-             * Adapt the current value according to the received reward.
+             * Adapt the current value according to the received reward. The parameter autonomously
+             * decides when and wether to adapt by keeping an internal counter.
              * 
-             * @param[in] reward Represent how well the current parameter performed.
+             * @param[in] reward Represent how well the current parameter performed in this last
+             * _step_ (not in all the evaluation epoch).
              */
             void Adapt(Real reward);
 
