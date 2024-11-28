@@ -65,9 +65,9 @@ namespace argos {
             virtual void NewEvaluation();
 
             /**
-             * Returns the performance computed since creation or reset.
+             * Return the computed performance of the robot controller at the last evaluation step.
              * 
-             * @return The computed performance of the robot controller.
+             * @return The performance computed at the last evaluation step.
              */
             virtual Real CurrentPerformance();
 
