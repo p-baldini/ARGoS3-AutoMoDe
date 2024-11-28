@@ -266,6 +266,9 @@ namespace argos {
 				case 5:
 					cNewCondition = new AutoMoDeConditionFixedProbability();
 					break;
+				case 6:
+					cNewCondition = new AutoMoDeConditionProbColor();
+					break;
 			}
 
 			cNewCondition->SetOriginAndExtremity(un_initial_state_index, unToBehaviour);
@@ -273,7 +276,7 @@ namespace argos {
 			cNewCondition->SetIdentifier(unConditionIdentifier);
 
 			// Checking for parameters
-			std::string vecPossibleParameters[] = {"p", "w", "l", "inv"};
+			std::string vecPossibleParameters[] = {"p", "w", "l", "t", "inv"};
 			for (auto& strCurrentParameter : vecPossibleParameters) {
 				// set the name of the parameter that has to be found
 				std::ostringstream oss;
