@@ -9,7 +9,9 @@ set(AUTOMODE_HEADERS
 	core/AutoMoDeFsmBuilder.h
 	core/AutoMoDeFsmHistory.h
 	# Behaviours
-	modules/AutoMoDeAdaptable.h
+	evaluators/AutoMoDeEvaluator.hpp
+	evaluators/AutoMoDeEvaluatorRepair.hpp
+	modules/AutoMoDeAdaptable.hpp
 	modules/AutoMoDeBehaviour.h
 	modules/AutoMoDeBehaviourAntiPhototaxis.h
 	modules/AutoMoDeBehaviourPhototaxis.h
@@ -19,6 +21,7 @@ set(AUTOMODE_HEADERS
 	modules/AutoMoDeBehaviourExploration.h
     modules/AutoMoDeBehaviourGoToColor.h
     modules/AutoMoDeBehaviourGoAwayColor.h
+	modules/AutoMoDeBehaviourReactToColor.h
 	# Conditions
 	modules/AutoMoDeCondition.h
 	modules/AutoMoDeConditionBlackFloor.h
@@ -27,7 +30,8 @@ set(AUTOMODE_HEADERS
 	modules/AutoMoDeConditionNeighborsCount.h
 	modules/AutoMoDeConditionInvertedNeighborsCount.h
     modules/AutoMoDeConditionFixedProbability.h
-    modules/AutoMoDeConditionProbColor.h)
+    modules/AutoMoDeConditionProbColor.h
+)
 
 # Sources
 set(AUTOMODE_SOURCES
@@ -36,6 +40,8 @@ set(AUTOMODE_SOURCES
 	core/AutoMoDeFsmBuilder.cpp
 	core/AutoMoDeFsmHistory.cpp
 	# Behaviours
+	evaluators/AutoMoDeEvaluator.cpp
+	evaluators/AutoMoDeEvaluatorRepair.cpp
 	modules/AutoMoDeBehaviour.cpp
 	modules/AutoMoDeBehaviourAntiPhototaxis.cpp
 	modules/AutoMoDeBehaviourPhototaxis.cpp
@@ -45,6 +51,7 @@ set(AUTOMODE_SOURCES
 	modules/AutoMoDeBehaviourExploration.cpp
     modules/AutoMoDeBehaviourGoToColor.cpp
     modules/AutoMoDeBehaviourGoAwayColor.cpp
+	modules/AutoMoDeBehaviourReactToColor.cpp
 	# Conditions
 	modules/AutoMoDeCondition.cpp
 	modules/AutoMoDeConditionBlackFloor.cpp
@@ -53,7 +60,8 @@ set(AUTOMODE_SOURCES
 	modules/AutoMoDeConditionNeighborsCount.cpp
 	modules/AutoMoDeConditionInvertedNeighborsCount.cpp
     modules/AutoMoDeConditionFixedProbability.cpp
-    modules/AutoMoDeConditionProbColor.cpp)
+    modules/AutoMoDeConditionProbColor.cpp
+)
 
 add_executable(automode /home/arena/dgarzon/iridia-tracking-system/src/plugins/robots/e-puck/real_robot/real_epuck_its.h /home/arena/dgarzon/iridia-tracking-system/src/plugins/robots/e-puck/real_robot/real_epuck_its_main.cpp ${AUTOMODE_HEADERS} ${AUTOMODE_SOURCES})
 target_link_libraries(automode argos3plugin_${ARGOS_BUILD_FOR}_epuck argos3plugin_${ARGOS_BUILD_FOR}_epuck argos3_demiurge_epuck_dao argos3plugin_${ARGOS_BUILD_FOR}_genericvirtualsensorsandactuators)
