@@ -65,8 +65,8 @@ namespace argos {
 		auto colors = m_pcRobotDAO->GetCameraInput().BlobList;
 
 		// filter too near blobs (supposedly own produced color)
-        auto isFar = [this](auto o){ return o->Distance < m_fDistance; };
-        auto end = std::remove_if(colors.begin(), colors.end(), isFar);
+        auto isNear = [this](auto o){ return o->Distance < m_fDistance; };
+        auto end = std::remove_if(colors.begin(), colors.end(), isNear);
         colors.erase(end, colors.end());
 
 		// create a lambda function to check if a color is of a specific type
