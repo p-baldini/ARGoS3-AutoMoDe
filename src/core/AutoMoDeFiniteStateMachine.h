@@ -30,6 +30,7 @@
 #include "../modules/AutoMoDeBehaviourReactToColor.h"
 #include "../modules/AutoMoDeCondition.h"
 #include "../modules/AutoMoDeConditionBlackFloor.h"
+#include "../modules/AutoMoDeConditionFloorColor.hpp"
 #include "../modules/AutoMoDeConditionGrayFloor.h"
 #include "../modules/AutoMoDeConditionWhiteFloor.h"
 #include "../modules/AutoMoDeConditionFixedProbability.h"

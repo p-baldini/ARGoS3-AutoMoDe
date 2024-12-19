@@ -26,6 +26,7 @@ set(AUTOMODE_HEADERS
 	# Conditions
 	modules/AutoMoDeCondition.h
 	modules/AutoMoDeConditionBlackFloor.h
+	modules/AutoMoDeConditionFloorColor.hpp
 	modules/AutoMoDeConditionWhiteFloor.h
 	modules/AutoMoDeConditionGrayFloor.h
 	modules/AutoMoDeConditionNeighborsCount.h
@@ -57,6 +58,7 @@ set(AUTOMODE_SOURCES
 	# Conditions
 	modules/AutoMoDeCondition.cpp
 	modules/AutoMoDeConditionBlackFloor.cpp
+	modules/AutoMoDeConditionFloorColor.cpp
 	modules/AutoMoDeConditionWhiteFloor.cpp
 	modules/AutoMoDeConditionGrayFloor.cpp
 	modules/AutoMoDeConditionNeighborsCount.cpp
