@@ -15,6 +15,7 @@ namespace argos {
     /****************************************/
 
     void AutoMoDeEvaluatorForaging::Init() {
+        AutoMoDeEvaluator::Init();
         m_fCurrentPerformance = 0;
         m_fCumulativePerformance = 0;
         m_bHasPrey = false;
@@ -24,6 +25,7 @@ namespace argos {
     /****************************************/
 
     void AutoMoDeEvaluatorForaging::Reset() {
+        AutoMoDeEvaluator::Reset();
         m_fCurrentPerformance = 0;
         m_fCumulativePerformance = 0;
         m_bHasPrey = false;
@@ -33,6 +35,8 @@ namespace argos {
     /****************************************/
 
     void AutoMoDeEvaluatorForaging::ControlStep() {
+        AutoMoDeEvaluator::ControlStep();
+
         Real groundColor = m_pcRobotDAO->GetGroundInput().Center;
 
         // if the robot perceives white ground and it does not yet has a prey, get one and increase
@@ -54,6 +58,7 @@ namespace argos {
     /****************************************/
 
     void AutoMoDeEvaluatorForaging::NewEvaluation() {
+        AutoMoDeEvaluator::NewEvaluation();
         m_fCumulativePerformance += m_fCurrentPerformance;
         m_fCurrentPerformance = 0;
     }
