@@ -92,6 +92,10 @@ namespace argos {
         protected:
             const std::string m_strLabel = "Dummy"; ///< The name of the evaluator; the default is
                                                     ///< "Dummy".
+            bool m_bBasicPerceptionCapabilities;    ///< True if the robot has basic perception
+                                                    ///< capabilities, false if it pre-process the
+                                                    ///< sensory input to provide a more stable
+                                                    ///< perception.
             UInt32 m_uEvaluationTime;               ///< The number of steps after which the
                                                     ///< parameter should adapt.
             UInt32 m_unEvaluationStep;              ///< The current evaluation step.
