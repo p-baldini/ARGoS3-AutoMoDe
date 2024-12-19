@@ -10,6 +10,11 @@
  */
 #include "AutoMoDeCondition.h"
 
+#include <argos3/demiurge/epuck-dao/ReferenceModel1Dot1.h>
+#include <argos3/demiurge/epuck-dao/ReferenceModel2Dot1.h>
+#include <argos3/demiurge/epuck-dao/ReferenceModel2Dot2.h>
+#include <argos3/demiurge/epuck-dao/ReferenceModel3DotS.hpp>
+
 namespace argos {
 
 	/****************************************/
@@ -116,14 +121,20 @@ namespace argos {
   	/****************************************/
 	/****************************************/
 
-  	void AutoMoDeCondition::SetRobotDAO(EpuckDAO* pc_robot_dao) {
-      	m_pcRobotDAO = pc_robot_dao;
+	void AutoMoDeCondition::SetRobotDAO(EpuckDAO* pc_robot_dao) {
+	  	m_pcRobotDAO = pc_robot_dao;
+		m_bBasicPerceptionCapabilities = (
+			typeid(*m_pcRobotDAO) == typeid(ReferenceModel1Dot1) ||
+			typeid(*m_pcRobotDAO) == typeid(ReferenceModel2Dot1) ||
+			typeid(*m_pcRobotDAO) == typeid(ReferenceModel2Dot2) ||
+			typeid(*m_pcRobotDAO) == typeid(ReferenceModel3DotS)
+		);
   	}
 
 	/****************************************/
 	/****************************************/
 
-  	bool AutoMoDeCondition::EvaluateBernoulliProbability(const Real& f_probability) const {
+	bool AutoMoDeCondition::EvaluateBernoulliProbability(const Real& f_probability) const {
 		return m_pcRobotDAO->GetRandomNumberGenerator()->Bernoulli(f_probability);
 	}
 
@@ -132,7 +143,7 @@ namespace argos {
 
 	// Return the color parameter
 	CColor AutoMoDeCondition::GetColorParameter(const UInt32& un_value) {
-      	CColor cColorParameter;
+		CColor cColorParameter;
 		switch(un_value){
 		case 0:
 			cColorParameter = CColor::BLACK;

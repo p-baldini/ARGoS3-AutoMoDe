@@ -59,6 +59,13 @@ namespace argos {
 			EpuckDAO* m_pcRobotDAO;
 
 			/**
+			 * True if the robot has basic perception capabilities, false if it pre-process the
+			 * sensory input to provide a more stable perception. Used to select which method to
+			 * call.
+			 */
+			bool m_bBasicPerceptionCapabilities;
+
+			/**
 			 * Find a parameter in the set and return it. If the value is not present, throws an
 			 * exception.
 			 * 
