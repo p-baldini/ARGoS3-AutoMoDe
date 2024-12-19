@@ -10,6 +10,7 @@ set(AUTOMODE_HEADERS
 	core/AutoMoDeFsmHistory.h
 	# Behaviours
 	evaluators/AutoMoDeEvaluator.hpp
+	evaluators/AutoMoDeEvaluatorForaging.hpp
 	evaluators/AutoMoDeEvaluatorRepair.hpp
 	modules/AutoMoDeAdaptable.hpp
 	modules/AutoMoDeBehaviour.h
@@ -41,6 +42,7 @@ set(AUTOMODE_SOURCES
 	core/AutoMoDeFsmHistory.cpp
 	# Behaviours
 	evaluators/AutoMoDeEvaluator.cpp
+	evaluators/AutoMoDeEvaluatorForaging.cpp
 	evaluators/AutoMoDeEvaluatorRepair.cpp
 	modules/AutoMoDeBehaviour.cpp
 	modules/AutoMoDeBehaviourAntiPhototaxis.cpp
