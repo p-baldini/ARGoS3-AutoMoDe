@@ -37,7 +37,9 @@ namespace argos {
     void AutoMoDeEvaluatorForaging::ControlStep() {
         AutoMoDeEvaluator::ControlStep();
 
-        Real groundColor = m_pcRobotDAO->GetGroundInput().Center;
+        Real groundColor = m_bBasicPerceptionCapabilities
+            ? m_pcRobotDAO->GetGroundInput().Center
+            : m_pcRobotDAO->GetGroundReading();
 
         // if the robot perceives white ground and it does not yet has a prey, get one and increase
         // the performance counter.
