@@ -62,7 +62,7 @@ namespace argos {
 	void AutoMoDeBehaviourExploration::Init() {
 		m_unActionSteps = 0;
 		m_eAction = TURN;
-		m_fProximityThreshold = 0.1;
+		m_fProximityThreshold = 0.15;
 		m_bLocked = false;
 
 		m_iMaxTurningSteps = FindParameter("rwm");
@@ -204,9 +204,7 @@ namespace argos {
 
 	bool AutoMoDeBehaviourExploration::IsObstacleInFront(CCI_EPuckProximitySensor::SReading s_prox_reading) {
 		CRadians cAngle = s_prox_reading.Angle;
-		if (s_prox_reading.Value >= m_fProximityThreshold && ((cAngle <= CRadians::PI_OVER_TWO) && (cAngle >= -CRadians::PI_OVER_TWO))) {
-			return true;
-		}
-		return false;
+		return s_prox_reading.Value >= m_fProximityThreshold
+			&& ((cAngle <= CRadians::PI_OVER_TWO) && (cAngle >= -CRadians::PI_OVER_TWO));
 	}
 }
