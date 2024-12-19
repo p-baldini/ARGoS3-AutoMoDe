@@ -105,10 +105,10 @@ namespace argos {
     void AutoMoDeEvaluator::SetRobotDAO(EpuckDAO* pc_robot_dao) {
         m_pcRobotDAO = pc_robot_dao;
         m_bBasicPerceptionCapabilities = (
-			typeid(*m_pcRobotDAO) == typeid(ReferenceModel1Dot1) ||
-			typeid(*m_pcRobotDAO) == typeid(ReferenceModel2Dot1) ||
-			typeid(*m_pcRobotDAO) == typeid(ReferenceModel2Dot2) ||
-			typeid(*m_pcRobotDAO) == typeid(ReferenceModel3DotS)
-		);
+            typeid(*m_pcRobotDAO) == typeid(ReferenceModel1Dot1) ||
+            typeid(*m_pcRobotDAO) == typeid(ReferenceModel2Dot1) ||
+            typeid(*m_pcRobotDAO) == typeid(ReferenceModel2Dot2) ||
+            typeid(*m_pcRobotDAO) == typeid(ReferenceModel3DotS)
+        );
     }
 }
