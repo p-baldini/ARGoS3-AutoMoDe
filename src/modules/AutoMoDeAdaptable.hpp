@@ -12,6 +12,7 @@
 
 #include <argos3/core/simulator/simulator.h>
 
+#include <limits>
 #include <vector>
 
 namespace argos {
