@@ -17,9 +17,9 @@ void AutoMoDeAdaptable<T>::Init(UInt32 evaluationSteps, T value) {
     m_tPossibleValues.clear();
     m_tPossibleValues.push_back(value);
     m_fRewards.clear();
-    m_fRewards.push_back(1);
+    m_fRewards.push_back(0);
     m_iPulls.clear();
-    m_iPulls.push_back(1);
+    m_iPulls.push_back(0);
 }
 
 /****************************************/
@@ -30,8 +30,8 @@ void AutoMoDeAdaptable<T>::Init(UInt32 evaluationSteps, std::vector<T> possibleV
     m_uEvaluationTime = evaluationSteps;
     m_uEvaluationStep = 0;
     m_tPossibleValues = std::vector<T>(possibleValues);
-    m_fRewards = std::vector<Real>(possibleValues.size(), 1);
-    m_iPulls = std::vector<SInt32>(possibleValues.size(), 1);
+    m_fRewards = std::vector<Real>(possibleValues.size(), 0);
+    m_iPulls = std::vector<SInt32>(possibleValues.size(), 0);
 }
 
 /****************************************/
@@ -96,10 +96,17 @@ SInt32 AutoMoDeAdaptable<T>::SelectArm() {
     Real max = 0;
     SInt32 maxIdx = -1;
 
-    // find the arm with the larger UCB
+    // find the arm with the larger UCB or the first untested one
     for (long unsigned int i = 0; i < m_tPossibleValues.size(); i++) {
-        Real mu = m_fRewards[i] / m_iPulls[i];
-        Real r = sqrt(nominator / m_iPulls[i]);
+        // the default setting for any arm is max range (i.e., unknown)
+        Real mu = 0;
+        Real r = std::numeric_limits<Real>::max();
+
+        // if an arm has been tried before override the default priority
+        if (m_iPulls[i] > 0) {
+            mu = m_fRewards[i] / m_iPulls[i];
+            r = sqrt(nominator / m_iPulls[i]);
+        }
 
         // if the arm “i” is more worth trying, select it
         if (mu + r > max) {
