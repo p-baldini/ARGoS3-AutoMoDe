@@ -67,8 +67,15 @@ namespace argos {
 
 		m_iMaxTurningSteps = FindParameter("rwm");
 		m_iStrategyType = FindParameter("rwt");
-		m_fDistributionMu = FindParameter("rwmu");
-		m_fDistributionC = FindParameter("rwc");
+
+		if (HasParameter("rwmu") && HasParameter("rwc")) {
+			m_fDistributionMu = FindParameter("rwmu");
+			m_fDistributionC = FindParameter("rwc");
+		}
+		else {
+			m_fDistributionMu.Init(0, .0);
+			m_fDistributionC.Init(0, .0);
+		}
 
 		if (HasParameter("cle")) {
 			auto color = GetColorParameter(FindParameter("cle"), true);
