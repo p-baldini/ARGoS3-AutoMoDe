@@ -87,6 +87,14 @@ namespace argos {
 				const char tag[], AutoMoDeAdaptable<Real> defaultValue
 			);
 
+			/**
+			 * Check wether the behavior contains a parameter with the specified name.
+			 * 
+			 * @param[in] tag The name of the parameter to check for existence.
+			 * @return True if the parameter exists, False otherwise.
+			 */
+			bool HasParameter(const char tag[]);
+
 		public:
 
 			virtual ~AutoMoDeBehaviour();
