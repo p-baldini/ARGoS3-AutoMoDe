@@ -138,42 +138,42 @@ namespace argos{
             /**
              * Pointer to the robot wheels actuator.
              */
-            CCI_EPuckWheelsActuator* m_pcWheelsActuator;
+            CCI_EPuckWheelsActuator* m_pcWheelsActuator = NULL;
 
             /**
              * Pointer to the robot range-and-bearing actuator.
              */
-            CCI_EPuckRangeAndBearingActuator* m_pcRabActuator;
+            CCI_EPuckRangeAndBearingActuator* m_pcRabActuator = NULL;
 
             /**
              * Pointer to the robot RGB LEDs actuator.
              */
-            CCI_EPuckRGBLEDsActuator* m_pcLEDsActuator;
+            CCI_EPuckRGBLEDsActuator* m_pcLEDsActuator = NULL;
 
             /**
              * Pointer to the robot proximity sensor.
              */
-            CCI_EPuckProximitySensor* m_pcProximitySensor;
+            CCI_EPuckProximitySensor* m_pcProximitySensor = NULL;
 
             /**
              * Pointer to the robot range-and-bearing sensor.
              */
-            CCI_EPuckRangeAndBearingSensor* m_pcRabSensor;
+            CCI_EPuckRangeAndBearingSensor* m_pcRabSensor = NULL;
 
             /**
              * Pointer to the robot light sensor.
              */
-            CCI_EPuckLightSensor* m_pcLightSensor;
+            CCI_EPuckLightSensor* m_pcLightSensor = NULL;
 
             /**
              * Pointer to the robot ground sensor.
              */
-            CCI_EPuckGroundSensor* m_pcGroundSensor;
+            CCI_EPuckGroundSensor* m_pcGroundSensor = NULL;
 
             /**
              * Pointer to the robot omnidirectional camera sensor.
              */
-            CCI_EPuckOmnidirectionalCameraSensor* m_pcCameraSensor;
+            CCI_EPuckOmnidirectionalCameraSensor* m_pcCameraSensor = NULL;
 
             bool m_bFiniteStateMachineGiven;
     };
