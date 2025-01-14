@@ -28,11 +28,6 @@ namespace argos {
             AutoMoDeBehaviourReactToColor(AutoMoDeBehaviourReactToColor* pc_behaviour);
 
             /**
-             * Instance destructor.
-             */
-            virtual ~AutoMoDeBehaviourReactToColor();
-
-            /**
              * @see AutoMoDeBehavior::ControlStep
              */
             virtual void ControlStep();
@@ -62,19 +57,26 @@ namespace argos {
              */
             virtual void Adapt(Real reward);
 
+            void SetRobotDAO(EpuckDAO* pc_robot_dao) override;
+
         private:
             /**
              * The type of reaction the robot can have to the color.
              */
             enum ReactionType {
-                FLEE,
-                APPROACH
+                FLEE_ANY,
+                FLEE_COLOR,
+                APPROACH_ANY,
+                APPROACH_COLOR
             };
 
             CColor m_cColorEmitterParameter;
-            CColor m_cColorReceiverParameter;
+            AutoMoDeAdaptable<Real> m_cColorReceiverParameter;
             AutoMoDeAdaptable<Real> m_iReactionType;
             AutoMoDeAdaptable<Real> m_unReactionParameter;
+
+            bool m_bBasicPerceptionCapabilities;	///< True if the robot can only analyze raw
+													///< proximity data; False otherwise.
     };
 }
 
