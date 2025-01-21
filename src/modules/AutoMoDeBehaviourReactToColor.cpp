@@ -14,8 +14,6 @@
 #include <argos3/demiurge/epuck-dao/ReferenceModel2Dot2.h>
 #include <argos3/demiurge/epuck-dao/ReferenceModel3DotS.hpp>
 
-#include <ranges>
-
 namespace argos {
 
     /****************************************/
