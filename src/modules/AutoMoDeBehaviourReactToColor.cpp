@@ -9,6 +9,13 @@
  */
 #include "AutoMoDeBehaviourReactToColor.h"
 
+#include <argos3/demiurge/epuck-dao/ReferenceModel1Dot1.h>
+#include <argos3/demiurge/epuck-dao/ReferenceModel2Dot1.h>
+#include <argos3/demiurge/epuck-dao/ReferenceModel2Dot2.h>
+#include <argos3/demiurge/epuck-dao/ReferenceModel3DotS.hpp>
+
+#include <ranges>
+
 namespace argos {
 
     /****************************************/
@@ -34,50 +41,66 @@ namespace argos {
     /****************************************/
     /****************************************/
 
-    AutoMoDeBehaviourReactToColor::~AutoMoDeBehaviourReactToColor() {}
-
-    /****************************************/
-    /****************************************/
-
     AutoMoDeBehaviourReactToColor* AutoMoDeBehaviourReactToColor::Clone() {
-        return new AutoMoDeBehaviourReactToColor(this);   // todo: check without *
+        return new AutoMoDeBehaviourReactToColor(this);
     }
 
     /****************************************/
     /****************************************/
 
     void AutoMoDeBehaviourReactToColor::ControlStep() {
-        CCI_EPuckOmnidirectionalCameraSensor::SReadings sReadings = m_pcRobotDAO->GetCameraInput();
-        CCI_EPuckOmnidirectionalCameraSensor::TBlobList::iterator it;
-        CVector2 sColVectorSum(0,CRadians::ZERO);
-        CVector2 sProxVectorSum(0,CRadians::ZERO);
-        CVector2 sResultVector(0,CRadians::ZERO);
+        CVector2 sColVectorSum, sProxVectorSum, sResultVector;
 
-        for (it = sReadings.BlobList.begin(); it != sReadings.BlobList.end(); it++) {
-            if ((*it)->Color == m_cColorReceiverParameter && (*it)->Distance >= 6.0) {
-                sColVectorSum += CVector2(1 / (((*it)->Distance)+1), (*it)->Angle);
+        // set up a variable to decide which blobs to consider and whether to communicate
+        bool specificColor = m_iReactionType == APPROACH_COLOR || m_iReactionType == FLEE_COLOR;
+        bool signalFlag = false;
+
+        CColor c = GetColorParameter(m_cColorReceiverParameter, true);
+        for (auto it : m_pcRobotDAO->GetCameraInput().BlobList) {
+            // skip blobs that are too near or different from the desired color
+            bool skipBlob = it->Distance < 6.0;
+            skipBlob |= specificColor && it->Color != c;
+
+            // if the blob is considered, update the direction vector (see Vector Field approach)
+            if (! skipBlob) {
+                sColVectorSum += CVector2(1 / (it->Distance + 1), it->Angle);
+
+                // if the action is "approach", set a communication with the blob
+                signalFlag = m_iReactionType == APPROACH_COLOR || m_iReactionType == APPROACH_ANY;
             }
-            // TODO Check sColVectorSum function
         }
 
-        sProxVectorSum = CVector2(m_pcRobotDAO->GetProximityReading().Value, m_pcRobotDAO->GetProximityReading().Angle);
-
-        // these lines of code are taken directly from "go to color" and "go away color"
-        std::cout << "aaa " << (m_iReactionType == APPROACH) << " " << (m_iReactionType == FLEE) << "\n";
-        std::flush(std::cout);
-        if (m_iReactionType == APPROACH) {
-            sResultVector = CVector2(m_unReactionParameter, sColVectorSum.Angle().SignedNormalize()) - 6*sProxVectorSum;
-        }
-        else
-        if (sColVectorSum.Length() != 0) {
-        	sResultVector = -CVector2(m_unReactionParameter, sColVectorSum.Angle().SignedNormalize()) - 5*sProxVectorSum;
+        // according to the robot capabilities, find a direction vector that avoids obstacles
+        if (m_bBasicPerceptionCapabilities) {
+            for (auto value : m_pcRobotDAO->GetProximityInput()) {
+                sProxVectorSum += CVector2(value.Value, value.Angle.SignedNormalize());
+            }
         }
         else {
-        	sResultVector = CVector2(m_unReactionParameter, sColVectorSum.Angle().SignedNormalize()) - 5*sProxVectorSum;
+            sProxVectorSum = CVector2(m_pcRobotDAO->GetProximityReading().Value, m_pcRobotDAO->GetProximityReading().Angle);
         }
 
+        if (sColVectorSum.Length() < 0.05) {
+            sColVectorSum = CVector2();
+        }
+        if (sProxVectorSum.Length() < 0.05) {
+            sProxVectorSum = CVector2();
+        }
+
+        sResultVector = sColVectorSum - sProxVectorSum;
+
+        // if the reaction strategy is flee (0 or 1), then goes in the opposite direction
+        if (m_iReactionType <= 1) {
+            sResultVector = - sResultVector;
+        }
+
+        // react to the color with a specific speed (regardless of the calculated one)
+        sResultVector = CVector2(m_unReactionParameter, sResultVector.Angle());
+
+        // set the output of the robot according to the calculated trajectory
         m_pcRobotDAO->SetWheelsVelocity(ComputeWheelsVelocityFromVector(sResultVector));
         m_pcRobotDAO->SetLEDsColor(m_cColorEmitterParameter);
+        m_pcRobotDAO->SetRangeAndBearingMessageToSend(signalFlag);
 
         m_bLocked = false;
     }
@@ -88,8 +111,16 @@ namespace argos {
     void AutoMoDeBehaviourReactToColor::Init() {
         m_iReactionType = FindParameter("crt");
         m_unReactionParameter = FindParameter("vel");
-        m_cColorEmitterParameter = GetColorParameter(FindParameter("cle"), true);
-        m_cColorReceiverParameter = GetColorParameter(FindParameter("clr"), true);
+        m_cColorReceiverParameter = FindParameter("clr");
+
+        if (HasParameter("cle")) {
+			auto color = GetColorParameter(FindParameter("cle"), true);
+			m_cColorEmitterParameter = color;
+		}
+		else {
+			auto color = GetColorParameter(0, true);
+			m_cColorEmitterParameter = color;
+		}
     }
 
     /****************************************/
@@ -113,5 +144,19 @@ namespace argos {
     void AutoMoDeBehaviourReactToColor::Adapt(Real reward) {
         m_iReactionType.Adapt(reward);
         m_unReactionParameter.Adapt(reward);
+        m_cColorReceiverParameter.Adapt(reward);
     }
+
+	/****************************************/
+	/****************************************/
+
+	void AutoMoDeBehaviourReactToColor::SetRobotDAO(EpuckDAO* pc_robot_dao) {
+		AutoMoDeBehaviour::SetRobotDAO(pc_robot_dao);
+		m_bBasicPerceptionCapabilities = (
+			typeid(*m_pcRobotDAO) == typeid(ReferenceModel1Dot1) ||
+			typeid(*m_pcRobotDAO) == typeid(ReferenceModel2Dot1) ||
+			typeid(*m_pcRobotDAO) == typeid(ReferenceModel2Dot2) ||
+			typeid(*m_pcRobotDAO) == typeid(ReferenceModel3DotS)
+		);
+	}
 }
