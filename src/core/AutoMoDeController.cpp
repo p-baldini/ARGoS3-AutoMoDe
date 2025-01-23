@@ -211,7 +211,9 @@ namespace argos {
 	/****************************************/
 	/****************************************/
 
-	void AutoMoDeController::Destroy() {}
+	void AutoMoDeController::Destroy() {
+		delete m_pcEvaluator;
+	}
 
 	/****************************************/
 	/****************************************/
