@@ -43,6 +43,11 @@ namespace argos {
     /****************************************/
     /****************************************/
 
+    AutoMoDeEvaluator::~AutoMoDeEvaluator() {}
+
+    /****************************************/
+    /****************************************/
+
     void AutoMoDeEvaluator::Init() {
         m_unEvaluationStep = 0;
     }

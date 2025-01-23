@@ -37,6 +37,11 @@ namespace argos {
             AutoMoDeEvaluator();
 
             /**
+             * The class destructor. Clean up possibly allocated data.
+             */
+            virtual ~AutoMoDeEvaluator();
+
+            /**
              * Initialize the evaluator.
              */
             virtual void Init();
