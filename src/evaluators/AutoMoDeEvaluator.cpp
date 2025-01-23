@@ -24,8 +24,6 @@ namespace argos {
     /****************************************/
 
     AutoMoDeEvaluator* AutoMoDeEvaluator::Build(const std::string& type) {
-        LOG.DisableColoredOutput();
-
         if (type == "foraging") {
             return new AutoMoDeEvaluatorForaging();
         }
