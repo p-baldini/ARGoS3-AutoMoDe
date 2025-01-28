@@ -65,7 +65,7 @@ namespace argos {
 		}
 
 		m_pcRobotDAO->SetWheelsVelocity(ComputeWheelsVelocityFromVector(sResultVector));
-        m_pcRobotDAO->SetLEDsColor(m_cColorEmitterParameter);
+		m_pcRobotDAO->SetLEDsColor(m_cColorEmitterParameter);
 
 		m_bLocked = false;
 	}

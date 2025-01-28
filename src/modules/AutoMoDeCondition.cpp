@@ -118,11 +118,11 @@ namespace argos {
 		return m_mapParameters;
 	}
 
-  	/****************************************/
+	/****************************************/
 	/****************************************/
 
 	void AutoMoDeCondition::SetRobotDAO(EpuckDAO* pc_robot_dao) {
-	  	m_pcRobotDAO = pc_robot_dao;
+		m_pcRobotDAO = pc_robot_dao;
 		m_bBasicPerceptionCapabilities = (
 			typeid(*m_pcRobotDAO) == typeid(ReferenceModel1Dot1) ||
 			typeid(*m_pcRobotDAO) == typeid(ReferenceModel2Dot1) ||
@@ -170,7 +170,7 @@ namespace argos {
 			cColorParameter = CColor::BLACK;
 		}
 		return cColorParameter;
-  	}
+	}
 
 	/****************************************/
 	/****************************************/

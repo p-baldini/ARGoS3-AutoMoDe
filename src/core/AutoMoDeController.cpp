@@ -95,27 +95,27 @@ namespace argos {
 		try {
 			m_pcProximitySensor = GetSensor<CCI_EPuckProximitySensor>("epuck_proximity");
 		} catch (CARGoSException& ex) {
-			LOGERR << "Error while initializing sensor epuck_proximity" << std::endl;
+			LOGERR << "[WARNING] sensor epuck_proximity not initialized " << std::endl;
 		}
 		try {
 			m_pcLightSensor = GetSensor<CCI_EPuckLightSensor>("epuck_light");
 		} catch (CARGoSException& ex) {
-			LOGERR << "Error while initializing sensor epuck_light" << std::endl;
+			LOGERR << "[WARNING] sensor epuck_light not initialized " << std::endl;
 		}
 		try {
 			m_pcGroundSensor = GetSensor<CCI_EPuckGroundSensor>("epuck_ground");
 		} catch (CARGoSException& ex) {
-			LOGERR << "Error while initializing sensor epuck_ground" << std::endl;
+			LOGERR << "[WARNING] sensor epuck_ground not initialized " << std::endl;
 		}
 		try {
 			m_pcRabSensor = GetSensor<CCI_EPuckRangeAndBearingSensor>("epuck_range_and_bearing");
 		} catch (CARGoSException& ex) {
-			LOGERR << "Error while initializing sensor epuck_range_and_bearing" << std::endl;
+			LOGERR << "[WARNING] sensor epuck_range_and_bearing not initialized " << std::endl;
 		}
 		try {
 			m_pcCameraSensor = GetSensor<CCI_EPuckOmnidirectionalCameraSensor>("epuck_omnidirectional_camera");
 		} catch (CARGoSException& ex) {
-			LOGERR << "Error while initializing sensor epuck_omnidirectional_camera" << std::endl;
+			LOGERR << "[WARNING] sensor epuck_omnidirectional_camera not initialized " << std::endl;
 		}
 
 		if (m_pcCameraSensor != NULL) {
@@ -125,17 +125,17 @@ namespace argos {
 		try {
 			m_pcWheelsActuator = GetActuator<CCI_EPuckWheelsActuator>("epuck_wheels");
 		} catch (CARGoSException& ex) {
-			LOGERR << "Error while initializing actuator epuck_wheels" << std::endl;
+			LOGERR << "[WARNING] actuator epuck_wheels not initialized " << std::endl;
 		}
-		try {		
+		try {
 			m_pcRabActuator = GetActuator<CCI_EPuckRangeAndBearingActuator>("epuck_range_and_bearing");
 		} catch (CARGoSException& ex) {
-			LOGERR << "Error while initializing actuator epuck_range_and_bearing" << std::endl;
+			LOGERR << "[WARNING] actuator epuck_range_and_bearing not initialized " << std::endl;
 		}
 		try {
 			m_pcLEDsActuator = GetActuator<CCI_EPuckRGBLEDsActuator>("epuck_rgb_leds");
 		} catch (CARGoSException& ex) {
-			LOGERR << "Error while initializing actuator epuck_rgb_leds" << std::endl;
+			LOGERR << "[WARNING] actuator epuck_rgb_leds not initialized " << std::endl;
 		}
 
 		/*

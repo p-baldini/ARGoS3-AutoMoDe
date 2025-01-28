@@ -38,8 +38,8 @@ void AutoMoDeAdaptable<T>::Init(UInt32 evaluationSteps, std::vector<T> possibleV
 /****************************************/
 
 template <typename T>
-AutoMoDeAdaptable<T>::operator T() const { 
-    return m_tPossibleValues[m_iIndex]; 
+AutoMoDeAdaptable<T>::operator T() const {
+    return m_tPossibleValues[m_iIndex];
 }
 
 /****************************************/

@@ -79,7 +79,7 @@ namespace argos {
 
 			/**
 			 * Creates a list containing the indexes of the behaviours reachable from a given
-			 * state. Added for compatibility with irace interdependent parameters. 
+			 * state. Added for compatibility with irace interdependent parameters.
 			 */
 			const std::vector<UInt32> GetPossibleDestinationBehaviour(
 				const UInt32& un_initial_state_index

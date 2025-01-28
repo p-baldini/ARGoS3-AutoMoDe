@@ -52,7 +52,7 @@ namespace argos {
 
 		private:
 			Real m_unAttractionParameter;
-            CColor m_cColorEmitterParameter;
+			CColor m_cColorEmitterParameter;
 	};
 }
 

@@ -225,7 +225,7 @@ namespace argos {
     }
 
 	/****************************************/
-    /****************************************/
+	/****************************************/
 
 	AutoMoDeAdaptable<Real> AutoMoDeBehaviour::FindParameter(const char tag[]) {
 		auto it = m_mapParameters.find(tag);
@@ -251,7 +251,7 @@ namespace argos {
 	}
 
 	/****************************************/
-    /****************************************/
+	/****************************************/
 
 	bool AutoMoDeBehaviour::HasParameter(const char tag[]) {
 		auto it = m_mapParameters.find(tag);

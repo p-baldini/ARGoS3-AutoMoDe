@@ -75,7 +75,7 @@ namespace argos {
 
 	void AutoMoDeBehaviourRepulsion::Init() {
 		m_unRepulsionParameter = FindParameter("rep");
-		
+
 		if (HasParameter("cle")) {
 			auto color = GetColorParameter(FindParameter("cle"), true);
 			m_cColorEmitterParameter = color;

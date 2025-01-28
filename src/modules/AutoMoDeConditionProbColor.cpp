@@ -45,7 +45,7 @@ namespace argos {
 	/****************************************/
 
 	void AutoMoDeConditionProbColor::Init() {
-        m_eTriggerType = FindParameter("t");
+		m_eTriggerType = FindParameter("t");
 		m_cColorParameter = FindParameter("l");
 		m_fProbability = FindParameter("p");
 	}
@@ -65,32 +65,32 @@ namespace argos {
 		auto colors = m_pcRobotDAO->GetCameraInput().BlobList;
 
 		// filter too near blobs (supposedly own produced color)
-        auto isNear = [this](auto o){ return o->Distance < m_fDistance; };
-        auto end = std::remove_if(colors.begin(), colors.end(), isNear);
-        colors.erase(end, colors.end());
+		auto isNear = [this](auto o){ return o->Distance < m_fDistance; };
+		auto end = std::remove_if(colors.begin(), colors.end(), isNear);
+		colors.erase(end, colors.end());
 
 		// create a lambda function to check if a color is of a specific type
 		CColor c = GetColorParameter(m_cColorParameter);
 		auto isBlobOfColor = [c](auto o){ return o->Color == c; };
 
-        // according to the trigger type consider a different condition and set if it is valid
-        bool isValid = false;
-        switch (static_cast<TriggerType>((int)m_eTriggerType)) {
+		// according to the trigger type consider a different condition and set if it is valid
+		bool isValid = false;
+		switch (static_cast<TriggerType>((int)m_eTriggerType)) {
 			case SPECIFIC_COLOR_DETECTED:
 				isValid = std::any_of(colors.begin(), colors.end(), isBlobOfColor);
 				break;
 			case SPECIFIC_COLOR_UNDETECTED:
 				isValid = std::none_of(colors.begin(), colors.end(), isBlobOfColor);
 				break;
-            case ANY_COLOR_DETECTED:
-                isValid = ! colors.empty();
-                break;
-            case NO_COLOR_DETECTED:
-                isValid = colors.empty();
-                break;
-        }
+			case ANY_COLOR_DETECTED:
+				isValid = ! colors.empty();
+				break;
+			case NO_COLOR_DETECTED:
+				isValid = colors.empty();
+				break;
+		}
 
-        return isValid && EvaluateBernoulliProbability(m_fProbability);
+		return isValid && EvaluateBernoulliProbability(m_fProbability);
 	}
 
 	/****************************************/

@@ -175,7 +175,7 @@ namespace argos {
 		cNewBehaviour->SetIdentifier(unBehaviourIdentifier);
 
 		// Checking for parameters
-		std::string vecPossibleParameters[] = {"rwt", "rwm", "rwmu", "rwc", "att", "rep", "crt", "cle", "clr", "vel", "wfd"};
+		std::string vecPossibleParameters[] = {"rwt", "rwm", "rwmu", "rwc", "att", "rep", "crt", "cle", "clr", "vel"};
 		for (auto& strCurrentParameter : vecPossibleParameters) {
 			// set the name of the parameter that has to be found
 			std::ostringstream oss;
@@ -279,7 +279,7 @@ namespace argos {
 			cNewCondition->SetIdentifier(unConditionIdentifier);
 
 			// Checking for parameters
-			std::string vecPossibleParameters[] = {"p", "w", "l", "t", "inv", "v"};
+			std::string vecPossibleParameters[] = {"p", "w", "l", "t", "v"};
 			for (auto& strCurrentParameter : vecPossibleParameters) {
 				// set the name of the parameter that has to be found
 				std::ostringstream oss;
