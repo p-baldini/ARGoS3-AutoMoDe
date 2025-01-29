@@ -54,7 +54,7 @@ namespace argos {
             Real m_fCumulativePerformance;              ///< The performance of the robot since the
                                                         ///< first evaluation.
 
-            std::map<UInt8, UInt8> un_mMessageIDs;      ///< For each object in the environment,
+            std::map<UInt8, UInt32> un_mMessageIDs;     ///< For each object in the environment,
                                                         ///< the ID of its last message received.
                                                         ///< This to avoid reading multiple time
                                                         ///< the same message.
