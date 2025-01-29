@@ -37,6 +37,14 @@ namespace argos {
     void AutoMoDeEvaluatorRepair::ControlStep() {
         AutoMoDeEvaluator::ControlStep();
 
+        // check the length of the interactions to verify that none is going to overflow;
+        // if any is going to overflow, reset the messages count to 0.
+        for (const auto& [k, v] : un_mMessageIDs) {
+            if (v == 255) {
+                un_mMessageIDs[k] = 0;
+            }
+        }
+
         // get the messages from the range and bearing
         std::vector<CCI_EPuckRangeAndBearingSensor::SReceivedPacket*> messages =
             m_pcRobotDAO->GetRangeAndBearingMessages();
@@ -76,7 +84,7 @@ namespace argos {
 
         // update the message IDs
         for (auto o : messages) {
-            un_mMessageIDs[o->Data[0]] = o->Data[1]; // TODO overflow at 256
+            un_mMessageIDs[o->Data[0]] = o->Data[1];
         }
     }
 
