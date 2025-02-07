@@ -16,6 +16,11 @@ namespace argos {
     class AutoMoDeEvaluatorForaging : public AutoMoDeEvaluator {
         public:
             /**
+             * The class destructor. Prints the final performance before exiting.
+             */
+            ~AutoMoDeEvaluatorForaging();
+
+            /**
              * @see AutoMoDeEvaluator::Init
              */
             void Init();

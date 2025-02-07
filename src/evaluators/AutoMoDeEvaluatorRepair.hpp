@@ -16,6 +16,11 @@ namespace argos {
     class AutoMoDeEvaluatorRepair : public AutoMoDeEvaluator {
         public:
             /**
+             * The class destructor. Prints the final performance before exiting.
+             */
+            ~AutoMoDeEvaluatorRepair();
+
+            /**
              * @see AutoMoDeEvaluator::Init
              */
             void Init();

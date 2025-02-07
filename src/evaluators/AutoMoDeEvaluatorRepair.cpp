@@ -16,6 +16,13 @@ namespace argos {
     /****************************************/
     /****************************************/
 
+    AutoMoDeEvaluatorRepair::~AutoMoDeEvaluatorRepair() {
+        LOG << "cumulative performance: " << CumulativePerformance() << std::endl;
+    }
+
+    /****************************************/
+    /****************************************/
+
     void AutoMoDeEvaluatorRepair::Init() {
         AutoMoDeEvaluator::Init();
         m_fCurrentPerformance = 0;
