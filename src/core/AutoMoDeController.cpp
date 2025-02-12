@@ -77,7 +77,7 @@ namespace argos {
 				std::cout << m_pcFiniteStateMachine->GetReadableFormat() << std::endl;
 			}
 		} else {
-			LOGERR << "Warning: No finite state machine configuration found in .argos" << std::endl;
+			LOGERR << "[WARNING] No finite state machine configuration found in .argos" << std::endl;
 		}
 
 		/*
