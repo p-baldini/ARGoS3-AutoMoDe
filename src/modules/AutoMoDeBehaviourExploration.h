@@ -46,11 +46,6 @@ namespace argos {
 			virtual AutoMoDeBehaviourExploration* Clone();
 
 			/**
-			 * @see AutoMoDeBehavior::Adapt
-			 */
-			void Adapt(Real reward);
-
-			/**
 			 * @see AutoMoDeBehavior::SetRobotDAO
 			 */
 			void SetRobotDAO(EpuckDAO* pc_robot_dao) override;
@@ -75,34 +70,55 @@ namespace argos {
 				RIGHT
 			};
 
-			AutoMoDeAdaptable<Real> m_iStrategyType;///< Indicate the exploration strategy
-													///< employed; adaptable parameter of the
-													///< behaviour: if instantiated with more than
-													///< one value, it can chose which to use at
-													///< runtime.
-			AutoMoDeAdaptable<Real> m_iMaxTurningSteps;	///< Indicate the maximum number of steps the
-													///< robot can turn; adaptable parameter of the
-													///< behaviour: if instantiated with more than
-													///< one value, it can chose which to use at
-													///< runtime.
-			AutoMoDeAdaptable<Real> m_fDistributionMu;		///< The mean of the Levy distribution;
-													///< adaptable parameter of the behaviour: if
-													///< instantiated with more than one value, it
-													///< can chose which to use at runtime.
-			AutoMoDeAdaptable<Real> m_fDistributionC;		///< The std dev of the Levy distribution;
-													///< adaptable parameter of the behaviour: if
-													///< instantiated with more than one value, it
-													///< can chose which to use at runtime.
+			/**
+			 * Indicate the exploration strategy employed; adaptable parameter of the behaviour: if
+			 * instantiated with more than one value, it can chose which to use at runtime.
+			 */
+			AutoMoDeValue /* UInt8 */ m_iStrategyType;
 
-			bool m_bBasicPerceptionCapabilities;	///< True if the robot can only analyze raw
-													///< proximity data; False otherwise.
-			ExplorationState m_eAction;				///< The current action under use in [turn,
-													///< go_straight, random_walk]
-			TurnDirection m_eTurnDirection;			///< The remaining step-duration of the current
-													///< action.
-			CColor m_cColorEmitterParameter;		///< The color emitted by the robot.
-			Real m_fProximityThreshold;				///< The threshold upon which an object is
-													///< considered a near obstacle.
+			/**
+			 * Indicate the maximum number of steps the robot can turn; adaptable parameter of the
+			 * behaviour: if instantiated with more than one value, it can chose which to use at
+			 * runtime.
+			 */
+			AutoMoDeValue /* UInt32 */ m_iMaxTurningSteps;
+
+			/**
+			 * The mean of the Levy distribution; adaptable parameter of the behaviour: if
+			 * instantiated with more than one value, it can chose which to use at runtime.
+			 */
+			AutoMoDeValue /* Real */ m_fDistributionMu;
+
+			/**
+			 * The std dev of the Levy distribution; adaptable parameter of the behaviour: if
+			 * instantiated with more than one value, it can chose which to use at runtime.
+			 */
+			AutoMoDeValue /* Real */ m_fDistributionC;
+
+			/**
+			 * True if the robot can only analyze raw proximity data; False otherwise.
+			 */
+			bool m_bBasicPerceptionCapabilities;
+
+			/**
+			 * The current action under use in [turn, go_straight, random_walk]
+			 */
+			ExplorationState m_eAction;
+
+			/**
+			 * The remaining step-duration of the current action.
+			 */
+			TurnDirection m_eTurnDirection;
+
+			/**
+			 * The color emitted by the robot.
+			 */
+			AutoMoDeValue m_cColorEmitterParameter;
+
+			/**
+			 * The threshold upon which an object is considered a near obstacle.
+			 */
+			Real m_fProximityThreshold;
 
 			/**
 			 * Return true is the robot perceives an obstacle in the proximity threshold.

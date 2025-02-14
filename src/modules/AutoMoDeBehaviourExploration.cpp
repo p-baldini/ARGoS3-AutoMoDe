@@ -67,24 +67,10 @@ namespace argos {
 
 		m_iMaxTurningSteps = FindParameter("rwm");
 		m_iStrategyType = FindParameter("rwt");
+		m_fDistributionMu = FindParameter("rwmu", AutoMoDeValue());
+		m_fDistributionC = FindParameter("rwc", AutoMoDeValue());
 
-		if (HasParameter("rwmu") && HasParameter("rwc")) {
-			m_fDistributionMu = FindParameter("rwmu");
-			m_fDistributionC = FindParameter("rwc");
-		}
-		else {
-			m_fDistributionMu.Init(0, .0);
-			m_fDistributionC.Init(0, .0);
-		}
-
-		if (HasParameter("cle")) {
-			auto color = GetColorParameter(FindParameter("cle"), true);
-			m_cColorEmitterParameter = color;
-		}
-		else {
-			auto color = GetColorParameter(0, true);
-			m_cColorEmitterParameter = color;
-		}
+		m_cColorEmitterParameter = FindParameter("cle", AutoMoDeValue());
 	}
 
 	/****************************************/
@@ -112,7 +98,7 @@ namespace argos {
 		// if the "random_walk" time terminated, performs a turn
 		// for a random amount of steps (uniform distr) in a random direction
 		if (m_unActionSteps <= 0 && m_eAction == RANDOM_WALK) {
-			m_unActionSteps = (m_pcRobotDAO->GetRandomNumberGenerator())->Uniform(CRange<UInt32>(0, m_iMaxTurningSteps)) + 1;
+			m_unActionSteps = (m_pcRobotDAO->GetRandomNumberGenerator())->Uniform(CRange<UInt32>(0, (UInt32) m_iMaxTurningSteps)) + 1;
 			if ((m_pcRobotDAO->GetRandomNumberGenerator())->Uniform(CRange<UInt32>(0, 1)) < 0.5) {
 				m_eTurnDirection = LEFT;
 			}
@@ -125,7 +111,7 @@ namespace argos {
 		// if the "turn" time terminated, go straight for a random amount of steps (Levy distr)
 		if (m_unActionSteps <= 0 && m_eAction == TURN) {
 			m_unActionSteps = SampleLevy(m_pcRobotDAO->GetRandomNumberGenerator(), m_fDistributionMu, m_fDistributionC) + 1;
-			m_eAction = m_iStrategyType == 0 ? GO_STRAIGHT : RANDOM_WALK;
+			m_eAction = (UInt8) m_iStrategyType == 0 ? GO_STRAIGHT : RANDOM_WALK;
 		}
 
 		// if the robot perceives an obstacle while going straight, performs a turn
@@ -133,7 +119,7 @@ namespace argos {
 		if (m_bBasicPerceptionCapabilities) {
 			if (m_eAction != TURN && IsObstacleInFront(m_pcRobotDAO->GetProximityInput())) {
 				// set the number of steps the robot has to turn
-				CRange<UInt32> turnRange(0, m_iMaxTurningSteps);
+				CRange<UInt32> turnRange(0, (UInt32) m_iMaxTurningSteps);
 				m_unActionSteps = m_pcRobotDAO->GetRandomNumberGenerator()->Uniform(turnRange);
 
 				// set the direction of the turn: if the perceived object is on the right, turn
@@ -150,7 +136,7 @@ namespace argos {
 		else {
 			if (m_eAction != TURN && IsObstacleInFront(m_pcRobotDAO->GetProximityReading())) {
 				// set the number of steps the robot has to turn
-				CRange<UInt32> turnRange(0, m_iMaxTurningSteps);
+				CRange<UInt32> turnRange(0, (UInt32) m_iMaxTurningSteps);
 				m_unActionSteps = m_pcRobotDAO->GetRandomNumberGenerator()->Uniform(turnRange);
 
 				// set the direction of the turn according to the direction vector
@@ -178,16 +164,6 @@ namespace argos {
 
 	void AutoMoDeBehaviourExploration::ResumeStep() {
 		m_bOperational = true;
-	}
-
-	/****************************************/
-	/****************************************/
-
-	void AutoMoDeBehaviourExploration::Adapt(Real reward) {
-		m_iStrategyType.Adapt(reward);
-		m_iMaxTurningSteps.Adapt(reward);
-		m_fDistributionMu.Adapt(reward);
-		m_fDistributionC.Adapt(reward);
 	}
 
 	/****************************************/
