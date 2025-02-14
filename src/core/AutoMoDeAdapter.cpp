@@ -73,12 +73,21 @@ namespace argos {
 			std::vector<std::vector<Real>> newCombinations;
 
 			// the number of combinations multiplies with the size of the `values` vector; e.g.:
-			// old combinations <- [(1,2), (1,3)]
+			// old combinations <- [(1), (2)]
 			// values <- [5, 6]
-			// new combinations <- [(1,2,5), (1,2,6), (1,3,5), (1,3,6)]
-			for (auto combination : m_vParameterCombinations) {
-				for (auto value : values) {
-					std::vector<Real> newCombination(combination);
+			// new combinations <- [(1,5), (2,5), (1,6), (2,6)]
+			for (auto value : values) {
+				// if there are already combinations, just add the values
+				if (m_vParameterCombinations.size() > 0) {
+					for (auto combination : m_vParameterCombinations) {
+						std::vector<Real> newCombination(combination);
+						newCombination.push_back(value);
+						newCombinations.push_back(newCombination);
+					}
+				}
+				// if it is the first combination, add the values directly
+				else {
+					std::vector<Real> newCombination;
 					newCombination.push_back(value);
 					newCombinations.push_back(newCombination);
 				}
@@ -104,7 +113,7 @@ namespace argos {
 	/****************************************/
 
 	void AutoMoDeAdapter::Adapt(Real reward) {
-		// if there are no dynamic parameters, do nothing
+		// if there are no dynamic parameters there is not adaptation
 		if (m_vParameterCombinations.size() == 0) {
 			return;
 		}
@@ -117,52 +126,9 @@ namespace argos {
 			m_uElapsedTime = 0;
 			m_iPulls[m_uArmIndex]++;
 
-			//
-			// ARM SELECTION
-			//
+			m_uArmIndex = SelectArm();
 
-			// accumulator variable for the total number of rounds
-    		SInt32 pullsCount = 0;
-
-			// counts the total number of rounds
-			for (SInt32 pull : m_iPulls) {
-				pullsCount += pull;
-			}
-
-			// the calculation of the confidence radius considers
-			// the same nominator for all the arms
-			Real nominator = 2 * log(pullsCount);
-
-			// setup auxiliary variables to find the arm to pull
-			Real max = 0;
-			m_uArmIndex = -1;
-
-			// find the arm with the larger UCB or the first untested one
-			for (long unsigned int i = 0; i < m_vParameterCombinations.size(); i++) {
-				// the default setting for any arm is max range (i.e., unknown)
-				Real mu = 0;
-				Real r = std::numeric_limits<Real>::max();
-
-				// if an arm has been tried before override the default priority
-				if (m_iPulls[i] > 0) {
-					mu = m_fRewards[i] / m_iPulls[i];
-					r = sqrt(nominator / m_iPulls[i]);
-				}
-
-				// if the arm “i” is more worth trying, select it
-				if (mu + r > max) {
-					max = mu + r;
-					m_uArmIndex = i;
-				}
-			}
-
-			//
-			// ARM SETTING
-			//
-
-			for (long unsigned int i = 0; i < m_vActiveParameterValues.size(); i++) {
-				m_vActiveParameterValues[i] = m_vParameterCombinations[m_uArmIndex][i];
-			}
+			SetValues();
 		}
 	}
 
@@ -178,5 +144,61 @@ namespace argos {
 
 	UInt32 AutoMoDeAdapter::GetEvaluationTime() const {
 		return m_uEvaluationTime;
+	}
+
+	/****************************************/
+	/****************************************/
+
+	UInt32 AutoMoDeAdapter::SelectArm() {
+		// accumulator variable for the total number of rounds
+		SInt32 pullsCount = 0;
+
+		// counts the total number of rounds and checks whether an arm has never been pulled
+		// if an arm has never been pulled, it will be tested next
+		for (unsigned long int i = 0; i < m_iPulls.size(); i++) {
+			pullsCount += m_iPulls[i];
+
+			if (m_iPulls[i] == 0) {
+				return i;
+			}
+		}
+
+		// the calculation of the confidence radius considers
+		// the same nominator for all the arms
+		Real nominator = 2 * log(pullsCount);
+
+		// setup auxiliary variables to find the arm to pull
+		Real max = 0;
+		UInt32 arm = -1;
+
+		// find the arm with the larger UCB or the first untested one
+		for (long unsigned int i = 0; i < m_vParameterCombinations.size(); i++) {
+			// the default setting for any arm is max range (i.e., unknown)
+			Real mu = 0;
+			Real r = std::numeric_limits<Real>::max();
+
+			// if an arm has been tried before override the default priority
+			if (m_iPulls[i] > 0) {
+				mu = m_fRewards[i] / m_iPulls[i];
+				r = sqrt(nominator / m_iPulls[i]);
+			}
+
+			// if the arm “i” is more worth trying, select it
+			if (mu + r > max) {
+				max = mu + r;
+				arm = i;
+			}
+		}
+
+		return arm;
+	}
+
+	/****************************************/
+	/****************************************/
+
+	void AutoMoDeAdapter::SetValues() {
+		for (long unsigned int i = 0; i < m_vActiveParameterValues.size(); i++) {
+			m_vActiveParameterValues[i] = m_vParameterCombinations[m_uArmIndex][i];
+		}
 	}
 }

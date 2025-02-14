@@ -102,6 +102,18 @@ namespace argos {
 			 * The value of each static parameter.
 			 */
 			std::vector<Real> m_vStaticParameterValues;
+
+			/**
+			 * Select an arm to use according to the number of trials and performance.
+			 * 
+			 * @return The index of the arm to use.
+			 */
+			UInt32 SelectArm();
+
+			/**
+			 * Sets the values conbination to use according to the selected arm.
+			 */
+			void SetValues();
 	};
 }
 
