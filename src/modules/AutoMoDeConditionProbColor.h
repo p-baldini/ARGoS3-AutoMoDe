@@ -12,71 +12,74 @@
 #define AUTOMODE_CONDITION_PROB_COLOR_H
 
 #include "AutoMoDeCondition.h"
-#include "AutoMoDeAdaptable.hpp"
 
 namespace argos {
-    class AutoMoDeConditionProbColor: public AutoMoDeCondition {
-        public:
-            /**
-             * Type of condition triggers. The condition can trigger if a specific color is
-             * perceived, if a specific color is not perceived, if any color is perceived, or if no
-             * color is perceived.
-             */
-            enum TriggerType {
-                SPECIFIC_COLOR_DETECTED,
-                SPECIFIC_COLOR_UNDETECTED,
-                ANY_COLOR_DETECTED,
-                NO_COLOR_DETECTED
-            };
+	class AutoMoDeConditionProbColor: public AutoMoDeCondition {
+		public:
+			/**
+			 * Type of condition triggers. The condition can trigger if a specific color is
+			 * perceived, if a specific color is not perceived, if any color is perceived, or if no
+			 * color is perceived.
+			 */
+			enum TriggerType {
+				SPECIFIC_COLOR_DETECTED,
+				SPECIFIC_COLOR_UNDETECTED,
+				ANY_COLOR_DETECTED,
+				NO_COLOR_DETECTED
+			};
 
-            /**
-             * Class constructor. It sets up the condition name and some initially variables.
-             */
-            AutoMoDeConditionProbColor();
+			/**
+			 * Class constructor. It sets up the condition name and some initially variables.
+			 */
+			AutoMoDeConditionProbColor();
 
-            /**
-             * Class constructor. It creates the instance by coping another color condition.
-             */
-            AutoMoDeConditionProbColor(AutoMoDeConditionProbColor* pc_condition);
+			/**
+			 * Class constructor. It creates the instance by coping another color condition.
+			 */
+			AutoMoDeConditionProbColor(AutoMoDeConditionProbColor* pc_condition);
 
-            /**
-             * @see AutoMoDeCondition::Adapt
-             */
-            virtual AutoMoDeConditionProbColor* Clone();
+			/**
+			 * @see AutoMoDeCondition::Adapt
+			 */
+			virtual AutoMoDeConditionProbColor* Clone();
 
-            /**
-             * @see AutoMoDeCondition::Adapt
-             */
-            virtual bool Verify();
+			/**
+			 * @see AutoMoDeCondition::Adapt
+			 */
+			virtual bool Verify();
 
-            /**
-             * @see AutoMoDeCondition::Adapt
-             */
-            virtual void Reset();
+			/**
+			 * @see AutoMoDeCondition::Adapt
+			 */
+			virtual void Reset();
 
-            /**
-             * @see AutoMoDeCondition::Adapt
-             */
-            virtual void Init();
+			/**
+			 * @see AutoMoDeCondition::Adapt
+			 */
+			virtual void Init();
 
-            /**
-             * @see AutoMoDeCondition::Adapt
-             */
-            virtual void Adapt(Real reward);
+		private:
+			/**
+			 * The type of event the condition activates for. The value is a reference to the enum.
+			 */
+			AutoMoDeValue /* UInt8  */ m_eTriggerType;
 
-        private:
-            AutoMoDeAdaptable<Real> m_eTriggerType;     ///< The type of event the condition
-                                                        ///< activates for. The value is a
-                                                        ///< reference to the enum.
-            AutoMoDeAdaptable<Real> m_cColorParameter;  ///< The color the condition reacts to. The
-                                                        ///< value is a reference to the color.
-            AutoMoDeAdaptable<Real> m_fProbability;     ///< The probability of activating the
-                                                        ///< transition when the condition holds.
-            Real m_fDistance;                           ///< The minimum distance the color must
-                                                        ///< be. I suppose it is to avoid
-                                                        ///< perceiving the self color (it was not
-                                                        ///< described before).
-    };
+			/**
+			 * The color the condition reacts to. The value is a reference to the color.
+			 */
+			AutoMoDeValue /* CColor */ m_cColorParameter;
+
+			/**
+			 * The probability of activating the transition when the condition holds.
+			 */
+			AutoMoDeValue /* Real   */ m_fProbability;
+
+			/**
+			 * The minimum distance the color must be. I suppose it is to avoid perceiving the self
+			 * color (it was not described before).
+			 */
+			Real m_fDistance;
+	};
 }
 
 #endif /* AUTOMODE_CONDITION_PROB_COLOR_H */

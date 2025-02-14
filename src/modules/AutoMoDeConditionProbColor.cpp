@@ -70,12 +70,11 @@ namespace argos {
 		colors.erase(end, colors.end());
 
 		// create a lambda function to check if a color is of a specific type
-		CColor c = GetColorParameter(m_cColorParameter);
-		auto isBlobOfColor = [c](auto o){ return o->Color == c; };
+		auto isBlobOfColor = [this](auto o){ return o->Color == (CColor) m_cColorParameter; };
 
 		// according to the trigger type consider a different condition and set if it is valid
 		bool isValid = false;
-		switch (static_cast<TriggerType>((int)m_eTriggerType)) {
+		switch (static_cast<TriggerType>((UInt8) m_eTriggerType)) {
 			case SPECIFIC_COLOR_DETECTED:
 				isValid = std::any_of(colors.begin(), colors.end(), isBlobOfColor);
 				break;
@@ -98,12 +97,5 @@ namespace argos {
 
 	void AutoMoDeConditionProbColor::Reset() {
 		Init();
-	}
-
-	/****************************************/
-	/****************************************/
-
-	void AutoMoDeConditionProbColor::Adapt(Real reward) {
-		m_fProbability.Adapt(reward);
 	}
 }
