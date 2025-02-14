@@ -92,9 +92,4 @@ namespace argos {
 	void AutoMoDeBehaviourRepulsion::ResumeStep() {
 		m_bOperational = true;
 	}
-
-	/****************************************/
-	/****************************************/
-
-	void AutoMoDeBehaviourRepulsion::Adapt(Real reward) {}
 }
