@@ -75,15 +75,7 @@ namespace argos {
 
 	void AutoMoDeBehaviourAttraction::Init() {
 		m_unAttractionParameter = FindParameter("att");
-
-		if (HasParameter("cle")) {
-			auto color = GetColorParameter(FindParameter("cle"), true);
-			m_cColorEmitterParameter = color;
-		}
-		else {
-			auto color = GetColorParameter(0, true);
-			m_cColorEmitterParameter = color;
-		}
+		m_cColorEmitterParameter = FindParameter("cle", AutoMoDeValue());
 	}
 
 	/****************************************/
@@ -100,9 +92,4 @@ namespace argos {
 	void AutoMoDeBehaviourAttraction::ResumeStep() {
 		m_bOperational = true;
 	}
-
-	/****************************************/
-	/****************************************/
-
-	void AutoMoDeBehaviourAttraction::Adapt(Real reward) {}
 }
