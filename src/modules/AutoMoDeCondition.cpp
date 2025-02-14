@@ -194,4 +194,12 @@ namespace argos {
 		}
 		return defaultValue;
 	}
+
+	/****************************************/
+	/****************************************/
+
+	bool AutoMoDeCondition::HasParameter(const char tag[]) {
+		auto it = m_mapParameters.find(tag);
+		return it != m_mapParameters.end();
+	}
 }
