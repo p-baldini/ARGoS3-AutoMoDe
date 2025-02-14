@@ -45,15 +45,21 @@ namespace argos {
 			 */
 			virtual AutoMoDeBehaviourGoAwayColor* Clone();
 
-			/**
-			 * @see AutoMoDeBehavior::Adapt
-			 */
-			virtual void Adapt(Real reward);
-
 		private:
-			CColor m_cColorEmitterParameter;
-			CColor m_cColorReceiverParameter;
-			AutoMoDeAdaptable<Real> m_unRepulsionParameter;
+			/**
+			 * The color emitted by the robot while in the go-away-color behavior.
+			 */
+			AutoMoDeValue /* CColor */ m_cColorEmitterParameter;
+
+			/**
+			 * The color the robot will flee.
+			 */
+			AutoMoDeValue /* CColor */ m_cColorReceiverParameter;
+
+			/**
+			 * The speed at which the robot will flee the color.
+			 */
+			AutoMoDeValue /* Real   */ m_unRepulsionParameter;
 	};
 }
 
