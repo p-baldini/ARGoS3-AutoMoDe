@@ -115,7 +115,7 @@ int main(int n_argc, char** ppch_argv) {
 					AutoMoDeFiniteStateMachine* pcPersonalFsm = new AutoMoDeFiniteStateMachine(pcFiniteStateMachine);
 					vecFsm.push_back(pcPersonalFsm);
 					auto pcEvaluator = AutoMoDeEvaluator::Build(strEvaluatorType);
-					pcEvaluator->SetEvaluationTime(pcPersonalFsm->GetEvaluationTime());
+					pcEvaluator->SetEvaluationTime(pcPersonalFsm->GetAdapter().GetEvaluationTime());
 					try {
 						AutoMoDeController& cController = dynamic_cast<AutoMoDeController&> (pcEntity->GetController());
 						cController.SetFiniteStateMachine(pcPersonalFsm);
