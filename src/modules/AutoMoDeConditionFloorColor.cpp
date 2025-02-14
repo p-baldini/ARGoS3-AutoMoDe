@@ -47,10 +47,10 @@ namespace argos {
             : m_pcRobotDAO->GetGroundReading();
 
         // check if the robot perceives a value in the surrounding of the desired value
-        bool perceived = m_fGroundColor - .25 <= reading && reading <= m_fGroundColor + .25;
+        bool perceived = (Real) m_fGroundColor - .25 <= reading && reading <= (Real) m_fGroundColor + .25;
 
         // if the condition type is `absence`, negate the presence of the perceived color
-        perceived = m_eType == 1 ? ! perceived : perceived;
+        perceived = (UInt8) m_eType == 1 ? ! perceived : perceived;
 
         // if the ground condition is enabled, check if transition probability
         return perceived && EvaluateBernoulliProbability(m_fProbability);
@@ -70,12 +70,5 @@ namespace argos {
         m_eType = FindParameter("t");
         m_fGroundColor = FindParameter("v");
         m_fProbability = FindParameter("p");
-    }
-
-    /****************************************/
-    /****************************************/
-
-    void AutoMoDeConditionFloorColor::Adapt(Real reward) {
-        m_fProbability.Adapt(reward);
     }
 }
