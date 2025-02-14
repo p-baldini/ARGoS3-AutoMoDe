@@ -38,7 +38,7 @@ namespace argos {
 			 * @return The class that allows accessing the value currently in use for this
 			 * parameter.
 			 */
-			AutoMoDeValue AddParameter(std::vector<AutoMoDeValue::Value> values);
+			AutoMoDeValue AddParameter(std::vector<Real> values);
 
 			/**
 			 * Decide which combination of parameter values to use according to the performance of
@@ -81,7 +81,7 @@ namespace argos {
 			/**
 			 * The set of all the possible parameter combinations.
 			 */
-			std::vector<std::vector<AutoMoDeValue::Value>> m_vParameterCombinations;
+			std::vector<std::vector<Real>> m_vParameterCombinations;
 
 			/**
 			 * Contains the cumulative reward of each parameter-value combination.
@@ -96,12 +96,12 @@ namespace argos {
 			/**
 			 * The current / active value of each parameter.
 			 */
-			std::vector<AutoMoDeValue::Value> m_vActiveParameterValues;
+			std::vector<Real> m_vActiveParameterValues;
 
 			/**
 			 * The value of each static parameter.
 			 */
-			std::vector<AutoMoDeValue::Value> m_vStaticParameterValues;
+			std::vector<Real> m_vStaticParameterValues;
 	};
 }
 

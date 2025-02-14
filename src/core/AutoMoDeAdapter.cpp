@@ -32,7 +32,7 @@ namespace argos {
 
 		// set a copy of the parameters combinations
 		for (auto combination : other.m_vParameterCombinations) {
-			std::vector<AutoMoDeValue::Value> combinationCopy(combination);
+			std::vector<Real> combinationCopy(combination);
 			m_vParameterCombinations.push_back(combinationCopy);
 		}
 
@@ -58,19 +58,19 @@ namespace argos {
 	/****************************************/
 	/****************************************/
 
-	AutoMoDeValue AutoMoDeAdapter::AddParameter(std::vector<AutoMoDeValue::Value> values) {
+	AutoMoDeValue AutoMoDeAdapter::AddParameter(std::vector<Real> values) {
 		// The initial value of each parameter is always the first
-		AutoMoDeValue::Value* valuePointer;
+		Real* valuePointer;
 
 		// if there is just 1 value, push it to the static parameters list
 		if (values.size() == 1) {
-			m_vStaticParameterValues.push_back(values[1]);
+			m_vStaticParameterValues.push_back(values[0]);
 			valuePointer = &m_vStaticParameterValues.back();
 		}
 		// if there are more values, add them to the possible combinations
 		else {
 			// create a new vector that will replace the previous one
-			std::vector<std::vector<AutoMoDeValue::Value>> newCombinations;
+			std::vector<std::vector<Real>> newCombinations;
 
 			// the number of combinations multiplies with the size of the `values` vector; e.g.:
 			// old combinations <- [(1,2), (1,3)]
@@ -78,7 +78,7 @@ namespace argos {
 			// new combinations <- [(1,2,5), (1,2,6), (1,3,5), (1,3,6)]
 			for (auto combination : m_vParameterCombinations) {
 				for (auto value : values) {
-					std::vector<AutoMoDeValue::Value> newCombination(combination);
+					std::vector<Real> newCombination(combination);
 					newCombination.push_back(value);
 					newCombinations.push_back(newCombination);
 				}
@@ -92,7 +92,7 @@ namespace argos {
 			m_iPulls.resize(newCombinations.size(), 0);
 
 			// return the pointer to the currently used value of the parameter
-			m_vActiveParameterValues.push_back(values[1]);
+			m_vActiveParameterValues.push_back(values[0]);
 			valuePointer = &m_vActiveParameterValues.back();
 		}
 
