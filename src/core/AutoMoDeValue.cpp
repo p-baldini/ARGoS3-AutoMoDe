@@ -16,133 +16,77 @@ namespace argos {
 
 	AutoMoDeValue::AutoMoDeValue() {
 		m_uDefaultValue = { };
-		m_uValue = &m_uDefaultValue;
+		m_rValue = &m_uDefaultValue;
 	}
 
 	/****************************************/
 	/****************************************/
 
-	AutoMoDeValue::AutoMoDeValue(Real value) {
-		m_uDefaultValue.real = value;
-		m_uValue = &m_uDefaultValue;
+	AutoMoDeValue::AutoMoDeValue(Real value) : AutoMoDeValue() {
+		m_uDefaultValue = value;
 	}
 
 	/****************************************/
 	/****************************************/
 
-	AutoMoDeValue::AutoMoDeValue(UInt8 value) {
-		m_uDefaultValue.u8 = value;
-		m_uValue = &m_uDefaultValue;
-	}
-
-	/****************************************/
-	/****************************************/
-
-	AutoMoDeValue::AutoMoDeValue(UInt16 value) {
-		m_uDefaultValue.u16 = value;
-		m_uValue = &m_uDefaultValue;
-	}
-
-	/****************************************/
-	/****************************************/
-
-	AutoMoDeValue::AutoMoDeValue(UInt32 value) {
-		m_uDefaultValue.u32 = value;
-		m_uValue = &m_uDefaultValue;
-	}
-
-	/****************************************/
-	/****************************************/
-
-	AutoMoDeValue::AutoMoDeValue(SInt8 value) {
-		m_uDefaultValue.s8 = value;
-		m_uValue = &m_uDefaultValue;
-	}
-
-	/****************************************/
-	/****************************************/
-
-	AutoMoDeValue::AutoMoDeValue(SInt16 value) {
-		m_uDefaultValue.s16 = value;
-		m_uValue = &m_uDefaultValue;
-	}
-
-	/****************************************/
-	/****************************************/
-
-	AutoMoDeValue::AutoMoDeValue(SInt32 value) {
-		m_uDefaultValue.s32 = value;
-		m_uValue = &m_uDefaultValue;
-	}
-
-	/****************************************/
-	/****************************************/
-
-	AutoMoDeValue::AutoMoDeValue(Value* value) {
-		m_uValue = value;
-	}
-
-	/****************************************/
-	/****************************************/
-
-	void AutoMoDeValue::SetPointer(Value* value) {
-		m_uValue = value;
+	AutoMoDeValue::AutoMoDeValue(Real* value) : AutoMoDeValue() {
+		m_rValue = value;
 	}
 
 	/****************************************/
 	/****************************************/
 
 	AutoMoDeValue::operator Real () const {
-		return m_uValue->real;
+		return *m_rValue;
 	}
 
 	/****************************************/
 	/****************************************/
 
 	AutoMoDeValue::operator UInt8 () const {
-		return m_uValue->u8;
+		return (UInt8) *m_rValue;
 	}
 
 	/****************************************/
 	/****************************************/
 
 	AutoMoDeValue::operator UInt16 () const {
-		return m_uValue->u16;
+		return (UInt16) *m_rValue;
 	}
 
 	/****************************************/
 	/****************************************/
 
 	AutoMoDeValue::operator UInt32 () const {
-		return m_uValue->u32;
+		return (UInt32) *m_rValue;
 	}
 
 	/****************************************/
 	/****************************************/
 
 	AutoMoDeValue::operator SInt8 () const {
-		return m_uValue->s8;
+		return (SInt8) *m_rValue;
 	}
 
 	/****************************************/
 	/****************************************/
 
 	AutoMoDeValue::operator SInt16 () const {
-		return m_uValue->s16;
+		return (SInt16) *m_rValue;
 	}
 
 	/****************************************/
 	/****************************************/
 
 	AutoMoDeValue::operator SInt32 () const {
-		return m_uValue->s32;
+		return (SInt32) *m_rValue;
 	}
 
 	/****************************************/
 	/****************************************/
 
 	AutoMoDeValue::operator CColor () const {
-		switch (m_uValue->s8) {
+		switch ((SInt8) *m_rValue) {
 			case 0:
 				return CColor::BLACK;
 			case 1:

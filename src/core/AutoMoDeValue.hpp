@@ -16,23 +16,11 @@ namespace argos {
 	/**
 	 * This class acts as a wrapper to a basic data type. Its utility consists in the smooth
 	 * access to a value managed by an external class, without the need for a direct referencing.
+	 * As the AutoMoDe FSM parser converts string-values into doubles, all the data will be stored
+	 * in that format and converted at need to the desired type.
 	 */
 	class AutoMoDeValue {
 		public:
-			/**
-			 * The variable containing the value information. The correct type is inferred by the
-			 * context.
-			 */
-			union Value {
-				Real   real;
-				UInt8  u8;
-				UInt16 u16;
-				UInt32 u32;
-				SInt8  s8;
-				SInt16 s16;
-				SInt32 s32;
-			};
-
 			/**
 			 * Empty class constructor. It uses a default value of 0.
 			 */
@@ -46,62 +34,12 @@ namespace argos {
 			AutoMoDeValue(Real value);
 
 			/**
-			 * Static value constructor. Asking for the value will always return the specified one.
-			 * 
-			 * @param[in] value The fixed value of the parameter.
-			 */
-			AutoMoDeValue(UInt8 value);
-
-			/**
-			 * Static value constructor. Asking for the value will always return the specified one.
-			 * 
-			 * @param[in] value The fixed value of the parameter.
-			 */
-			AutoMoDeValue(UInt16 value);
-
-			/**
-			 * Static value constructor. Asking for the value will always return the specified one.
-			 * 
-			 * @param[in] value The fixed value of the parameter.
-			 */
-			AutoMoDeValue(UInt32 value);
-
-			/**
-			 * Static value constructor. Asking for the value will always return the specified one.
-			 * 
-			 * @param[in] value The fixed value of the parameter.
-			 */
-			AutoMoDeValue(SInt8 value);
-
-			/**
-			 * Static value constructor. Asking for the value will always return the specified one.
-			 * 
-			 * @param[in] value The fixed value of the parameter.
-			 */
-			AutoMoDeValue(SInt16 value);
-
-			/**
-			 * Static value constructor. Asking for the value will always return the specified one.
-			 * 
-			 * @param[in] value The fixed value of the parameter.
-			 */
-			AutoMoDeValue(SInt32 value);
-
-			/**
 			 * Dynamic value constructor. Asking for the value possibly returns a different value
 			 * each time.
 			 * 
 			 * @param[in] value The pointer to the variable containing the value of the parameter.
 			 */
-			AutoMoDeValue(Value* value);
-
-			/**
-			 * Dynamic value setter. Asking for the value possibly returns a different value
-			 * each time.
-			 * 
-			 * @param[in] value The pointer to the variable containing the value of the parameter.
-			 */
-			void SetPointer(Value* value);
+			AutoMoDeValue(Real* value);
 
 			/**
 			 * The cast operator, converting the value wrapped by this class to the desired one.
@@ -163,12 +101,12 @@ namespace argos {
 			/**
 			 * The pointer to the variable containing the value of the parameter.
 			 */
-			Value* m_uValue;
+			Real* m_rValue;
 
 			/**
 			 * The default and fixed value of the parameter.
 			 */
-			Value  m_uDefaultValue;
+			Real  m_uDefaultValue;
 	};
 }
 
