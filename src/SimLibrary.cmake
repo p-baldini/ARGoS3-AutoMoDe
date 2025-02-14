@@ -4,15 +4,16 @@ link_directories(${ARGOS_LIBRARY_DIRS})
 
 # Headers
 set(AUTOMODE_HEADERS
+	core/AutoMoDeAdapter.hpp
 	core/AutoMoDeController.h
 	core/AutoMoDeFiniteStateMachine.h
 	core/AutoMoDeFsmBuilder.h
 	core/AutoMoDeFsmHistory.h
+	core/AutoMoDeValue.hpp
 	# Behaviours
 	evaluators/AutoMoDeEvaluator.hpp
 	evaluators/AutoMoDeEvaluatorForaging.hpp
 	evaluators/AutoMoDeEvaluatorRepair.hpp
-	modules/AutoMoDeAdaptable.hpp
 	modules/AutoMoDeBehaviour.h
 	modules/AutoMoDeBehaviourAntiPhototaxis.h
 	modules/AutoMoDeBehaviourPhototaxis.h
@@ -37,10 +38,12 @@ set(AUTOMODE_HEADERS
 
 # Sources
 set(AUTOMODE_SOURCES
+	core/AutoMoDeAdapter.cpp
 	core/AutoMoDeController.cpp
 	core/AutoMoDeFiniteStateMachine.cpp
 	core/AutoMoDeFsmBuilder.cpp
 	core/AutoMoDeFsmHistory.cpp
+	core/AutoMoDeValue.cpp
 	# Behaviours
 	evaluators/AutoMoDeEvaluator.cpp
 	evaluators/AutoMoDeEvaluatorForaging.cpp
