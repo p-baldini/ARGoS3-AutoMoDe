@@ -56,7 +56,7 @@ namespace argos {
 		std::stringstream ss;
 		ss << m_strLabel;
 		for (auto& it : m_mapParameters) {
-			ss << "\\n" << it.first << "=" << it.second ;
+			ss << "\\n" << it.first << "=" << (Real) it.second;
 		}
 		return ss.str();
 	}
