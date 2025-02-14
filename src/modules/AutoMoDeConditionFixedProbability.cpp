@@ -64,11 +64,4 @@ namespace argos {
 	void AutoMoDeConditionFixedProbability::Reset() {
 		Init();
 	}
-
-	/****************************************/
-	/****************************************/
-
-	void AutoMoDeConditionFixedProbability::Adapt(Real reward) {
-		m_fProbability.Adapt(reward);
-	}
 }

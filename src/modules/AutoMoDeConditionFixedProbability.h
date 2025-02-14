@@ -12,7 +12,6 @@
 #define AUTOMODE_CONDITION_FIXED_PROBABILITY_H
 
 #include "AutoMoDeCondition.h"
-#include "AutoMoDeAdaptable.hpp"
 
 namespace argos {
 	class AutoMoDeConditionFixedProbability: public AutoMoDeCondition {
@@ -42,13 +41,11 @@ namespace argos {
 			 */
 			virtual void Init();
 
-			/**
-			 * @see AutoMoDeCondition::Adapt
-			 */
-			virtual void Adapt(Real reward);
-
 		private:
-			AutoMoDeAdaptable<Real> m_fProbability;
+			/**
+			 * The probability for the transition to enable.
+			 */
+			AutoMoDeValue /* Real */ m_fProbability;
 	};
 }
 
