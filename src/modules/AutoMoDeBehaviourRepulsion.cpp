@@ -58,7 +58,7 @@ namespace argos {
 		}
 
 		sProxVector = CVector2(m_pcRobotDAO->GetProximityReading().Value, m_pcRobotDAO->GetProximityReading().Angle);
-		sResultVector = -m_unRepulsionParameter*sRabVector - 5*sProxVector;
+		sResultVector = - (Real) m_unRepulsionParameter * sRabVector - 5 * sProxVector;
 
 		if (sResultVector.Length() < 0.1) {
 			sResultVector = CVector2(1, CRadians::ZERO);
@@ -75,15 +75,7 @@ namespace argos {
 
 	void AutoMoDeBehaviourRepulsion::Init() {
 		m_unRepulsionParameter = FindParameter("rep");
-
-		if (HasParameter("cle")) {
-			auto color = GetColorParameter(FindParameter("cle"), true);
-			m_cColorEmitterParameter = color;
-		}
-		else {
-			auto color = GetColorParameter(0, true);
-			m_cColorEmitterParameter = color;
-		}
+		m_cColorEmitterParameter = FindParameter("cle", AutoMoDeValue());
 	}
 
 	/****************************************/

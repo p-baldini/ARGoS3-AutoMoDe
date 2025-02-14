@@ -45,14 +45,16 @@ namespace argos {
 			 */
 			virtual AutoMoDeBehaviourRepulsion* Clone();
 
-			/**
-			 * @see AutoMoDeBehavior::Adapt
-			 */
-			virtual void Adapt(Real reward);
-
 		private:
-			Real m_unRepulsionParameter;
-			CColor m_cColorEmitterParameter;
+			/**
+			 * The speed at which the robot will flee others.
+			 */
+			AutoMoDeValue /* Real   */ m_unRepulsionParameter;
+
+			/**
+			 * The color emitted by the robot while in the repulsion behavior.
+			 */
+			AutoMoDeValue /* CColor */ m_cColorEmitterParameter;
 	};
 }
 
