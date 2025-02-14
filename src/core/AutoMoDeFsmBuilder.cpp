@@ -43,13 +43,13 @@ namespace argos {
 
 		// if the are more sub-strings to evaluate and none contain "--", then
 		// we are considering a value of the parameter: save it and check the next
-		std::vector<AutoMoDeValue::Value> v;
+		std::vector<Real> v;
 		for (
 			it = std::next(it);
 			it != fsm.end() && std::string((*it).c_str()).find("--") == std::string::npos;
 			it = std::next(it)
 		) {
-			AutoMoDeValue::Value value = { strtod((*it).c_str(), NULL) };
+			Real value = strtod((*it).c_str(), NULL);
 			v.push_back(value);
 		}
 		result = adapter.AddParameter(v);
