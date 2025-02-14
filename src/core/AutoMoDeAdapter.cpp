@@ -9,6 +9,8 @@
  */
 #include "AutoMoDeAdapter.hpp"
 
+#include <limits>
+
 namespace argos {
 
 	/****************************************/
