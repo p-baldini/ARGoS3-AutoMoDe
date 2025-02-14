@@ -80,13 +80,6 @@ namespace argos {
 	/****************************************/
 	/****************************************/
 
-	void AutoMoDeConditionGrayFloor::Adapt(Real reward) {
-		m_fProbability.Adapt(reward);
-	}
-
-	/****************************************/
-	/****************************************/
-
 	void AutoMoDeConditionGrayFloor::SetRobotDAO(EpuckDAO* pc_robot_dao) {
 		AutoMoDeCondition::SetRobotDAO(pc_robot_dao);
 		m_bBasicPerceptionCapabilities = (

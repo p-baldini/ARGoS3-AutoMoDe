@@ -35,8 +35,8 @@ namespace argos {
 	bool AutoMoDeConditionWhiteFloor::Verify() {
 		// according to the robot capabilities, verify if the ground is white
 		bool whitePerceived = m_bBasicPerceptionCapabilities
-			? m_pcRobotDAO->GetGroundInput().Center >= m_fGroundThreshold
-			: m_pcRobotDAO->GetGroundReading() >= m_fGroundThreshold;
+			? m_pcRobotDAO->GetGroundInput().Center >= (Real) m_fGroundThreshold
+			: m_pcRobotDAO->GetGroundReading() >= (Real) m_fGroundThreshold;
 
 		// if the ground is white, the transition depends on the sampled value
 		return whitePerceived && EvaluateBernoulliProbability(m_fProbability);
@@ -66,7 +66,7 @@ namespace argos {
 	/****************************************/
 
 	void AutoMoDeConditionWhiteFloor::Init() {
-		m_fGroundThreshold = 0.95;
+		m_fGroundThreshold = AutoMoDeValue(0.95);
 		m_fProbability = FindParameter("p");
 	}
 
@@ -74,13 +74,6 @@ namespace argos {
 	/****************************************/
 
 	void AutoMoDeConditionWhiteFloor::Reset() {}
-
-	/****************************************/
-	/****************************************/
-
-	void AutoMoDeConditionWhiteFloor::Adapt(Real reward) {
-		m_fProbability.Adapt(reward);
-	}
 
 	/****************************************/
 	/****************************************/

@@ -46,7 +46,7 @@ namespace argos {
 	/****************************************/
 
 	void AutoMoDeConditionBlackFloor::Init() {
-		m_fGroundThreshold = 0.1;
+		m_fGroundThreshold = AutoMoDeValue(0.1);
 		m_fProbability = FindParameter("p");
 	}
 
@@ -63,8 +63,8 @@ namespace argos {
 	bool AutoMoDeConditionBlackFloor::Verify() {
 		// according to the robot capabilities, verify if the ground is black
 		bool blackPerceived = m_bBasicPerceptionCapabilities
-			? m_pcRobotDAO->GetGroundInput().Center <= m_fGroundThreshold
-			: m_pcRobotDAO->GetGroundReading() <= m_fGroundThreshold;
+			? m_pcRobotDAO->GetGroundInput().Center <= (Real) m_fGroundThreshold
+			: m_pcRobotDAO->GetGroundReading() <= (Real) m_fGroundThreshold;
 
 		// if the ground is black, the transition depends on the sampled value
 		return blackPerceived && EvaluateBernoulliProbability(m_fProbability);
@@ -75,13 +75,6 @@ namespace argos {
 
 	void AutoMoDeConditionBlackFloor::Reset() {
 		Init();
-	}
-
-	/****************************************/
-	/****************************************/
-
-	void AutoMoDeConditionBlackFloor::Adapt(Real reward) {
-		m_fProbability.Adapt(reward);
 	}
 
 	/****************************************/

@@ -12,7 +12,6 @@
 #define AUTOMODE_CONDITION_BLACK_FLOOR_H
 
 #include "AutoMoDeCondition.h"
-#include "AutoMoDeAdaptable.hpp"
 
 namespace argos {
 	class AutoMoDeConditionBlackFloor: public AutoMoDeCondition {
@@ -43,21 +42,25 @@ namespace argos {
 			virtual void Init();
 
 			/**
-			 * @see AutoMoDeCondition::Adapt
-			 */
-			virtual void Adapt(Real reward);
-
-			/**
 			 * @see AutoMoDeCondition::SetRobotDAO
 			 */
 			void SetRobotDAO(EpuckDAO* pc_robot_dao) override;
 
 		private:
-			Real m_fGroundThreshold;
-			AutoMoDeAdaptable<Real> m_fProbability;
+			/**
+			 * The threshold under which the ground is considered black.
+			 */
+			AutoMoDeValue /* Real */ m_fGroundThreshold;
 
-			bool m_bBasicPerceptionCapabilities;	///< True if the robot can only analyze raw
-													///< ground data; False otherwise.
+			/**
+			 * The probability to transition when the ground is black.
+			 */
+			AutoMoDeValue /* Real */ m_fProbability;
+
+			/**
+			 * True if the robot can only analyze raw ground data; False otherwise.
+			 */
+			bool m_bBasicPerceptionCapabilities;
 	};
 }
 
