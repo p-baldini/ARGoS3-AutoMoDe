@@ -55,7 +55,7 @@ namespace argos {
 		CVector2 sResultVector(0,CRadians::ZERO);
 
 		for (it = sReadings.BlobList.begin(); it != sReadings.BlobList.end(); it++) {
-			if ((*it)->Color == m_cColorReceiverParameter && (*it)->Distance >= 6.0) {
+			if ((*it)->Color == (CColor) m_cColorReceiverParameter && (*it)->Distance >= 6.0) {
 				sColVectorSum += CVector2(1 / (((*it)->Distance)+1), (*it)->Angle);
 			}
 			// TODO Check sColVectorSum function
@@ -76,16 +76,8 @@ namespace argos {
 
 	void AutoMoDeBehaviourGoToColor::Init() {
 		m_unAttractionParameter = FindParameter("vel");
-		m_cColorReceiverParameter = GetColorParameter(FindParameter("clr"), true);
-
-		if (HasParameter("cle")) {
-			auto color = GetColorParameter(FindParameter("cle"), true);
-			m_cColorEmitterParameter = color;
-		}
-		else {
-			auto color = GetColorParameter(0, true);
-			m_cColorEmitterParameter = color;
-		}
+		m_cColorReceiverParameter = FindParameter("clr");
+		m_cColorEmitterParameter = FindParameter("cle", AutoMoDeValue());
 	}
 
 	/****************************************/
@@ -101,12 +93,5 @@ namespace argos {
 
 	void AutoMoDeBehaviourGoToColor::ResumeStep() {
 		m_bOperational = true;
-	}
-
-	/****************************************/
-	/****************************************/
-
-	void AutoMoDeBehaviourGoToColor::Adapt(Real reward) {
-		m_unAttractionParameter.Adapt(reward);
 	}
 }

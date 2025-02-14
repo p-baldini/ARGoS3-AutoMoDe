@@ -45,15 +45,21 @@ namespace argos {
 			 */
 			virtual AutoMoDeBehaviourGoToColor* Clone();
 
-			/**
-			 * @see AutoMoDeBehavior::Adapt
-			 */
-			virtual void Adapt(Real reward);
-
 		private:
-			CColor m_cColorEmitterParameter;
-			CColor m_cColorReceiverParameter;
-			AutoMoDeAdaptable<Real> m_unAttractionParameter;
+			/**
+			 * The color emitted by the robot while in the go-to-color behavior.
+			 */
+			AutoMoDeValue /* CColor */ m_cColorEmitterParameter;
+
+			/**
+			 * The color the robot will approach.
+			 */
+			AutoMoDeValue /* CColor */ m_cColorReceiverParameter;
+
+			/**
+			 * The speed at which the robot will approach the color.
+			 */
+			AutoMoDeValue /* Real   */ m_unAttractionParameter;
 	};
 }
 
