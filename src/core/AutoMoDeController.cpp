@@ -86,7 +86,7 @@ namespace argos {
 		 */
 		SetEvaluator(AutoMoDeEvaluator::Build(m_strEvaluatorType));
 		if (m_bFiniteStateMachineGiven) {
-			m_pcEvaluator->SetEvaluationTime(m_pcFiniteStateMachine->GetEvaluationTime());
+			m_pcEvaluator->SetEvaluationTime(m_pcFiniteStateMachine->GetAdapter().GetEvaluationTime());
 		}
 
 		/*

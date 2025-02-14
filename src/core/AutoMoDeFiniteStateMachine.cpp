@@ -47,7 +47,7 @@ namespace argos {
 		m_bEnteringNewState = pc_fsm->GetEnteringNewStateFlag();
 		m_bMaintainHistory = pc_fsm->GetMaintainHistoryFlag();
 		m_unTimeStep = pc_fsm->GetTimeStep();
-		m_unEvaluationTime = pc_fsm->GetEvaluationTime();
+		m_cAdapter = AutoMoDeAdapter(pc_fsm->m_cAdapter);
 
 		std::vector<AutoMoDeBehaviour*> vecBehaviours = pc_fsm->GetBehaviours();
 		m_vecBehaviours.clear();
@@ -156,12 +156,7 @@ namespace argos {
 	/****************************************/
 
 	void AutoMoDeFiniteStateMachine::Adapt(Real reward) {
-		for (auto behavior : m_vecBehaviours) {
-			behavior->Adapt(reward);
-		}
-		for (auto condition : m_vecConditions) {
-			condition->Adapt(reward);
-		}
+		m_cAdapter.Adapt(reward);
 		// TODO manage history properly
 	}
 
@@ -219,6 +214,13 @@ namespace argos {
 	/****************************************/
 	/****************************************/
 
+	AutoMoDeAdapter& AutoMoDeFiniteStateMachine::GetAdapter() {
+		return m_cAdapter;
+	}
+
+	/****************************************/
+	/****************************************/
+
 	void AutoMoDeFiniteStateMachine::AddCondition(AutoMoDeCondition* pc_new_condition){
 		m_vecConditions.push_back(pc_new_condition);
 	}
@@ -228,13 +230,6 @@ namespace argos {
 
 	void AutoMoDeFiniteStateMachine::AddBehaviour(AutoMoDeBehaviour* pc_new_behaviour){
 		m_vecBehaviours.push_back(pc_new_behaviour);
-	}
-
-	/****************************************/
-	/****************************************/
-
-	void AutoMoDeFiniteStateMachine::SetEvaluationTime(UInt32 unSteps) {
-		m_unEvaluationTime = unSteps;
 	}
 
 	/****************************************/
@@ -320,13 +315,6 @@ namespace argos {
 
 	const UInt32& AutoMoDeFiniteStateMachine::GetTimeStep() const {
 		return m_unTimeStep;
-	}
-
-	/****************************************/
-	/****************************************/
-
-	UInt32 AutoMoDeFiniteStateMachine::GetEvaluationTime() const {
-		return m_unEvaluationTime;
 	}
 
 	/****************************************/

@@ -17,6 +17,7 @@
 
 #include <argos3/demiurge/epuck-dao/EpuckDAO.h>
 
+#include "AutoMoDeAdapter.hpp"
 #include "AutoMoDeFsmHistory.h"
 #include "../modules/AutoMoDeBehaviour.h"
 #include "../modules/AutoMoDeBehaviourAttraction.h"
@@ -78,13 +79,6 @@ namespace argos {
 			void AddBehaviour(AutoMoDeBehaviour* pc_new_behaviour);
 
 			/**
-			 * Set the evaluation time for a FSM specialization.
-			 * 
-			 * @param[in] unSteps The time a FSM specialization can be evaluated for.
-			 */
-			void SetEvaluationTime(UInt32 unSteps);
-
-			/**
 			 * Core of the Finite State Machine. Responsible for the transitions between the
 			 * different states (behaviours). Works as follows:
 			 *   1. Execute current behaviour
@@ -139,13 +133,6 @@ namespace argos {
 			const UInt32& GetTimeStep() const;
 
 			/**
-			 * Returns the evaluation time of a FSM specialization when adapting.
-			 * 
-			 * @return The evaluation time of the FSM specialization under trial.
-			 */
-			UInt32 GetEvaluationTime() const;
-
-			/**
 			 * Returns all the behaviours contained in the FSM.
 			 * 
 			 * @return A vector containing all the behaviours composing the FSM.
@@ -171,6 +158,13 @@ namespace argos {
 			 * Setter for the finite state machine history folder.
 			 */
 			void SetHistoryFolder(const std::string& s_hist_folder);
+
+			/**
+			 * Returns the reference to the fsm parameters adapter.
+			 * 
+			 * @return The reference to the fsm adapter.
+			 */
+			AutoMoDeAdapter& GetAdapter();
 
 		private:
 			/**
@@ -228,11 +222,6 @@ namespace argos {
 			UInt32 m_unTimeStep;
 
 			/**
-			 * The evaluation period for an adapting FSM.
-			 */
-			UInt32 m_unEvaluationTime;
-
-			/**
 			 * Map containing pointers to tested outgoing conditions and
 			 * the result of the test.
 			 * @see AutoMoDeFsmHistory.
@@ -244,6 +233,11 @@ namespace argos {
 			 * @see EpuckDAO.
 			 */
 			EpuckDAO* m_pcRobotDAO;
+
+			/**
+			 * The FSM adapter.
+			 */
+			AutoMoDeAdapter m_cAdapter;
 
 			/**
 			 * Returns a container filled conditions starting from the
