@@ -24,7 +24,7 @@ namespace argos {
 		std::stringstream ss;
 		ss << m_strLabel;
 		for (auto& it : m_mapParameters) {
-			ss << "\\n" << it.first << "=" << it.second ;
+			ss << "\\n" << it.first << "=" << (Real) it.second;
 		}
 		return ss.str();
 	}
@@ -33,10 +33,10 @@ namespace argos {
 	/****************************************/
 
 	void AutoMoDeCondition::AddParameter(
-		const std::string& str_identifier, const AutoMoDeAdaptable<Real>& f_value
+		const std::string& str_identifier, const AutoMoDeValue& f_value
 	) {
 		m_mapParameters.insert(
-			std::pair<std::string, AutoMoDeAdaptable<Real>>(str_identifier, f_value)
+			std::pair<std::string, AutoMoDeValue>(str_identifier, f_value)
 		);
 	}
 
@@ -114,7 +114,7 @@ namespace argos {
 	/****************************************/
 	/****************************************/
 
-	const std::map<std::string, AutoMoDeAdaptable<Real>> AutoMoDeCondition::GetParameters() const {
+	const std::map<std::string, AutoMoDeValue> AutoMoDeCondition::GetParameters() const {
 		return m_mapParameters;
 	}
 
@@ -129,7 +129,7 @@ namespace argos {
 			typeid(*m_pcRobotDAO) == typeid(ReferenceModel2Dot2) ||
 			typeid(*m_pcRobotDAO) == typeid(ReferenceModel3DotS)
 		);
-  	}
+	}
 
 	/****************************************/
 	/****************************************/
@@ -175,7 +175,7 @@ namespace argos {
 	/****************************************/
 	/****************************************/
 
-	AutoMoDeAdaptable<Real> AutoMoDeCondition::FindParameter(const char tag[]) {
+	AutoMoDeValue AutoMoDeCondition::FindParameter(const char tag[]) {
 		auto it = m_mapParameters.find(tag);
 		if (it == m_mapParameters.end()) {
 			LOGERR << "[FATAL] Missing parameter '" << tag
@@ -188,13 +188,10 @@ namespace argos {
 	/****************************************/
 	/****************************************/
 
-	AutoMoDeAdaptable<Real> AutoMoDeCondition::FindParameter(
-		const char tag[], AutoMoDeAdaptable<Real> defaultValue
-	) {
-		try {
+	AutoMoDeValue AutoMoDeCondition::FindParameter(const char tag[], AutoMoDeValue defaultValue) {
+		if (HasParameter(tag)) {
 			return FindParameter(tag);
-		} catch (CARGoSException& ex) {
-			return defaultValue;
 		}
+		return defaultValue;
 	}
 }

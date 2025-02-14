@@ -11,6 +11,8 @@
 #ifndef AUTOMODE_CONDITION_H
 #define AUTOMODE_CONDITION_H
 
+#include "../core/AutoMoDeValue.hpp"
+
 #include <argos3/core/utility/math/vector2.h>
 #include <argos3/core/utility/logging/argos_log.h>
 
@@ -18,15 +20,13 @@
 
 #include <map>
 
-#include "AutoMoDeAdaptable.hpp"
-
 namespace argos {
 	class AutoMoDeCondition {
 		protected:
 			/**
 			 * Map containing all parameters of the condition.
 			 */
-			std::map<std::string, AutoMoDeAdaptable<Real>> m_mapParameters;
+			std::map<std::string, AutoMoDeValue> m_mapParameters;
 
 			/**
 			 * Index of the behaviour at the origin of the condition.
@@ -72,7 +72,7 @@ namespace argos {
 			 * @param[in] tag The name of the parameter to return.
 			 * @return The parsed parameter.
 			 */
-			AutoMoDeAdaptable<Real> FindParameter(const char tag[]);
+			AutoMoDeValue FindParameter(const char tag[]);
 
 			/**
 			 * Find a parameter in the set and return it. If the value is not present, returns the
@@ -82,9 +82,7 @@ namespace argos {
 			 * @param[in] defaultValue The value to be returned if the parameter does not exists.
 			 * @return The parsed parameter or default if it does not exists.
 			 */
-			AutoMoDeAdaptable<Real> FindParameter(
-				const char tag[], AutoMoDeAdaptable<Real> defaultValue
-			);
+			AutoMoDeValue FindParameter(const char tag[], AutoMoDeValue defaultValue);
 
 		public:
 
@@ -104,13 +102,6 @@ namespace argos {
 			 * Initialize the condition.
 			 */
 			virtual void Init() = 0;
-
-			/**
-			 * Adapt the condition according to the received reward.
-			 * 
-			 * @param[in] reward The online performance of the FSM a the recent time.
-			 */
-			virtual void Adapt(Real reward) = 0;
 
 			/**
 			 * Returns the DOT description of the condition.
@@ -150,14 +141,12 @@ namespace argos {
 			/**
 			 * Adds a pair <parameter, value> to the parameters map.
 			 */
-			void AddParameter(
-				const std::string& str_identifier, const AutoMoDeAdaptable<Real>& f_value
-			);
+			void AddParameter(const std::string& str_identifier, const AutoMoDeValue& f_value);
 
 			/**
 			 * Returns the whole parameter map.
 			 */
-			const std::map<std::string, AutoMoDeAdaptable<Real>> GetParameters() const;
+			const std::map<std::string, AutoMoDeValue> GetParameters() const;
 
 			/**
 			 * Getter for the name of the label.
