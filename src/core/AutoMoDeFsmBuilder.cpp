@@ -23,15 +23,15 @@ namespace argos {
 	 * 
 	 * @param[in] fsm The description of the FSM.
 	 * @param[in] tag The parameter identifier in the given behavior.
-	 * @param[in] evaluationTime The step-duration of a parameter evaluation.
+	 * @param[in] adapter The reference to the adapter object that will manage the parameter.
 	 * @param[out] result The value(s) of the required parameter, if exists.
 	 * @return True if the parameter exists, false otherwise.
 	 */
 	bool ParseParameter(
 		const std::vector<std::string>& fsm,
 		const std::ostringstream& tag,
-		UInt32 evaluationTime,
-		AutoMoDeAdaptable<Real>& result
+		AutoMoDeAdapter& adapter,
+		AutoMoDeValue& result
 	) {
 		// find the first (and only) occurrence of the parameter in the FSM description
 		auto it = std::find(fsm.begin(), fsm.end(), tag.str());
@@ -43,15 +43,16 @@ namespace argos {
 
 		// if the are more sub-strings to evaluate and none contain "--", then
 		// we are considering a value of the parameter: save it and check the next
-		std::vector<Real> v;
+		std::vector<AutoMoDeValue::Value> v;
 		for (
 			it = std::next(it);
 			it != fsm.end() && std::string((*it).c_str()).find("--") == std::string::npos;
 			it = std::next(it)
 		) {
-			v.push_back(strtod((*it).c_str(), NULL));
+			AutoMoDeValue::Value value = { strtod((*it).c_str(), NULL) };
+			v.push_back(value);
 		}
-		result.Init(evaluationTime, v);
+		result = adapter.AddParameter(v);
 		return !v.empty();
 	}
 
@@ -98,7 +99,7 @@ namespace argos {
 			UInt32 un_EvaluationTime = it == vec_fsm_config.end()
 				? std::numeric_limits<int>::max()
 				: atoi((*(it+1)).c_str());
-			cFiniteStateMachine->SetEvaluationTime(un_EvaluationTime);
+			cFiniteStateMachine->GetAdapter().SetEvaluationTime(un_EvaluationTime);
 
 			// find the number of states in the FSM
 			it = std::find(vec_fsm_config.begin(), vec_fsm_config.end(), "--nstates");
@@ -182,8 +183,8 @@ namespace argos {
 			oss << "--" << strCurrentParameter << unBehaviourIndex;
 
 			// search and possibly add the parameter to the behavior
-			AutoMoDeAdaptable<Real> fCurrentParameterValue;
-			bool found = ParseParameter(vec_fsm_state_config, oss, c_fsm->GetEvaluationTime(), fCurrentParameterValue);
+			AutoMoDeValue fCurrentParameterValue;
+			bool found = ParseParameter(vec_fsm_state_config, oss, cFiniteStateMachine->GetAdapter(), fCurrentParameterValue);
 			if (found) {
 				cNewBehaviour->AddParameter(strCurrentParameter, fCurrentParameterValue);
 			}
@@ -286,8 +287,8 @@ namespace argos {
 				oss << "--" << strCurrentParameter << un_initial_state_index << "x" << un_condition_index;
 
 				// search and possibly add the parameter to the behavior
-				AutoMoDeAdaptable<Real> fCurrentParameterValue;
-				bool found = ParseParameter(vec_fsm_transition_config, oss, cFiniteStateMachine->GetEvaluationTime(), fCurrentParameterValue);
+				AutoMoDeValue fCurrentParameterValue;
+				bool found = ParseParameter(vec_fsm_transition_config, oss, cFiniteStateMachine->GetAdapter(), fCurrentParameterValue);
 				if (found) {
 					cNewCondition->AddParameter(strCurrentParameter, fCurrentParameterValue);
 				}
