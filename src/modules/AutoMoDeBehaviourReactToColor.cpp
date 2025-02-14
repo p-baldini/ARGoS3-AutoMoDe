@@ -16,134 +16,116 @@
 
 namespace argos {
 
-    /****************************************/
-    /****************************************/
+	/****************************************/
+	/****************************************/
 
-    AutoMoDeBehaviourReactToColor::AutoMoDeBehaviourReactToColor() {
-        m_strLabel = "ReactToColor";
-    }
+	AutoMoDeBehaviourReactToColor::AutoMoDeBehaviourReactToColor() {
+		m_strLabel = "ReactToColor";
+	}
 
-    /****************************************/
-    /****************************************/
+	/****************************************/
+	/****************************************/
 
-    AutoMoDeBehaviourReactToColor::AutoMoDeBehaviourReactToColor(AutoMoDeBehaviourReactToColor* pc_behaviour) {
-        m_strLabel = pc_behaviour->GetLabel();
-        m_bLocked = pc_behaviour->IsLocked();
-        m_bOperational = pc_behaviour->IsOperational();
-        m_unIndex = pc_behaviour->GetIndex();
-        m_unIdentifier = pc_behaviour->GetIdentifier();
-        m_mapParameters = pc_behaviour->GetParameters();
-        Init();
-    }
+	AutoMoDeBehaviourReactToColor::AutoMoDeBehaviourReactToColor(AutoMoDeBehaviourReactToColor* pc_behaviour) {
+		m_strLabel = pc_behaviour->GetLabel();
+		m_bLocked = pc_behaviour->IsLocked();
+		m_bOperational = pc_behaviour->IsOperational();
+		m_unIndex = pc_behaviour->GetIndex();
+		m_unIdentifier = pc_behaviour->GetIdentifier();
+		m_mapParameters = pc_behaviour->GetParameters();
+		Init();
+	}
 
-    /****************************************/
-    /****************************************/
+	/****************************************/
+	/****************************************/
 
-    AutoMoDeBehaviourReactToColor* AutoMoDeBehaviourReactToColor::Clone() {
-        return new AutoMoDeBehaviourReactToColor(this);
-    }
+	AutoMoDeBehaviourReactToColor* AutoMoDeBehaviourReactToColor::Clone() {
+		return new AutoMoDeBehaviourReactToColor(this);
+	}
 
-    /****************************************/
-    /****************************************/
+	/****************************************/
+	/****************************************/
 
-    void AutoMoDeBehaviourReactToColor::ControlStep() {
-        CVector2 sColVectorSum, sProxVectorSum, sResultVector;
+	void AutoMoDeBehaviourReactToColor::ControlStep() {
+		CVector2 sColVectorSum, sProxVectorSum, sResultVector;
 
-        // set up a variable to decide which blobs to consider and whether to communicate
-        bool specificColor = m_iReactionType == APPROACH_COLOR || m_iReactionType == FLEE_COLOR;
-        bool signalFlag = false;
+		// set up a variable to decide which blobs to consider and whether to communicate
+		bool specificColor = (UInt8) m_iReactionType == APPROACH_COLOR || (UInt8) m_iReactionType == FLEE_COLOR;
+		bool signalFlag = false;
 
-        CColor c = GetColorParameter(m_cColorReceiverParameter, true);
-        for (auto it : m_pcRobotDAO->GetCameraInput().BlobList) {
-            // skip blobs that are too near or different from the desired color
-            bool skipBlob = it->Distance < 6.0;
-            skipBlob |= specificColor && it->Color != c;
+		for (auto it : m_pcRobotDAO->GetCameraInput().BlobList) {
+			// skip blobs that are too near or different from the desired color
+			bool skipBlob = it->Distance < 6.0;
+			skipBlob |= specificColor && it->Color != (CColor) m_cColorReceiverParameter;
 
-            // if the blob is considered, update the direction vector (see Vector Field approach)
-            if (! skipBlob) {
-                sColVectorSum += CVector2(1 / (it->Distance + 1), it->Angle);
+			// if the blob is considered, update the direction vector (see Vector Field approach)
+			if (! skipBlob) {
+				sColVectorSum += CVector2(1 / (it->Distance + 1), it->Angle);
 
-                // if the action is "approach", set a communication with the blob
-                signalFlag = m_iReactionType == APPROACH_COLOR || m_iReactionType == APPROACH_ANY;
-            }
-        }
+				// if the action is "approach", set a communication with the blob
+				signalFlag = (UInt8) m_iReactionType == APPROACH_COLOR || (UInt8) m_iReactionType == APPROACH_ANY;
+			}
+		}
 
-        // according to the robot capabilities, find a direction vector that avoids obstacles
-        if (m_bBasicPerceptionCapabilities) {
-            for (auto value : m_pcRobotDAO->GetProximityInput()) {
-                sProxVectorSum += CVector2(value.Value, value.Angle.SignedNormalize());
-            }
-        }
-        else {
-            sProxVectorSum = CVector2(m_pcRobotDAO->GetProximityReading().Value, m_pcRobotDAO->GetProximityReading().Angle);
-        }
-
-        if (sColVectorSum.Length() < 0.05) {
-            sColVectorSum = CVector2();
-        }
-        if (sProxVectorSum.Length() < 0.05) {
-            sProxVectorSum = CVector2();
-        }
-
-        sResultVector = sColVectorSum - sProxVectorSum;
-
-        // if the reaction strategy is flee (0 or 1), then goes in the opposite direction
-        if (m_iReactionType <= 1) {
-            sResultVector = - sResultVector;
-        }
-
-        // react to the color with a specific speed (regardless of the calculated one)
-        sResultVector = CVector2(m_unReactionParameter, sResultVector.Angle());
-
-        // set the output of the robot according to the calculated trajectory
-        m_pcRobotDAO->SetWheelsVelocity(ComputeWheelsVelocityFromVector(sResultVector));
-        m_pcRobotDAO->SetLEDsColor(m_cColorEmitterParameter);
-        m_pcRobotDAO->SetRangeAndBearingMessageToSend(signalFlag);
-
-        m_bLocked = false;
-    }
-
-    /****************************************/
-    /****************************************/
-
-    void AutoMoDeBehaviourReactToColor::Init() {
-        m_iReactionType = FindParameter("crt");
-        m_unReactionParameter = FindParameter("vel");
-        m_cColorReceiverParameter = FindParameter("clr");
-
-        if (HasParameter("cle")) {
-			auto color = GetColorParameter(FindParameter("cle"), true);
-			m_cColorEmitterParameter = color;
+		// according to the robot capabilities, find a direction vector that avoids obstacles
+		if (m_bBasicPerceptionCapabilities) {
+			for (auto value : m_pcRobotDAO->GetProximityInput()) {
+				sProxVectorSum += CVector2(value.Value, value.Angle.SignedNormalize());
+			}
 		}
 		else {
-			auto color = GetColorParameter(0, true);
-			m_cColorEmitterParameter = color;
+			sProxVectorSum = CVector2(m_pcRobotDAO->GetProximityReading().Value, m_pcRobotDAO->GetProximityReading().Angle);
 		}
-    }
 
-    /****************************************/
-    /****************************************/
+		if (sColVectorSum.Length() < 0.05) {
+			sColVectorSum = CVector2();
+		}
+		if (sProxVectorSum.Length() < 0.05) {
+			sProxVectorSum = CVector2();
+		}
 
-    void AutoMoDeBehaviourReactToColor::Reset() {
-        m_bOperational = false;
-        ResumeStep();
-    }
+		sResultVector = sColVectorSum - sProxVectorSum;
 
-    /****************************************/
-    /****************************************/
+		// if the reaction strategy is flee (0 or 1), then goes in the opposite direction
+		if ((UInt8) m_iReactionType <= 1) {
+			sResultVector = - sResultVector;
+		}
 
-    void AutoMoDeBehaviourReactToColor::ResumeStep() {
-        m_bOperational = true;
-    }
+		// react to the color with a specific speed (regardless of the calculated one)
+		sResultVector = CVector2(m_unReactionParameter, sResultVector.Angle());
 
-    /****************************************/
-    /****************************************/
+		// set the output of the robot according to the calculated trajectory
+		m_pcRobotDAO->SetWheelsVelocity(ComputeWheelsVelocityFromVector(sResultVector));
+		m_pcRobotDAO->SetLEDsColor(m_cColorEmitterParameter);
+		m_pcRobotDAO->SetRangeAndBearingMessageToSend(signalFlag);
 
-    void AutoMoDeBehaviourReactToColor::Adapt(Real reward) {
-        m_iReactionType.Adapt(reward);
-        m_unReactionParameter.Adapt(reward);
-        m_cColorReceiverParameter.Adapt(reward);
-    }
+		m_bLocked = false;
+	}
+
+	/****************************************/
+	/****************************************/
+
+	void AutoMoDeBehaviourReactToColor::Init() {
+		m_iReactionType = FindParameter("crt");
+		m_unReactionParameter = FindParameter("vel");
+		m_cColorReceiverParameter = FindParameter("clr");
+		m_cColorEmitterParameter = FindParameter("cle", AutoMoDeValue());
+	}
+
+	/****************************************/
+	/****************************************/
+
+	void AutoMoDeBehaviourReactToColor::Reset() {
+		m_bOperational = false;
+		ResumeStep();
+	}
+
+	/****************************************/
+	/****************************************/
+
+	void AutoMoDeBehaviourReactToColor::ResumeStep() {
+		m_bOperational = true;
+	}
 
 	/****************************************/
 	/****************************************/
