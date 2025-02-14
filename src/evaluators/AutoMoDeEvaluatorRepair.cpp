@@ -81,8 +81,6 @@ namespace argos {
         end = std::remove_if(senderAndContent.begin(), senderAndContent.end(), AlreadyConsidered);
         senderAndContent.erase(end, senderAndContent.end());
 
-        // std::cout << "aaa " << std::distance(messages.begin(), messages.end()) << std::endl;
-
         // count the new reward messages and add them to the performance
         m_fCurrentPerformance = std::distance(senderAndContent.begin(), senderAndContent.end());
         m_fCumulativePerformance += m_fCurrentPerformance;
