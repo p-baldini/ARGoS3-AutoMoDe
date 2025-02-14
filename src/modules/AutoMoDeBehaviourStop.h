@@ -51,7 +51,10 @@ namespace argos {
 			virtual void Adapt(Real reward) {};
 
 		private:
-			CColor m_cColorEmitterParameter;
+			/**
+			 * The color the robot emits when performing this behavior.
+			 */
+			AutoMoDeValue /* CColor */ m_cColorEmitterParameter;
 	};
 }
 
