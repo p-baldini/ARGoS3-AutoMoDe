@@ -116,10 +116,10 @@ namespace argos {
 	/****************************************/
 
 	void AutoMoDeBehaviour::AddParameter(
-		const std::string& str_identifier, const AutoMoDeAdaptable<Real>& f_value
+		const std::string& str_identifier, const AutoMoDeValue& f_value
 	) {
 		m_mapParameters.insert(
-			std::pair<std::string, AutoMoDeAdaptable<Real>>(str_identifier, f_value)
+			std::pair<std::string, AutoMoDeValue>(str_identifier, f_value)
 		);
 	}
 
@@ -140,7 +140,7 @@ namespace argos {
 	/****************************************/
 	/****************************************/
 
-	const std::map<std::string, AutoMoDeAdaptable<Real>> AutoMoDeBehaviour::GetParameters() {
+	const std::map<std::string, AutoMoDeValue> AutoMoDeBehaviour::GetParameters() {
 		return m_mapParameters;
 	}
 
@@ -227,7 +227,7 @@ namespace argos {
 	/****************************************/
 	/****************************************/
 
-	AutoMoDeAdaptable<Real> AutoMoDeBehaviour::FindParameter(const char tag[]) {
+	AutoMoDeValue AutoMoDeBehaviour::FindParameter(const char tag[]) {
 		auto it = m_mapParameters.find(tag);
 		if (it == m_mapParameters.end()) {
 			LOGERR << "[FATAL] Missing parameter '" << tag
@@ -240,14 +240,11 @@ namespace argos {
 	/****************************************/
     /****************************************/
 
-	AutoMoDeAdaptable<Real> AutoMoDeBehaviour::FindParameter(
-		const char tag[], AutoMoDeAdaptable<Real> defaultValue
-	) {
-		try {
+	AutoMoDeValue AutoMoDeBehaviour::FindParameter(const char tag[], AutoMoDeValue defaultValue) {
+		if (HasParameter(tag)) {
 			return FindParameter(tag);
-		} catch (CARGoSException& ex) {
-			return defaultValue;
 		}
+		return defaultValue;
 	}
 
 	/****************************************/

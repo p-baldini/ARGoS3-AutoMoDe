@@ -11,6 +11,8 @@
 #ifndef AUTOMODE_BEHAVIOUR_H
 #define AUTOMODE_BEHAVIOUR_H
 
+#include "../core/AutoMoDeValue.hpp"
+
 #include <argos3/core/utility/math/vector2.h>
 #include <argos3/core/utility/logging/argos_log.h>
 #include <argos3/core/utility/configuration/argos_exception.h>
@@ -21,8 +23,6 @@
 #include <argos3/demiurge/epuck-dao/EpuckDAO.h>
 
 #include <map>
-
-#include "AutoMoDeAdaptable.hpp"
 
 namespace argos {
 	class AutoMoDeBehaviour {
@@ -43,7 +43,7 @@ namespace argos {
 			/**
 			 * Contains the parameters of the behaviours.
 			 */
-			std::map<std::string, AutoMoDeAdaptable<Real>> m_mapParameters;
+			std::map<std::string, AutoMoDeValue> m_mapParameters;
 
 			/**
 			 * The name of the behaviour.
@@ -73,7 +73,7 @@ namespace argos {
 			 * @param[in] tag The name of the parameter to return.
 			 * @return The parsed parameter.
 			 */
-			AutoMoDeAdaptable<Real> FindParameter(const char tag[]);
+			AutoMoDeValue FindParameter(const char tag[]);
 
 			/**
 			 * Find a parameter in the set and return it. If the value is not present, returns the
@@ -83,9 +83,7 @@ namespace argos {
 			 * @param[in] defaultValue The value to be returned if the parameter does not exists.
 			 * @return The parsed parameter or default if it does not exists.
 			 */
-			AutoMoDeAdaptable<Real> FindParameter(
-				const char tag[], AutoMoDeAdaptable<Real> defaultValue
-			);
+			AutoMoDeValue FindParameter(const char tag[], AutoMoDeValue defaultValue);
 
 			/**
 			 * Check wether the behavior contains a parameter with the specified name.
@@ -128,13 +126,6 @@ namespace argos {
 			virtual AutoMoDeBehaviour* Clone() = 0;
 
 			/**
-			 * Adapt the behavior according to the received reward.
-			 * 
-			 * @param[in] reward The online performance of the FSM a the recent time.
-			 */
-			virtual void Adapt(Real reward) = 0;
-
-			/**
 			 * Returns a string containing the DOT description of the behaviour.
 			 */
 			const std::string GetDOTDescription();
@@ -142,14 +133,12 @@ namespace argos {
 			/**
 			 * Instert a pair <parameter, value> to the parameters map.
 			 */
-			void AddParameter(
-				const std::string& str_identifier, const AutoMoDeAdaptable<Real>& f_value
-			);
+			void AddParameter(const std::string& str_identifier, const AutoMoDeValue& f_value);
 
 			/**
 			 * Returns the whole parameters map.
 			 */
-			const std::map<std::string, AutoMoDeAdaptable<Real>> GetParameters();
+			const std::map<std::string, AutoMoDeValue> GetParameters();
 
 			/**
 			 * Setter for the index of the behaviour.
