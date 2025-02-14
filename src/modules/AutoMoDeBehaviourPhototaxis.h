@@ -44,11 +44,6 @@ namespace argos {
 			 * @see AutoMoDeBehavior::Clone
 			 */
 			virtual AutoMoDeBehaviourPhototaxis* Clone();
-
-			/**
-			 * @see AutoMoDeBehavior::Adapt
-			 */
-			virtual void Adapt(Real reward) {};
 	};
 }
 
