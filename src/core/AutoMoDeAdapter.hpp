@@ -13,6 +13,7 @@
 #include "AutoMoDeValue.hpp"
 
 #include <argos3/core/simulator/simulator.h>
+#include <list>
 
 namespace argos {
 	/**
@@ -96,12 +97,12 @@ namespace argos {
 			/**
 			 * The current / active value of each parameter.
 			 */
-			std::vector<Real> m_vActiveParameterValues;
+			std::list<Real> m_vActiveParameterValues;
 
 			/**
 			 * The value of each static parameter.
 			 */
-			std::vector<Real> m_vStaticParameterValues;
+			std::list<Real> m_vStaticParameterValues;
 
 			/**
 			 * Select an arm to use according to the number of trials and performance.

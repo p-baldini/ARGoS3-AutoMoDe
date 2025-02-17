@@ -197,8 +197,9 @@ namespace argos {
 	/****************************************/
 
 	void AutoMoDeAdapter::SetValues() {
-		for (long unsigned int i = 0; i < m_vActiveParameterValues.size(); i++) {
-			m_vActiveParameterValues[i] = m_vParameterCombinations[m_uArmIndex][i];
+		int counter = 0;
+		for (auto& value : m_vActiveParameterValues) {
+			value = m_vParameterCombinations[m_uArmIndex][counter++];
 		}
 	}
 }
