@@ -42,6 +42,21 @@ namespace argos {
 			AutoMoDeValue(Real* value);
 
 			/**
+			 * Copy constructor. Create a new object that is the copy of the passed one.
+			 * 
+			 * @param[in] other The object to copy.
+			 */
+			AutoMoDeValue(const AutoMoDeValue& other);
+
+			/**
+			 * Copy the value of another object into this.
+			 * 
+			 * @param[in] other The object to copy.
+			 * @return The copy of the passed object.
+			 */
+			AutoMoDeValue& operator = (const AutoMoDeValue& other);
+
+			/**
 			 * The cast operator, converting the value wrapped by this class to the desired one.
 			 * 
 			 * @return The value casted to the desired type.

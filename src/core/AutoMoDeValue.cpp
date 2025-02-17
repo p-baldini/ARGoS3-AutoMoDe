@@ -36,6 +36,37 @@ namespace argos {
 	/****************************************/
 	/****************************************/
 
+	AutoMoDeValue::AutoMoDeValue(const AutoMoDeValue& other) : AutoMoDeValue() {
+		// if the pointer is dummy, copy the default value and ignore the pointer
+		if (other.m_rValue == &other.m_uDefaultValue) {
+			m_uDefaultValue = other.m_uDefaultValue;
+		}
+		// if the pointer is meaningful, copy it in the new object
+		else {
+			m_rValue = other.m_rValue;
+		}
+	}
+
+	/****************************************/
+	/****************************************/
+
+	AutoMoDeValue& AutoMoDeValue::operator = (const AutoMoDeValue& other) {
+		// if the pointer is dummy, copy the default value and ignore the pointer
+		if (other.m_rValue == &other.m_uDefaultValue) {
+			m_uDefaultValue = other.m_uDefaultValue;
+			m_rValue = &m_uDefaultValue;
+		}
+		// if the pointer is meaningful, copy it in the new object
+		else {
+			m_uDefaultValue = { };
+			m_rValue = other.m_rValue;
+		}
+		return *this;
+	}
+
+	/****************************************/
+	/****************************************/
+
 	AutoMoDeValue::operator Real () const {
 		return *m_rValue;
 	}
