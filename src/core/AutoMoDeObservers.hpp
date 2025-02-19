@@ -30,7 +30,9 @@ namespace argos {
 			/**
 			 * Class destroyer. It must unsubscribe to the observable when called.
 			 */
-			virtual ~AutoMoDeObserver() { };
+			virtual ~AutoMoDeObserver() {
+				m_Observable = NULL;
+			};
 
 			/**
 			 * The function called when an event with the given name fires. It accepts the value
