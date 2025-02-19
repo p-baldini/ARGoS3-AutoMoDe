@@ -47,19 +47,23 @@ namespace argos {
 		m_bEnteringNewState = pc_fsm->GetEnteringNewStateFlag();
 		m_bMaintainHistory = pc_fsm->GetMaintainHistoryFlag();
 		m_unTimeStep = pc_fsm->GetTimeStep();
-		m_cAdapter = AutoMoDeAdapter(pc_fsm->m_cAdapter);
+		m_Parameters = new AutoMoDeParameters(*pc_fsm->m_Parameters);
 
-		std::vector<AutoMoDeBehaviour*> vecBehaviours = pc_fsm->GetBehaviours();
 		m_vecBehaviours.clear();
-		for (std::vector<AutoMoDeBehaviour*>::iterator it = vecBehaviours.begin(); it != vecBehaviours.end(); ++it) {
-			m_vecBehaviours.push_back((*it)->Clone());
+		for (auto behavior : pc_fsm->GetBehaviours()) {
+			auto clone = behavior->Clone();
+			clone->SetParameters(m_Parameters);
+			clone->Init();
+			m_vecBehaviours.push_back(clone);
 		}
 		m_pcCurrentBehaviour = m_vecBehaviours.at(m_unCurrentBehaviourIndex);
 
-		std::vector<AutoMoDeCondition*> vecConditions = pc_fsm->GetConditions();
 		m_vecConditions.clear();
-		for (std::vector<AutoMoDeCondition*>::iterator it = vecConditions.begin(); it != vecConditions.end(); ++it) {
-			m_vecConditions.push_back((*it)->Clone());
+		for (auto condition : pc_fsm->GetConditions()) {
+			auto clone = condition->Clone();
+			clone->SetParameters(m_Parameters);
+			clone->Init();
+			m_vecConditions.push_back(clone);
 		}
 
 		if (m_bMaintainHistory) {
@@ -156,7 +160,7 @@ namespace argos {
 	/****************************************/
 
 	void AutoMoDeFiniteStateMachine::Adapt(Real reward) {
-		m_cAdapter.Adapt(reward);
+		m_Parameters->Adapt(reward);
 		// TODO manage history properly
 	}
 
@@ -214,8 +218,15 @@ namespace argos {
 	/****************************************/
 	/****************************************/
 
-	AutoMoDeAdapter& AutoMoDeFiniteStateMachine::GetAdapter() {
-		return m_cAdapter;
+	void AutoMoDeFiniteStateMachine::SetParameters(AutoMoDeParameters* parameters) {
+		m_Parameters = parameters;
+	}
+
+	/****************************************/
+	/****************************************/
+
+	AutoMoDeParameters* AutoMoDeFiniteStateMachine::GetParameters() {
+		return m_Parameters;
 	}
 
 	/****************************************/

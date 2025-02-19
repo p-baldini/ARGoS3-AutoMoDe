@@ -17,8 +17,8 @@
 
 #include <argos3/demiurge/epuck-dao/EpuckDAO.h>
 
-#include "AutoMoDeAdapter.hpp"
 #include "AutoMoDeFsmHistory.h"
+#include "AutoMoDeParameters.hpp"
 #include "../modules/AutoMoDeBehaviour.h"
 #include "../modules/AutoMoDeBehaviourAttraction.h"
 #include "../modules/AutoMoDeBehaviourAntiPhototaxis.h"
@@ -160,11 +160,18 @@ namespace argos {
 			void SetHistoryFolder(const std::string& s_hist_folder);
 
 			/**
-			 * Returns the reference to the fsm parameters adapter.
+			 * Set the object containing the fsm parameters.
 			 * 
-			 * @return The reference to the fsm adapter.
+			 * @param[in] parameters The reference to the object managing parameters.
 			 */
-			AutoMoDeAdapter& GetAdapter();
+			void SetParameters(AutoMoDeParameters* parameters);
+
+			/**
+			 * Return the object managing the fsm parameters.
+			 * 
+			 * @return The reference to the object managing parameters.
+			 */
+			AutoMoDeParameters* GetParameters();
 
 		private:
 			/**
@@ -235,9 +242,9 @@ namespace argos {
 			EpuckDAO* m_pcRobotDAO;
 
 			/**
-			 * The FSM adapter.
+			 * The object managing the FSM parameters.
 			 */
-			AutoMoDeAdapter m_cAdapter;
+			AutoMoDeParameters* m_Parameters;
 
 			/**
 			 * Returns a container filled conditions starting from the
