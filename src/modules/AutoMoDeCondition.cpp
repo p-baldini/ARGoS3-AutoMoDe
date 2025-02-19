@@ -20,24 +20,18 @@ namespace argos {
 	/****************************************/
 	/****************************************/
 
-	const std::string AutoMoDeCondition::GetDOTDescription() {
-		std::stringstream ss;
-		ss << m_strLabel;
-		for (auto& it : m_mapParameters) {
-			ss << "\\n" << it.first << "=" << (Real) it.second;
-		}
-		return ss.str();
-	}
+	AutoMoDeCondition::AutoMoDeCondition() { }
 
 	/****************************************/
 	/****************************************/
 
-	void AutoMoDeCondition::AddParameter(
-		const std::string& str_identifier, const AutoMoDeValue& f_value
-	) {
-		m_mapParameters.insert(
-			std::pair<std::string, AutoMoDeValue>(str_identifier, f_value)
-		);
+	AutoMoDeCondition::AutoMoDeCondition(const AutoMoDeCondition* other) {
+		m_strLabel = other->GetLabel();
+		m_unIndex = other->GetIndex();
+		m_unIdentifier = other->GetIndex();
+		m_unFromBehaviourIndex = other->GetOrigin();
+		m_unToBehaviourIndex = other->GetExtremity();
+		m_Parameters = other->m_Parameters;
 	}
 
 	/****************************************/
@@ -66,6 +60,13 @@ namespace argos {
 
 	void AutoMoDeCondition::SetExtremity(const UInt32& un_to) {
 		m_unToBehaviourIndex = un_to;
+	}
+
+	/****************************************/
+	/****************************************/
+
+	void AutoMoDeCondition::SetParameters(AutoMoDeParameters* parameters) {
+		m_Parameters = parameters;
 	}
 
 	/****************************************/
@@ -109,13 +110,6 @@ namespace argos {
 
 	const UInt32& AutoMoDeCondition::GetIdentifier() const {
 		return m_unIdentifier;
-	}
-
-	/****************************************/
-	/****************************************/
-
-	const std::map<std::string, AutoMoDeValue> AutoMoDeCondition::GetParameters() const {
-		return m_mapParameters;
 	}
 
 	/****************************************/
@@ -170,36 +164,5 @@ namespace argos {
 			cColorParameter = CColor::BLACK;
 		}
 		return cColorParameter;
-	}
-
-	/****************************************/
-	/****************************************/
-
-	AutoMoDeValue AutoMoDeCondition::FindParameter(const char tag[]) {
-		auto it = m_mapParameters.find(tag);
-		if (it == m_mapParameters.end()) {
-			LOGERR << "[FATAL] Missing parameter '" << tag
-					<< "' for condition: " << m_strLabel << std::endl;
-			THROW_ARGOSEXCEPTION("Missing Parameter");
-		}
-		return it->second;
-	}
-
-	/****************************************/
-	/****************************************/
-
-	AutoMoDeValue AutoMoDeCondition::FindParameter(const char tag[], AutoMoDeValue defaultValue) {
-		if (HasParameter(tag)) {
-			return FindParameter(tag);
-		}
-		return defaultValue;
-	}
-
-	/****************************************/
-	/****************************************/
-
-	bool AutoMoDeCondition::HasParameter(const char tag[]) {
-		auto it = m_mapParameters.find(tag);
-		return it != m_mapParameters.end();
 	}
 }

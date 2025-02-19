@@ -11,7 +11,7 @@
 #ifndef AUTOMODE_CONDITION_H
 #define AUTOMODE_CONDITION_H
 
-#include "../core/AutoMoDeValue.hpp"
+#include "../core/AutoMoDeParameters.hpp"
 
 #include <argos3/core/utility/math/vector2.h>
 #include <argos3/core/utility/logging/argos_log.h>
@@ -23,11 +23,6 @@
 namespace argos {
 	class AutoMoDeCondition {
 		protected:
-			/**
-			 * Map containing all parameters of the condition.
-			 */
-			std::map<std::string, AutoMoDeValue> m_mapParameters;
-
 			/**
 			 * Index of the behaviour at the origin of the condition.
 			 */
@@ -59,40 +54,22 @@ namespace argos {
 			EpuckDAO* m_pcRobotDAO;
 
 			/**
+			 * Reference to the object managing the FSM parameters.
+			 */
+			AutoMoDeParameters* m_Parameters;
+
+			/**
 			 * True if the robot has basic perception capabilities, false if it pre-process the
 			 * sensory input to provide a more stable perception. Used to select which method to
 			 * call.
 			 */
 			bool m_bBasicPerceptionCapabilities;
 
-			/**
-			 * Find a parameter in the set and return it. If the value is not present, throws an
-			 * exception.
-			 * 
-			 * @param[in] tag The name of the parameter to return.
-			 * @return The parsed parameter.
-			 */
-			AutoMoDeValue FindParameter(const char tag[]);
-
-			/**
-			 * Find a parameter in the set and return it. If the value is not present, returns the
-			 * default value.
-			 * 
-			 * @param[in] tag The name of the parameter to return.
-			 * @param[in] defaultValue The value to be returned if the parameter does not exists.
-			 * @return The parsed parameter or default if it does not exists.
-			 */
-			AutoMoDeValue FindParameter(const char tag[], AutoMoDeValue defaultValue);
-
-			/**
-			 * Check wether the condition contains a parameter with the specified name.
-			 * 
-			 * @param[in] tag The name of the parameter to check for existence.
-			 * @return True if the parameter exists, False otherwise.
-			 */
-			bool HasParameter(const char tag[]);
-
 		public:
+
+			AutoMoDeCondition();
+
+			AutoMoDeCondition(const AutoMoDeCondition* other);
 
 			virtual ~AutoMoDeCondition(){};
 
@@ -112,14 +89,21 @@ namespace argos {
 			virtual void Init() = 0;
 
 			/**
-			 * Returns the DOT description of the condition.
-			 */
-			const std::string GetDOTDescription();
-
-			/**
 			 * Cloning method.
 			 */
 			virtual AutoMoDeCondition* Clone() = 0;
+
+			/**
+			 * Returns the DOT description of the condition.
+			 */
+			virtual const std::string GetDOTDescription() = 0;
+
+			/**
+			 * Set the parameters manager.
+			 * 
+			 * @param[in] parameters The object containing the FSM parameters.
+			 */
+			void SetParameters(AutoMoDeParameters* parameters);
 
 			/**
 			 * Setters for the origin and extremity behaviours of the condition.
@@ -145,16 +129,6 @@ namespace argos {
 			 */
 			void SetIdentifier(const UInt32& un_id);
 			const UInt32& GetIdentifier() const;
-
-			/**
-			 * Adds a pair <parameter, value> to the parameters map.
-			 */
-			void AddParameter(const std::string& str_identifier, const AutoMoDeValue& f_value);
-
-			/**
-			 * Returns the whole parameter map.
-			 */
-			const std::map<std::string, AutoMoDeValue> GetParameters() const;
 
 			/**
 			 * Getter for the name of the label.
