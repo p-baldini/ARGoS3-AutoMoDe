@@ -17,49 +17,7 @@ namespace argos {
 	/****************************************/
 	/****************************************/
 
-	/**
-	 * File reserved function. Given the FSM description, retrieves the value of a parameter with
-	 * the given tag.
-	 * 
-	 * @param[in] fsm The description of the FSM.
-	 * @param[in] tag The parameter identifier in the given behavior.
-	 * @param[in] adapter The reference to the adapter object that will manage the parameter.
-	 * @param[out] result The value(s) of the required parameter, if exists.
-	 * @return True if the parameter exists, false otherwise.
-	 */
-	bool ParseParameter(
-		const std::vector<std::string>& fsm,
-		const std::ostringstream& tag,
-		AutoMoDeAdapter& adapter,
-		AutoMoDeValue& result
-	) {
-		// find the first (and only) occurrence of the parameter in the FSM description
-		auto it = std::find(fsm.begin(), fsm.end(), tag.str());
-
-		// if the parameter does not exists, exit and notify the caller
-		if (it == fsm.end()) {
-			return false;
-		}
-
-		// if the are more sub-strings to evaluate and none contain "--", then
-		// we are considering a value of the parameter: save it and check the next
-		std::vector<Real> v;
-		for (
-			it = std::next(it);
-			it != fsm.end() && std::string((*it).c_str()).find("--") == std::string::npos;
-			it = std::next(it)
-		) {
-			Real value = strtod((*it).c_str(), NULL);
-			v.push_back(value);
-		}
-		result = adapter.AddParameter(v);
-		return !v.empty();
-	}
-
-	/****************************************/
-	/****************************************/
-
-	AutoMoDeFsmBuilder::AutoMoDeFsmBuilder() {}
+	AutoMoDeFsmBuilder::AutoMoDeFsmBuilder() { }
 
 	/****************************************/
 	/****************************************/
@@ -90,39 +48,22 @@ namespace argos {
 	AutoMoDeFiniteStateMachine* AutoMoDeFsmBuilder::BuildFiniteStateMachine(
 		std::vector<std::string>& vec_fsm_config
 	) {
+		// create the FSM object to set up and return
 		cFiniteStateMachine = new AutoMoDeFiniteStateMachine();
 
-		std::vector<std::string>::iterator it;
+		// try parsing the FSM description
 		try {
-			// set the number of evaluation steps in for the adaptation
-			it = std::find(vec_fsm_config.begin(), vec_fsm_config.end(), "--evaluationsteps");
-			UInt32 un_EvaluationTime = it == vec_fsm_config.end()
-				? std::numeric_limits<int>::max()
-				: atoi((*(it+1)).c_str());
-			cFiniteStateMachine->GetAdapter().SetEvaluationTime(un_EvaluationTime);
-
-			// find the number of states in the FSM
-			it = std::find(vec_fsm_config.begin(), vec_fsm_config.end(), "--nstates");
-			m_unNumberStates = atoi((*(it+1)).c_str());
-			std::vector<std::string>::iterator first_state;
-			std::vector<std::string>::iterator second_state;
-			for (UInt32 i = 0; i < m_unNumberStates; i++) {
-				std::ostringstream oss;
-				oss << "--s" << i;
-				first_state = std::find(vec_fsm_config.begin(), vec_fsm_config.end(), oss.str());
-				if (i+1 < m_unNumberStates) {
-					std::ostringstream oss;
-					oss << "--s" << i+1;
-					second_state = std::find(vec_fsm_config.begin(), vec_fsm_config.end(), oss.str());
-				} else {
-					second_state = vec_fsm_config.end();
-				}
-				std::vector<std::string> vecStateConfig(first_state, second_state);
-				HandleState(cFiniteStateMachine, vecStateConfig);
-			}
+			auto parameters = new AutoMoDeParameters(vec_fsm_config);
+			cFiniteStateMachine->SetParameters(parameters);
 		}
 		catch (std::exception& e) {
-			THROW_ARGOSEXCEPTION("Could not create the Finite State Machine: Error while parsing.");
+			THROW_ARGOSEXCEPTION("[ERROR] Could not parse the Finite State Machine");
+		}
+
+		// get the number of states in the FSM, and create them accordingly
+		UInt32 statesCount = cFiniteStateMachine->GetParameters()->GetParameter<UInt32>("nstates");
+		for (UInt32 state_id = 0; state_id < statesCount; state_id++) {
+			HandleState(state_id);
 		}
 
 		return cFiniteStateMachine;
@@ -131,183 +72,118 @@ namespace argos {
 	/****************************************/
 	/****************************************/
 
-	void AutoMoDeFsmBuilder::HandleState(
-		AutoMoDeFiniteStateMachine* c_fsm,
-		std::vector<std::string>& vec_fsm_state_config
-	) {
-		AutoMoDeBehaviour* cNewBehaviour;
-		std::vector<std::string>::iterator it;
-		// Extraction of the index of the behaviour in the FSM
-		UInt8 unBehaviourIndex =  atoi((*vec_fsm_state_config.begin()).substr(3,4).c_str());
-		// Extraction of the identifier of the behaviour
-		UInt8 unBehaviourIdentifier =  atoi((*(vec_fsm_state_config.begin()+1)).c_str());
+	void AutoMoDeFsmBuilder::HandleState(const UInt32 state_id) {
+		// create the behavior object to set up
+		AutoMoDeBehaviour* newBehavior;
 
-		// Creation of the Behaviour object
-		switch(unBehaviourIdentifier) {
+		// get the type of the behavior and instantiate the corresponding class
+		UInt8 behaviorType = cFiniteStateMachine->GetParameters()->GetParameter<UInt32>("s", state_id);
+		switch (behaviorType) {
 			case 0:
-				cNewBehaviour = new AutoMoDeBehaviourExploration();
+				newBehavior = new AutoMoDeBehaviourExploration();
 				break;
 			case 1:
-				cNewBehaviour = new AutoMoDeBehaviourStop();
+				newBehavior = new AutoMoDeBehaviourStop();
 				break;
 			case 2:
-				cNewBehaviour = new AutoMoDeBehaviourPhototaxis();
+				newBehavior = new AutoMoDeBehaviourPhototaxis();
 				break;
 			case 3:
-				cNewBehaviour = new AutoMoDeBehaviourAntiPhototaxis();
+				newBehavior = new AutoMoDeBehaviourAntiPhototaxis();
 				break;
 			case 4:
-				cNewBehaviour = new AutoMoDeBehaviourAttraction();
+				newBehavior = new AutoMoDeBehaviourAttraction();
 				break;
 			case 5:
-				cNewBehaviour = new AutoMoDeBehaviourRepulsion();
+				newBehavior = new AutoMoDeBehaviourRepulsion();
 				break;
 			case 8:
-				cNewBehaviour = new AutoMoDeBehaviourGoToColor();
+				newBehavior = new AutoMoDeBehaviourGoToColor();
 				break;
 			case 9:
-				cNewBehaviour = new AutoMoDeBehaviourGoAwayColor();
+				newBehavior = new AutoMoDeBehaviourGoAwayColor();
 				break;
 			case 10:
-				cNewBehaviour = new AutoMoDeBehaviourReactToColor();
+				newBehavior = new AutoMoDeBehaviourReactToColor();
 				break;
 		}
-		cNewBehaviour->SetIndex(unBehaviourIndex);
-		cNewBehaviour->SetIdentifier(unBehaviourIdentifier);
 
-		// Checking for parameters
-		std::string vecPossibleParameters[] = {"rwt", "rwm", "rwmu", "rwc", "att", "rep", "crt", "cle", "clr", "vel"};
-		for (auto& strCurrentParameter : vecPossibleParameters) {
-			// set the name of the parameter that has to be found
-			std::ostringstream oss;
-			oss << "--" << strCurrentParameter << unBehaviourIndex;
+		// set up behavior information and initialize it
+		newBehavior->SetIndex(state_id);
+		newBehavior->SetIdentifier(behaviorType);
+		newBehavior->SetParameters(cFiniteStateMachine->GetParameters());
+		newBehavior->Init();
 
-			// search and possibly add the parameter to the behavior
-			AutoMoDeValue fCurrentParameterValue;
-			bool found = ParseParameter(vec_fsm_state_config, oss, cFiniteStateMachine->GetAdapter(), fCurrentParameterValue);
-			if (found) {
-				cNewBehaviour->AddParameter(strCurrentParameter, fCurrentParameterValue);
-			}
-		}
-		cNewBehaviour->Init();
-		// Add the constructed Behaviour to the FSM
-		c_fsm->AddBehaviour(cNewBehaviour);
+		// add the constructed Behaviour to the FSM
+		cFiniteStateMachine->AddBehaviour(newBehavior);
 
-		/*
-		 * Extract the transitions starting from the state and
-		 * pass them to the transition handler, if they exist.
-		 */
-		std::ostringstream oss;
-		oss << "--n" << unBehaviourIndex;
-		it = std::find(vec_fsm_state_config.begin(), vec_fsm_state_config.end(), oss.str());
-		if (it != vec_fsm_state_config.end()) {
-			UInt8 unNumberTransitions = atoi((*(it+1)).c_str());
-
-			std::vector<std::string>::iterator first_transition;
-			std::vector<std::string>::iterator second_transition;
-
-			for (UInt8 i = 0; i < unNumberTransitions; i++) {
-				std::ostringstream oss;
-				oss << "--n" << unBehaviourIndex << "x" << i;
-				first_transition = std::find(vec_fsm_state_config.begin(), vec_fsm_state_config.end(), oss.str());
-				if (i+1 < unNumberTransitions) {
-					std::ostringstream oss;
-					oss << "--n" << unBehaviourIndex << "x" << i+1;
-					second_transition = std::find(vec_fsm_state_config.begin(), vec_fsm_state_config.end(), oss.str());
-				} else {
-					second_transition = vec_fsm_state_config.end();
-				}
-				std::vector<std::string> vecTransitionConfig(first_transition, second_transition);
-				HandleTransition(vecTransitionConfig, unBehaviourIndex, i);
-			}
+		// get the number of outgoing transition from the state and instantiate them
+		UInt8 outgoingTransitions = cFiniteStateMachine->GetParameters()->GetParameter<UInt32>("n", state_id);
+		for (UInt8 condition_id = 0; condition_id < outgoingTransitions; condition_id++) {
+			HandleTransition(state_id, condition_id);
 		}
 	}
 
 	/****************************************/
 	/****************************************/
 
-	void AutoMoDeFsmBuilder::HandleTransition(
-		std::vector<std::string>& vec_fsm_transition_config,
-		const UInt32& un_initial_state_index,
-		const UInt32& un_condition_index
-	) {
-		AutoMoDeCondition* cNewCondition;
+	void AutoMoDeFsmBuilder::HandleTransition(const UInt32 state_id, const UInt32 condition_id) {
+		// create the condition object to set up
+		AutoMoDeCondition* newCondition;
 
-		std::stringstream ss;
-		ss << "--n" << un_initial_state_index << "x" << un_condition_index;
-		std::vector<UInt32> vecPossibleDestinationIndex = GetPossibleDestinationBehaviour(un_initial_state_index);
-		std::vector<std::string>::iterator it;
-		it = std::find(vec_fsm_transition_config.begin(), vec_fsm_transition_config.end(), ss.str());
+		// get the type of the condition and instantiate the corresponding class
+		UInt8 conditionType = cFiniteStateMachine->GetParameters()->GetParameter<UInt32>("c", state_id, condition_id);
+		switch (conditionType) {
+			case 0:
+				newCondition = new AutoMoDeConditionBlackFloor();
+				break;
+			case 1:
+				newCondition = new AutoMoDeConditionGrayFloor();
+				break;
+			case 2:
+				newCondition = new AutoMoDeConditionWhiteFloor();
+				break;
+			case 3:
+				newCondition = new AutoMoDeConditionNeighborsCount();
+				break;
+			case 4:
+				newCondition = new AutoMoDeConditionInvertedNeighborsCount();
+				break;
+			case 5:
+				newCondition = new AutoMoDeConditionFixedProbability();
+				break;
+			case 6:
+				newCondition = new AutoMoDeConditionProbColor();
+				break;
+			case 7:
+				newCondition = new AutoMoDeConditionFloorColor();
+				break;
+		}
+
+		// get the destination state from the FSM description
+		UInt8 destinationState = cFiniteStateMachine->GetParameters()->GetParameter<UInt32>("n", state_id, condition_id);
 
 		// TODO: Check here whether unToBehaviour is smaller than the total number of states.
-		UInt32 unIndexBehaviour = atoi((*(it+1)).c_str());
-		UInt32 unToBehaviour = vecPossibleDestinationIndex.at(unIndexBehaviour);
-		if (unToBehaviour < m_unNumberStates) {
-			ss.str(std::string());
-			ss << "--c" << un_initial_state_index << "x" << un_condition_index;
-			it = std::find(vec_fsm_transition_config.begin(), vec_fsm_transition_config.end(), ss.str());
 
-			UInt8 unConditionIdentifier = atoi((*(it+1)).c_str());
-			switch(unConditionIdentifier) {
-				case 0:
-					cNewCondition = new AutoMoDeConditionBlackFloor();
-					break;
-				case 1:
-					cNewCondition = new AutoMoDeConditionGrayFloor();
-					break;
-				case 2:
-					cNewCondition = new AutoMoDeConditionWhiteFloor();
-					break;
-				case 3:
-					cNewCondition = new AutoMoDeConditionNeighborsCount();
-					break;
-				case 4:
-					cNewCondition = new AutoMoDeConditionInvertedNeighborsCount();
-					break;
-				case 5:
-					cNewCondition = new AutoMoDeConditionFixedProbability();
-					break;
-				case 6:
-					cNewCondition = new AutoMoDeConditionProbColor();
-					break;
-				case 7:
-					cNewCondition = new AutoMoDeConditionFloorColor();
-					break;
-			}
-
-			cNewCondition->SetOriginAndExtremity(un_initial_state_index, unToBehaviour);
-			cNewCondition->SetIndex(un_condition_index);
-			cNewCondition->SetIdentifier(unConditionIdentifier);
-
-			// Checking for parameters
-			std::string vecPossibleParameters[] = {"p", "w", "l", "t", "v"};
-			for (auto& strCurrentParameter : vecPossibleParameters) {
-				// set the name of the parameter that has to be found
-				std::ostringstream oss;
-				oss << "--" << strCurrentParameter << un_initial_state_index << "x" << un_condition_index;
-
-				// search and possibly add the parameter to the behavior
-				AutoMoDeValue fCurrentParameterValue;
-				bool found = ParseParameter(vec_fsm_transition_config, oss, cFiniteStateMachine->GetAdapter(), fCurrentParameterValue);
-				if (found) {
-					cNewCondition->AddParameter(strCurrentParameter, fCurrentParameterValue);
-				}
-			}
-			cNewCondition->Init();
-			cFiniteStateMachine->AddCondition(cNewCondition);
+		// the destination state in the FSM ignores the current state; here we want the real index
+		// E.G.:
+		// 	in FSM: state 1 has a transition to state 0
+		//  here: state 1 has a transition to state 0
+		// 
+		// 	in FSM: state 1 has a transition to state 1
+		//  here: state 1 has a transition to state 2
+		if (destinationState >= state_id) {
+			destinationState += 1;
 		}
-	}
 
-	/****************************************/
-	/****************************************/
+		// set up condition information and initialize it
+		newCondition->SetOriginAndExtremity(state_id, destinationState);
+		newCondition->SetIndex(condition_id);
+		newCondition->SetIdentifier(conditionType);
+		newCondition->SetParameters(cFiniteStateMachine->GetParameters());
+		newCondition->Init();
 
-	const std::vector<UInt32> AutoMoDeFsmBuilder::GetPossibleDestinationBehaviour(const UInt32& un_initial_state_index) {
-		std::vector<UInt32> vecPossibleDestinationIndex;
-		for (UInt32 i = 0; i < m_unNumberStates; i++) {
-			if (i != un_initial_state_index) {
-				vecPossibleDestinationIndex.push_back(i);
-			}
-		}
-		return vecPossibleDestinationIndex;
+		// add the constructed Condition to the FSM
+		cFiniteStateMachine->AddCondition(newCondition);
 	}
 }

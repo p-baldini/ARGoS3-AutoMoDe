@@ -2,6 +2,7 @@
  * @file <src/core/AutoMoDeFsmBuilder.h>
  * 
  * @author Antoine Ligot - <aligot@ulb.ac.be>
+ * @author Paolo Baldini - <paolo.baldini.phd@gmail.com>
  * 
  * @package ARGoS3-AutoMoDe
  * 
@@ -16,6 +17,7 @@
 #define AUTOMODE_FSM_BUILDER_H
 
 #include "AutoMoDeFiniteStateMachine.h"
+#include "AutoMoDeParameters.hpp"
 
 #include <argos3/core/utility/logging/argos_log.h>
 #include <algorithm>
@@ -29,12 +31,12 @@ namespace argos {
 	class AutoMoDeFsmBuilder {
 		public:
 			/**
-			 * Class constructor.
+			 * Dummy class constructor.
 			 */
 			AutoMoDeFsmBuilder();
 
 			/**
-			 * Class destructor.
+			 * Class destructor. Frees the memory occupied by the FSM object.
 			 */
 			virtual ~AutoMoDeFsmBuilder();
 
@@ -42,6 +44,9 @@ namespace argos {
 			 * Creates an AutoMoDeFiniteStateMachine based on a configuration as a vector of
 			 * strings. This method should be called when the FSM is created from the
 			 * AutoMoDeMain.cpp.
+			 * 
+			 * @param[in] str_fsm_config The sequence of tokens describing the FSM.
+			 * @return The built FSM.
 			 */
 			AutoMoDeFiniteStateMachine* BuildFiniteStateMachine(
 				std::vector<std::string>& vec_fsm_config
@@ -51,6 +56,9 @@ namespace argos {
 			 * Creates an AutoMoDeFiniteStateMachine based on a configuration as a string.
 			 * This method should be called when the FSM is created from the
 			 * AutoMoDeController.cpp.
+			 * 
+			 * @param[in] str_fsm_config The string-representation of the FSM.
+			 * @return The built FSM.
 			 */
 			AutoMoDeFiniteStateMachine* BuildFiniteStateMachine(
 				const std::string& str_fsm_config
@@ -61,32 +69,23 @@ namespace argos {
 			 * Creates a AutoMoDeBehaviour from a state configuration and add it to the
 			 * AutoMoDeFiniStateMachine in construction.
 			 * Strips the different transitions and calls HandleTransition for their creation.
+			 * 
+			 * @param[in] state_id The ID of the behavior.
 			 */
-			void HandleState(
-				AutoMoDeFiniteStateMachine* c_fsm,
-				std::vector<std::string>& vec_fsm_state_config
-			);
+			void HandleState(const UInt32 state_id);
 
 			/**
 			 * Creates a AutoMoDeCondition from a transition configuration and add it to the
-			 * AutoMoDeFiniStateMachine in construction.
+			 * AutoMoDeFiniStateMachine under construction.
+			 * 
+			 * @param[in] state_id The ID of the origin behavior of the transition.
+			 * @param[in] condition_id The ID of the transition.
 			 */
-			void HandleTransition(
-				std::vector<std::string>& vec_fsm_transition_config,
-				const UInt32& un_initial_state_index,
-				const UInt32& un_condition_index
-			);
+			void HandleTransition(const UInt32 state_id, const UInt32 condition_id);
 
 			/**
-			 * Creates a list containing the indexes of the behaviours reachable from a given
-			 * state. Added for compatibility with irace interdependent parameters.
+			 * Pointer to the FSM under construction.
 			 */
-			const std::vector<UInt32> GetPossibleDestinationBehaviour(
-				const UInt32& un_initial_state_index
-			);
-
-			UInt32 m_unNumberStates;
-
 			AutoMoDeFiniteStateMachine* cFiniteStateMachine;
 	};
 }
