@@ -163,6 +163,11 @@ namespace argos {
 			 * @param[in] name The name of the parameter value to retrieve.
 			 */
 			std::string GetValue(const std::string name);
+
+			/**
+			 * Disable access to equal operator.
+			 */
+			AutoMoDeParameters& operator = (const AutoMoDeParameters& other) { return *this; };
 	};
 }
 
