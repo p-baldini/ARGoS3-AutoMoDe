@@ -19,6 +19,8 @@
 #include <argos3/demiurge/epuck-dao/ReferenceModel3Dot0.h>
 #include <argos3/demiurge/epuck-dao/ReferenceModel3DotS.hpp>
 
+#include <limits>
+
 namespace argos {
 
 	/****************************************/
@@ -86,7 +88,11 @@ namespace argos {
 		 */
 		SetEvaluator(AutoMoDeEvaluator::Build(m_strEvaluatorType));
 		if (m_bFiniteStateMachineGiven) {
-			m_pcEvaluator->SetEvaluationTime(m_pcFiniteStateMachine->GetAdapter().GetEvaluationTime());
+			m_pcEvaluator->SetEvaluationTime(
+				m_pcFiniteStateMachine->GetParameters()->GetParameter<UInt32>(
+					"evaluationsteps", std::to_string(std::numeric_limits<UInt32>::max())
+				)
+			);
 		}
 
 		/*
@@ -222,6 +228,7 @@ namespace argos {
 		m_pcFiniteStateMachine->Reset();
 		m_pcEvaluator->Reset();
 		m_pcRobotState->Reset();
+		// TODO reset configuration index
 		// Restart actuation.
 		InitializeActuation();
 	}
@@ -229,7 +236,9 @@ namespace argos {
 	/****************************************/
 	/****************************************/
 
-	void AutoMoDeController::SetFiniteStateMachine(AutoMoDeFiniteStateMachine* pc_finite_state_machine) {
+	void AutoMoDeController::SetFiniteStateMachine(
+		AutoMoDeFiniteStateMachine* pc_finite_state_machine
+	) {
 		m_pcFiniteStateMachine = pc_finite_state_machine;
 		m_pcFiniteStateMachine->SetRobotDAO(m_pcRobotState);
 		m_pcFiniteStateMachine->Init();

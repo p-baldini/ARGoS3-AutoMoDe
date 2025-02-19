@@ -21,6 +21,8 @@
 
 #include <argos3/demiurge/loop-functions/CoreLoopFunctions.h>
 
+#include <limits>
+
 using namespace argos;
 
 const std::string ExplainParameters() {
@@ -37,7 +39,6 @@ const std::string ExplainParameters() {
  *
  */
 int main(int n_argc, char** ppch_argv) {
-
 	bool bHistory = false;
 
 	bool bReadableFSM = false;
@@ -115,7 +116,11 @@ int main(int n_argc, char** ppch_argv) {
 					AutoMoDeFiniteStateMachine* pcPersonalFsm = new AutoMoDeFiniteStateMachine(pcFiniteStateMachine);
 					vecFsm.push_back(pcPersonalFsm);
 					auto pcEvaluator = AutoMoDeEvaluator::Build(strEvaluatorType);
-					pcEvaluator->SetEvaluationTime(pcPersonalFsm->GetAdapter().GetEvaluationTime());
+					pcEvaluator->SetEvaluationTime(
+						pcPersonalFsm->GetParameters()->GetParameter<UInt32>(
+							"evaluationsteps", std::to_string(std::numeric_limits<UInt32>::max())
+						)
+					);
 					try {
 						AutoMoDeController& cController = dynamic_cast<AutoMoDeController&> (pcEntity->GetController());
 						cController.SetFiniteStateMachine(pcPersonalFsm);
