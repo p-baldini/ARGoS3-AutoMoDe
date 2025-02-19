@@ -53,6 +53,11 @@ namespace argos {
 			virtual AutoMoDeBehaviourReactToColor* Clone();
 
 			/**
+			 * @see AutoMoDeBehavior::GetDOTDescription
+			 */
+			virtual const std::string GetDOTDescription();
+
+			/**
 			 * @see AutoMoDeBehavior::SetRobotDAO
 			 */
 			void SetRobotDAO(EpuckDAO* pc_robot_dao) override;
@@ -71,22 +76,22 @@ namespace argos {
 			/**
 			 * The color emitted by the robot when using this behavior.
 			 */
-			AutoMoDeValue /* CColor */ m_cColorEmitterParameter;
+			AutoMoDeValue<CColor> m_cColorEmitterParameter;
 
 			/**
 			 * The color that the robot reacts to when using this behavior.
 			 */
-			AutoMoDeValue /* CColor */ m_cColorReceiverParameter;
+			AutoMoDeValue<CColor> m_cColorReceiverParameter;
 
 			/**
 			 * The type of reaction the robot has to (possibly lack of) color.
 			 */
-			AutoMoDeValue /* UInt8  */ m_iReactionType;
+			AutoMoDeValue<UInt8> m_iReactionType;
 
 			/**
 			 * The speed at which the robot approach / flee the color.
 			 */
-			AutoMoDeValue /* Real   */ m_unReactionParameter;
+			AutoMoDeValue<Real> m_unReactionParameter;
 
 			/**
 			 * True if the robot can only analyze raw proximity data; False otherwise.

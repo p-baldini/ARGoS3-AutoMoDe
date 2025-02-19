@@ -45,21 +45,26 @@ namespace argos {
 			 */
 			virtual AutoMoDeBehaviourGoToColor* Clone();
 
+			/**
+			 * @see AutoMoDeBehavior::GetDOTDescription
+			 */
+			virtual const std::string GetDOTDescription();
+
 		private:
 			/**
 			 * The color emitted by the robot while in the go-to-color behavior.
 			 */
-			AutoMoDeValue /* CColor */ m_cColorEmitterParameter;
+			AutoMoDeValue<CColor> m_cColorEmitterParameter;
 
 			/**
 			 * The color the robot will approach.
 			 */
-			AutoMoDeValue /* CColor */ m_cColorReceiverParameter;
+			AutoMoDeValue<CColor> m_cColorReceiverParameter;
 
 			/**
 			 * The speed at which the robot will approach the color.
 			 */
-			AutoMoDeValue /* Real   */ m_unAttractionParameter;
+			AutoMoDeValue<Real> m_unAttractionParameter;
 	};
 }
 

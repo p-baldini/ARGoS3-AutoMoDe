@@ -26,13 +26,9 @@ namespace argos {
 	/****************************************/
 	/****************************************/
 
-	AutoMoDeBehaviourReactToColor::AutoMoDeBehaviourReactToColor(AutoMoDeBehaviourReactToColor* pc_behaviour) {
-		m_strLabel = pc_behaviour->GetLabel();
-		m_bLocked = pc_behaviour->IsLocked();
-		m_bOperational = pc_behaviour->IsOperational();
-		m_unIndex = pc_behaviour->GetIndex();
-		m_unIdentifier = pc_behaviour->GetIdentifier();
-		m_mapParameters = pc_behaviour->GetParameters();
+	AutoMoDeBehaviourReactToColor::AutoMoDeBehaviourReactToColor(
+		AutoMoDeBehaviourReactToColor* pc_behaviour
+	) : AutoMoDeBehaviour(pc_behaviour) {
 		Init();
 	}
 
@@ -41,6 +37,19 @@ namespace argos {
 
 	AutoMoDeBehaviourReactToColor* AutoMoDeBehaviourReactToColor::Clone() {
 		return new AutoMoDeBehaviourReactToColor(this);
+	}
+
+	/****************************************/
+	/****************************************/
+
+	const std::string AutoMoDeBehaviourReactToColor::GetDOTDescription() {
+		std::stringstream ss;
+		ss << m_strLabel << std::endl;
+		ss << "crt=" << m_iReactionType << std::endl;
+		ss << "vel=" << m_unReactionParameter << std::endl;
+		ss << "clr=" << m_cColorReceiverParameter << std::endl;
+		ss << "cle=" << m_cColorEmitterParameter << std::endl;
+		return ss.str();
 	}
 
 	/****************************************/
@@ -106,10 +115,10 @@ namespace argos {
 	/****************************************/
 
 	void AutoMoDeBehaviourReactToColor::Init() {
-		m_iReactionType = FindParameter("crt");
-		m_unReactionParameter = FindParameter("vel");
-		m_cColorReceiverParameter = FindParameter("clr");
-		m_cColorEmitterParameter = FindParameter("cle", AutoMoDeValue());
+		m_iReactionType = m_Parameters->GetParameter<UInt8>("crt", m_unIndex);
+		m_unReactionParameter = m_Parameters->GetParameter<Real>("vel", m_unIndex);
+		m_cColorReceiverParameter = m_Parameters->GetParameter<CColor>("clr", m_unIndex);
+		m_cColorEmitterParameter = m_Parameters->GetParameter<CColor>("cle", m_unIndex, "0");
 	}
 
 	/****************************************/

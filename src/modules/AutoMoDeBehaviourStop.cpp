@@ -22,13 +22,9 @@ namespace argos {
 	/****************************************/
 	/****************************************/
 
-	AutoMoDeBehaviourStop::AutoMoDeBehaviourStop(AutoMoDeBehaviourStop* pc_behaviour) {
-		m_strLabel = pc_behaviour->GetLabel();
-		m_bLocked = pc_behaviour->IsLocked();
-		m_bOperational = pc_behaviour->IsOperational();
-		m_unIndex = pc_behaviour->GetIndex();
-		m_unIdentifier = pc_behaviour->GetIdentifier();
-		m_mapParameters = pc_behaviour->GetParameters();
+	AutoMoDeBehaviourStop::AutoMoDeBehaviourStop(
+		AutoMoDeBehaviourStop* pc_behaviour
+	) : AutoMoDeBehaviour(pc_behaviour) {
 		Init();
 	}
 
@@ -47,6 +43,16 @@ namespace argos {
 	/****************************************/
 	/****************************************/
 
+	const std::string AutoMoDeBehaviourStop::GetDOTDescription() {
+		std::stringstream ss;
+		ss << m_strLabel << std::endl;
+		ss << "cle=" << m_cColorEmitterParameter << std::endl;
+		return ss.str();
+	}
+
+	/****************************************/
+	/****************************************/
+
 	void AutoMoDeBehaviourStop::ControlStep() {
 		m_pcRobotDAO->SetWheelsVelocity(0,0);
 		m_pcRobotDAO->SetLEDsColor(m_cColorEmitterParameter);
@@ -57,7 +63,7 @@ namespace argos {
 	/****************************************/
 
 	void AutoMoDeBehaviourStop::Init() {
-		m_cColorEmitterParameter = FindParameter("cle", AutoMoDeValue());
+		m_cColorEmitterParameter = m_Parameters->GetParameter<CColor>("cle", m_unIndex, "0");
 	}
 
 	/****************************************/

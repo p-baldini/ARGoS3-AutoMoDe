@@ -21,13 +21,9 @@ namespace argos {
 	/****************************************/
 	/****************************************/
 
-	AutoMoDeBehaviourAntiPhototaxis::AutoMoDeBehaviourAntiPhototaxis(AutoMoDeBehaviourAntiPhototaxis* pc_behaviour) {
-		m_strLabel = pc_behaviour->GetLabel();
-		m_bLocked = pc_behaviour->IsLocked();
-		m_bOperational = pc_behaviour->IsOperational();
-		m_unIndex = pc_behaviour->GetIndex();
-		m_unIdentifier = pc_behaviour->GetIdentifier();
-		m_mapParameters = pc_behaviour->GetParameters();
+	AutoMoDeBehaviourAntiPhototaxis::AutoMoDeBehaviourAntiPhototaxis(
+		AutoMoDeBehaviourAntiPhototaxis* pc_behaviour
+	) : AutoMoDeBehaviour(pc_behaviour) {
 		Init();
 	}
 
@@ -41,6 +37,15 @@ namespace argos {
 
 	AutoMoDeBehaviourAntiPhototaxis* AutoMoDeBehaviourAntiPhototaxis::Clone() {
 		return new AutoMoDeBehaviourAntiPhototaxis(this);
+	}
+
+	/****************************************/
+	/****************************************/
+
+	const std::string AutoMoDeBehaviourAntiPhototaxis::GetDOTDescription() {
+		std::stringstream ss;
+		ss << m_strLabel;
+		return ss.str();
 	}
 
 	/****************************************/

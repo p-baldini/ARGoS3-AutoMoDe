@@ -22,13 +22,9 @@ namespace argos {
 	/****************************************/
 	/****************************************/
 
-	AutoMoDeBehaviourAttraction::AutoMoDeBehaviourAttraction(AutoMoDeBehaviourAttraction* pc_behaviour) {
-		m_strLabel = pc_behaviour->GetLabel();
-		m_bLocked = pc_behaviour->IsLocked();
-		m_bOperational = pc_behaviour->IsOperational();
-		m_unIndex = pc_behaviour->GetIndex();
-		m_unIdentifier = pc_behaviour->GetIdentifier();
-		m_mapParameters = pc_behaviour->GetParameters();
+	AutoMoDeBehaviourAttraction::AutoMoDeBehaviourAttraction(
+		AutoMoDeBehaviourAttraction* pc_behaviour
+	) : AutoMoDeBehaviour(pc_behaviour) {
 		Init();
 	}
 
@@ -42,6 +38,17 @@ namespace argos {
 
 	AutoMoDeBehaviourAttraction* AutoMoDeBehaviourAttraction::Clone() {
 		return new AutoMoDeBehaviourAttraction(this);   // todo: check without *
+	}
+
+	/****************************************/
+	/****************************************/
+
+	const std::string AutoMoDeBehaviourAttraction::GetDOTDescription() {
+		std::stringstream ss;
+		ss << m_strLabel << std::endl;
+		ss << "att=" << m_unAttractionParameter << std::endl;
+		ss << "cle=" << m_cColorEmitterParameter << std::endl;
+		return ss.str();
 	}
 
 	/****************************************/
@@ -74,8 +81,8 @@ namespace argos {
 	/****************************************/
 
 	void AutoMoDeBehaviourAttraction::Init() {
-		m_unAttractionParameter = FindParameter("att");
-		m_cColorEmitterParameter = FindParameter("cle", AutoMoDeValue());
+		m_unAttractionParameter = m_Parameters->GetParameter<Real>("att", m_unIndex);
+		m_cColorEmitterParameter = m_Parameters->GetParameter<CColor>("cle", m_unIndex, "0");
 	}
 
 	/****************************************/

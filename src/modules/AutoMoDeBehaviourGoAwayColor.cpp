@@ -22,13 +22,9 @@ namespace argos {
 	/****************************************/
 	/****************************************/
 
-	AutoMoDeBehaviourGoAwayColor::AutoMoDeBehaviourGoAwayColor(AutoMoDeBehaviourGoAwayColor* pc_behaviour) {
-		m_strLabel = pc_behaviour->GetLabel();
-		m_bLocked = pc_behaviour->IsLocked();
-		m_bOperational = pc_behaviour->IsOperational();
-		m_unIndex = pc_behaviour->GetIndex();
-		m_unIdentifier = pc_behaviour->GetIdentifier();
-		m_mapParameters = pc_behaviour->GetParameters();
+	AutoMoDeBehaviourGoAwayColor::AutoMoDeBehaviourGoAwayColor(
+		AutoMoDeBehaviourGoAwayColor* pc_behaviour
+	) : AutoMoDeBehaviour(pc_behaviour) {
 		Init();
 	}
 
@@ -42,6 +38,18 @@ namespace argos {
 
 	AutoMoDeBehaviourGoAwayColor* AutoMoDeBehaviourGoAwayColor::Clone() {
 		return new AutoMoDeBehaviourGoAwayColor(this);
+	}
+
+	/****************************************/
+	/****************************************/
+
+	const std::string AutoMoDeBehaviourGoAwayColor::GetDOTDescription() {
+		std::stringstream ss;
+		ss << m_strLabel << std::endl;
+		ss << "vel=" << m_unRepulsionParameter << std::endl;
+		ss << "clr=" << m_cColorReceiverParameter << std::endl;
+		ss << "cle=" << m_cColorEmitterParameter << std::endl;
+		return ss.str();
 	}
 
 	/****************************************/
@@ -77,9 +85,9 @@ namespace argos {
 	/****************************************/
 
 	void AutoMoDeBehaviourGoAwayColor::Init() {
-		m_unRepulsionParameter = FindParameter("vel");
-		m_cColorReceiverParameter = FindParameter("clr");
-		m_cColorEmitterParameter = FindParameter("cle", AutoMoDeValue());
+		m_unRepulsionParameter = m_Parameters->GetParameter<Real>("vel", m_unIndex);
+		m_cColorReceiverParameter = m_Parameters->GetParameter<CColor>("clr", m_unIndex);
+		m_cColorEmitterParameter = m_Parameters->GetParameter<CColor>("cle", m_unIndex, "0");
 	}
 
 	/****************************************/

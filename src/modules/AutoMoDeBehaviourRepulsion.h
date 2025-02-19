@@ -45,16 +45,21 @@ namespace argos {
 			 */
 			virtual AutoMoDeBehaviourRepulsion* Clone();
 
+			/**
+			 * @see AutoMoDeBehavior::GetDOTDescription
+			 */
+			virtual const std::string GetDOTDescription();
+
 		private:
 			/**
 			 * The speed at which the robot will flee others.
 			 */
-			AutoMoDeValue /* Real   */ m_unRepulsionParameter;
+			AutoMoDeValue<Real> m_unRepulsionParameter;
 
 			/**
 			 * The color emitted by the robot while in the repulsion behavior.
 			 */
-			AutoMoDeValue /* CColor */ m_cColorEmitterParameter;
+			AutoMoDeValue<CColor> m_cColorEmitterParameter;
 	};
 }
 

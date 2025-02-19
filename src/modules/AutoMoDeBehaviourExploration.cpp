@@ -34,13 +34,9 @@ namespace argos {
 	/****************************************/
 	/****************************************/
 
-	AutoMoDeBehaviourExploration::AutoMoDeBehaviourExploration(AutoMoDeBehaviourExploration* pc_behaviour) {
-		m_strLabel = pc_behaviour->GetLabel();
-		m_bLocked = pc_behaviour->IsLocked();
-		m_bOperational = pc_behaviour->IsOperational();
-		m_unIndex = pc_behaviour->GetIndex();
-		m_unIdentifier = pc_behaviour->GetIdentifier();
-		m_mapParameters = pc_behaviour->GetParameters();
+	AutoMoDeBehaviourExploration::AutoMoDeBehaviourExploration(
+		AutoMoDeBehaviourExploration* pc_behaviour
+	) : AutoMoDeBehaviour(pc_behaviour) {
 		Init();
 	}
 
@@ -59,18 +55,33 @@ namespace argos {
 	/****************************************/
 	/****************************************/
 
+	const std::string AutoMoDeBehaviourExploration::GetDOTDescription() {
+		std::stringstream ss;
+		ss << m_strLabel << std::endl;
+		ss << "rwm=" << m_iMaxTurningSteps << std::endl;
+		ss << "rwt=" << m_iStrategyType << std::endl;
+		ss << "rwmu=" << m_fDistributionMu << std::endl;
+		ss << "rwc=" << m_fDistributionC << std::endl;
+		ss << "cle=" << m_cColorEmitterParameter << std::endl;
+		return ss.str();
+	}
+
+	/****************************************/
+	/****************************************/
+
 	void AutoMoDeBehaviourExploration::Init() {
 		m_unActionSteps = 0;
 		m_eAction = TURN;
 		m_fProximityThreshold = 0.15;
 		m_bLocked = false;
 
-		m_iMaxTurningSteps = FindParameter("rwm");
-		m_iStrategyType = FindParameter("rwt");
-		m_fDistributionMu = FindParameter("rwmu", AutoMoDeValue());
-		m_fDistributionC = FindParameter("rwc", AutoMoDeValue());
+		m_iMaxTurningSteps = m_Parameters->GetParameter<UInt32>("rwm", m_unIndex);
+		m_iStrategyType = m_Parameters->GetParameter<UInt8>("rwt", m_unIndex);
 
-		m_cColorEmitterParameter = FindParameter("cle", AutoMoDeValue());
+		m_fDistributionMu = m_Parameters->GetParameter<Real>("rwmu", m_unIndex, "0");
+		m_fDistributionC = m_Parameters->GetParameter<Real>("rwc", m_unIndex, "0");
+
+		m_cColorEmitterParameter = m_Parameters->GetParameter<CColor>("cle", m_unIndex, "0");
 	}
 
 	/****************************************/

@@ -46,6 +46,11 @@ namespace argos {
 			virtual AutoMoDeBehaviourStop* Clone();
 
 			/**
+			 * @see AutoMoDeBehavior::GetDOTDescription
+			 */
+			virtual const std::string GetDOTDescription();
+
+			/**
 			 * @see AutoMoDeBehavior::Adapt
 			 */
 			virtual void Adapt(Real reward) {};
@@ -54,7 +59,7 @@ namespace argos {
 			/**
 			 * The color the robot emits when performing this behavior.
 			 */
-			AutoMoDeValue /* CColor */ m_cColorEmitterParameter;
+			AutoMoDeValue<CColor> m_cColorEmitterParameter;
 	};
 }
 

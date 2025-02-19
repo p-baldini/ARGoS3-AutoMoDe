@@ -45,16 +45,21 @@ namespace argos {
 			 */
 			virtual AutoMoDeBehaviourAttraction* Clone();
 
+			/**
+			 * @see AutoMoDeBehavior::GetDOTDescription
+			 */
+			virtual const std::string GetDOTDescription();
+
 		private:
 			/**
 			 * The speed at which the robot will approach others.
 			 */
-			AutoMoDeValue /* Real   */ m_unAttractionParameter;
+			AutoMoDeValue<Real> m_unAttractionParameter;
 
 			/**
 			 * The color emitted by the robot while in the attraction behavior.
 			 */
-			AutoMoDeValue /* CColor */ m_cColorEmitterParameter;
+			AutoMoDeValue<CColor> m_cColorEmitterParameter;
 	};
 }
 

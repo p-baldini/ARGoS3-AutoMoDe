@@ -46,6 +46,11 @@ namespace argos {
 			virtual AutoMoDeBehaviourExploration* Clone();
 
 			/**
+			 * @see AutoMoDeBehavior::GetDOTDescription
+			 */
+			virtual const std::string GetDOTDescription();
+
+			/**
 			 * @see AutoMoDeBehavior::SetRobotDAO
 			 */
 			void SetRobotDAO(EpuckDAO* pc_robot_dao) override;
@@ -74,26 +79,26 @@ namespace argos {
 			 * Indicate the exploration strategy employed; adaptable parameter of the behaviour: if
 			 * instantiated with more than one value, it can chose which to use at runtime.
 			 */
-			AutoMoDeValue /* UInt8 */ m_iStrategyType;
+			AutoMoDeValue<UInt8> m_iStrategyType;
 
 			/**
 			 * Indicate the maximum number of steps the robot can turn; adaptable parameter of the
 			 * behaviour: if instantiated with more than one value, it can chose which to use at
 			 * runtime.
 			 */
-			AutoMoDeValue /* UInt32 */ m_iMaxTurningSteps;
+			AutoMoDeValue<UInt32> m_iMaxTurningSteps;
 
 			/**
 			 * The mean of the Levy distribution; adaptable parameter of the behaviour: if
 			 * instantiated with more than one value, it can chose which to use at runtime.
 			 */
-			AutoMoDeValue /* Real */ m_fDistributionMu;
+			AutoMoDeValue<Real> m_fDistributionMu;
 
 			/**
 			 * The std dev of the Levy distribution; adaptable parameter of the behaviour: if
 			 * instantiated with more than one value, it can chose which to use at runtime.
 			 */
-			AutoMoDeValue /* Real */ m_fDistributionC;
+			AutoMoDeValue<Real> m_fDistributionC;
 
 			/**
 			 * True if the robot can only analyze raw proximity data; False otherwise.
@@ -113,7 +118,7 @@ namespace argos {
 			/**
 			 * The color emitted by the robot.
 			 */
-			AutoMoDeValue m_cColorEmitterParameter;
+			AutoMoDeValue<CColor> m_cColorEmitterParameter;
 
 			/**
 			 * The threshold upon which an object is considered a near obstacle.

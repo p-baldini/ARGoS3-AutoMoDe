@@ -44,6 +44,11 @@ namespace argos {
 			 * @see AutoMoDeBehavior::Clone
 			 */
 			virtual AutoMoDeBehaviourAntiPhototaxis* Clone();
+
+			/**
+			 * @see AutoMoDeBehavior::GetDOTDescription
+			 */
+			virtual const std::string GetDOTDescription();
 	};
 }
 
