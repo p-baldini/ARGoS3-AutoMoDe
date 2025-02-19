@@ -12,13 +12,40 @@
 
 namespace argos {
 
-	AutoMoDeBehaviour::~AutoMoDeBehaviour() {}
+	/****************************************/
+	/****************************************/
+
+	AutoMoDeBehaviour::AutoMoDeBehaviour() { }
+
+	/****************************************/
+	/****************************************/
+
+	AutoMoDeBehaviour::AutoMoDeBehaviour(const AutoMoDeBehaviour* other) {
+		m_strLabel = other->GetLabel();
+		m_bLocked = other->IsLocked();
+		m_bOperational = other->IsOperational();
+		m_unIndex = other->GetIndex();
+		m_unIdentifier = other->GetIdentifier();
+		m_Parameters = other->m_Parameters;
+	}
+
+	/****************************************/
+	/****************************************/
+
+	AutoMoDeBehaviour::~AutoMoDeBehaviour() { }
 
 	/****************************************/
 	/****************************************/
 
 	const bool AutoMoDeBehaviour::IsLocked() const {
 		return m_bLocked;
+	}
+
+	/****************************************/
+	/****************************************/
+
+	void AutoMoDeBehaviour::SetParameters(AutoMoDeParameters* parameters) {
+		m_Parameters = parameters;
 	}
 
 	/****************************************/
@@ -47,18 +74,6 @@ namespace argos {
 
 	const UInt32& AutoMoDeBehaviour::GetIdentifier() const {
 		return m_unIdentifier;
-	}
-
-	/****************************************/
-	/****************************************/
-
-	const std::string AutoMoDeBehaviour::GetDOTDescription() {
-		std::stringstream ss;
-		ss << m_strLabel;
-		for (auto& it : m_mapParameters) {
-			ss << "\\n" << it.first << "=" << (Real) it.second;
-		}
-		return ss.str();
 	}
 
 	/****************************************/
@@ -115,17 +130,6 @@ namespace argos {
 	/****************************************/
 	/****************************************/
 
-	void AutoMoDeBehaviour::AddParameter(
-		const std::string& str_identifier, const AutoMoDeValue& f_value
-	) {
-		m_mapParameters.insert(
-			std::pair<std::string, AutoMoDeValue>(str_identifier, f_value)
-		);
-	}
-
-	/****************************************/
-	/****************************************/
-
 	const bool AutoMoDeBehaviour::IsOperational() const {
 		return m_bOperational;
 	}
@@ -135,13 +139,6 @@ namespace argos {
 
 	const std::string& AutoMoDeBehaviour::GetLabel() const {
 		return m_strLabel;
-	}
-
-	/****************************************/
-	/****************************************/
-
-	const std::map<std::string, AutoMoDeValue> AutoMoDeBehaviour::GetParameters() {
-		return m_mapParameters;
 	}
 
 	/****************************************/
@@ -223,35 +220,4 @@ namespace argos {
 
         return cColorParameter;
     }
-
-	/****************************************/
-	/****************************************/
-
-	AutoMoDeValue AutoMoDeBehaviour::FindParameter(const char tag[]) {
-		auto it = m_mapParameters.find(tag);
-		if (it == m_mapParameters.end()) {
-			LOGERR << "[FATAL] Missing parameter '" << tag
-				   << "' for behaviour: " << m_strLabel << std::endl;
-			THROW_ARGOSEXCEPTION("Missing Parameter");
-		}
-		return it->second;
-	}
-
-	/****************************************/
-    /****************************************/
-
-	AutoMoDeValue AutoMoDeBehaviour::FindParameter(const char tag[], AutoMoDeValue defaultValue) {
-		if (HasParameter(tag)) {
-			return FindParameter(tag);
-		}
-		return defaultValue;
-	}
-
-	/****************************************/
-	/****************************************/
-
-	bool AutoMoDeBehaviour::HasParameter(const char tag[]) {
-		auto it = m_mapParameters.find(tag);
-		return it != m_mapParameters.end();
-	}
 }

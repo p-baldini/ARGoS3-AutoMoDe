@@ -12,6 +12,7 @@
 #define AUTOMODE_BEHAVIOUR_H
 
 #include "../core/AutoMoDeValue.hpp"
+#include "../core/AutoMoDeParameters.hpp"
 
 #include <argos3/core/utility/math/vector2.h>
 #include <argos3/core/utility/logging/argos_log.h>
@@ -41,11 +42,6 @@ namespace argos {
 			bool m_bOperational;
 
 			/**
-			 * Contains the parameters of the behaviours.
-			 */
-			std::map<std::string, AutoMoDeValue> m_mapParameters;
-
-			/**
 			 * The name of the behaviour.
 			 */
 			std::string m_strLabel;
@@ -67,34 +63,25 @@ namespace argos {
 			EpuckDAO* m_pcRobotDAO;
 
 			/**
-			 * Find a parameter in the set and return it. If the value is not present, throws an
-			 * exception.
-			 * 
-			 * @param[in] tag The name of the parameter to return.
-			 * @return The parsed parameter.
+			 * Reference to the object managing the FSM parameters.
 			 */
-			AutoMoDeValue FindParameter(const char tag[]);
-
-			/**
-			 * Find a parameter in the set and return it. If the value is not present, returns the
-			 * default value.
-			 * 
-			 * @param[in] tag The name of the parameter to return.
-			 * @param[in] defaultValue The value to be returned if the parameter does not exists.
-			 * @return The parsed parameter or default if it does not exists.
-			 */
-			AutoMoDeValue FindParameter(const char tag[], AutoMoDeValue defaultValue);
-
-			/**
-			 * Check wether the behavior contains a parameter with the specified name.
-			 * 
-			 * @param[in] tag The name of the parameter to check for existence.
-			 * @return True if the parameter exists, False otherwise.
-			 */
-			bool HasParameter(const char tag[]);
+			AutoMoDeParameters* m_Parameters;
 
 		public:
 
+			/**
+			 * Dummy constructor.
+			 */
+			AutoMoDeBehaviour();
+
+			/**
+			 * Copy constructor.
+			 */
+			AutoMoDeBehaviour(const AutoMoDeBehaviour* other);
+
+			/**
+			 * Class destructor.
+			 */
 			virtual ~AutoMoDeBehaviour();
 
 			/**
@@ -128,17 +115,14 @@ namespace argos {
 			/**
 			 * Returns a string containing the DOT description of the behaviour.
 			 */
-			const std::string GetDOTDescription();
+			virtual const std::string GetDOTDescription() = 0;
 
 			/**
-			 * Instert a pair <parameter, value> to the parameters map.
+			 * Set the parameters manager.
+			 * 
+			 * @param[in] parameters The object containing the FSM parameters.
 			 */
-			void AddParameter(const std::string& str_identifier, const AutoMoDeValue& f_value);
-
-			/**
-			 * Returns the whole parameters map.
-			 */
-			const std::map<std::string, AutoMoDeValue> GetParameters();
+			void SetParameters(AutoMoDeParameters* parameters);
 
 			/**
 			 * Setter for the index of the behaviour.
