@@ -17,7 +17,8 @@
 
 namespace argos {
 	/**
-	 * The object of the FSM that manages the selection of dynamic values.
+	 * This class manages the selection of values according to a multi-armed bandit algorithm.
+	 * Currently, it completely abstracts away the type of data, only working with indexes.
 	 */
 	class AutoMoDeAdapter {
 		public:
@@ -32,36 +33,34 @@ namespace argos {
 			AutoMoDeAdapter(const AutoMoDeAdapter& other);
 
 			/**
-			 * Add a new adaptable parameter with its possible values, and return the adaptable
-			 * object that allows a flawless access to the currently selected value.
+			 * Decide which 'arm' to use according to the performance of the last and the time
+			 * instant.
 			 * 
-			 * @param[in] values The set of possible values the parameter can assume.
-			 * @return The class that allows accessing the value currently in use for this
-			 * parameter.
-			 */
-			AutoMoDeValue AddParameter(std::vector<Real> values);
-
-			/**
-			 * Decide which combination of parameter values to use according to the performance of
-			 * the last. This method is based on a multi-armed banding algorithm.
-			 * 
-			 * @param[in] reward The performance of the last tested set of values.
+			 * @param[in] reward The performance of the last tested arm.
 			 */
 			void Adapt(Real reward);
 
 			/**
-			 * Set the evaluation time of each combination of parameter values.
+			 * Set the number of arms available. Calling this method will delete any other data
+			 * previously contained.
 			 * 
-			 * @param[in] evaluationTime The number of steps a set of values will be evaluated for.
+			 * @param[in] arms_count The number of arms to try.
+			 */
+			void SetArmsCount(UInt32 arms_count);
+
+			/**
+			 * Set the evaluation time of each arm.
+			 * 
+			 * @param[in] evaluationTime The number of steps an arm will be evaluated for.
 			 */
 			void SetEvaluationTime(UInt32 evaluationTime);
 
 			/**
-			 * Returns the evaluation time of a combination of parameter values when adapting.
+			 * Set the value of the arm. Must be implemented by derived classes.
 			 * 
-			 * @return The time a combination of parameter values will be tested for.
+			 * @param[in] arm_index The index of the arm to set.
 			 */
-			UInt32 GetEvaluationTime() const;
+			virtual void SetValues(UInt32 arm_index) = 0;
 
 		private:
 			/**
@@ -80,11 +79,6 @@ namespace argos {
 			UInt32 m_uArmIndex;
 
 			/**
-			 * The set of all the possible parameter combinations.
-			 */
-			std::vector<std::vector<Real>> m_vParameterCombinations;
-
-			/**
 			 * Contains the cumulative reward of each parameter-value combination.
 			 */
 			std::vector<Real> m_fRewards;
@@ -92,17 +86,7 @@ namespace argos {
 			/**
 			 * Contains the number of times a parameter-value combination has been tried for.
 			 */
-			std::vector<SInt32> m_iPulls;
-
-			/**
-			 * The current / active value of each parameter.
-			 */
-			std::list<Real> m_vActiveParameterValues;
-
-			/**
-			 * The value of each static parameter.
-			 */
-			std::list<Real> m_vStaticParameterValues;
+			std::vector<UInt32> m_iPulls;
 
 			/**
 			 * Select an arm to use according to the number of trials and performance.
@@ -112,9 +96,9 @@ namespace argos {
 			UInt32 SelectArm();
 
 			/**
-			 * Sets the values conbination to use according to the selected arm.
+			 * Disable access to equal operator.
 			 */
-			void SetValues();
+			AutoMoDeAdapter& operator = (const AutoMoDeAdapter& other) { return *this; };
 	};
 }
 
