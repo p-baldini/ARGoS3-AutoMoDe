@@ -25,6 +25,11 @@ namespace argos {
 			 * @see AutoMoDeCondition::Clone
 			 */
 			virtual AutoMoDeConditionGrayFloor* Clone();
+		
+			/**
+			 * @see AutoMoDeCondition::GetDOTDescription
+			 */
+			virtual const std::string GetDOTDescription();
 
 			/**
 			 * @see AutoMoDeCondition::Verify
@@ -55,7 +60,7 @@ namespace argos {
 			/**
 			 * The probability to transition when the ground is gray.
 			 */
-			AutoMoDeValue /* Real */ m_fProbability;
+			AutoMoDeValue<Real> m_fProbability;
 
 			/**
 			 * True if the robot can only analyze raw ground data; False otherwise.

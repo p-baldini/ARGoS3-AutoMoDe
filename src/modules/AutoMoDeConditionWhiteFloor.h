@@ -27,6 +27,11 @@ namespace argos {
 			virtual AutoMoDeConditionWhiteFloor* Clone();
 
 			/**
+			 * @see AutoMoDeCondition::GetDOTDescription
+			 */
+			virtual const std::string GetDOTDescription();
+
+			/**
 			 * @see AutoMoDeCondition::Verify
 			 */
 			virtual bool Verify();
@@ -50,12 +55,12 @@ namespace argos {
 			/**
 			 * The threshold over which the ground is considered white.
 			 */
-			AutoMoDeValue /* Real */ m_fGroundThreshold;
+			Real m_fGroundThreshold;
 
 			/**
 			 * The probability to transition when the ground is gray.
 			 */
-			AutoMoDeValue /* Real */ m_fProbability;
+			AutoMoDeValue<Real> m_fProbability;
 
 			/**
 			 * True if the robot can only analyze raw ground data; False otherwise.

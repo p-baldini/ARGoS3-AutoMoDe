@@ -27,16 +27,7 @@ namespace argos {
 
 	AutoMoDeConditionProbColor::AutoMoDeConditionProbColor(
 		AutoMoDeConditionProbColor* pc_condition
-	) : AutoMoDeConditionProbColor() {
-		m_strLabel = pc_condition->GetLabel();
-		m_unIndex = pc_condition->GetIndex();
-		m_unIdentifier = pc_condition->GetIndex();
-		m_unFromBehaviourIndex = pc_condition->GetOrigin();
-		m_unToBehaviourIndex = pc_condition->GetExtremity();
-		m_mapParameters = pc_condition->GetParameters();
-		m_eTriggerType = pc_condition->m_eTriggerType;
-		m_cColorParameter = pc_condition->m_cColorParameter;
-		m_fProbability = pc_condition->m_fProbability;
+	) : AutoMoDeCondition(pc_condition) {
 		m_fDistance = pc_condition->m_fDistance;
 		Init();
 	}
@@ -45,9 +36,9 @@ namespace argos {
 	/****************************************/
 
 	void AutoMoDeConditionProbColor::Init() {
-		m_eTriggerType = FindParameter("t");
-		m_cColorParameter = FindParameter("l");
-		m_fProbability = FindParameter("p");
+		m_eTriggerType = m_Parameters->GetParameter<UInt8>("t", m_unFromBehaviourIndex, m_unIndex);
+		m_cColorParameter = m_Parameters->GetParameter<CColor>("l", m_unFromBehaviourIndex, m_unIndex);
+		m_fProbability = m_Parameters->GetParameter<Real>("p", m_unFromBehaviourIndex, m_unIndex);
 	}
 
 	/****************************************/
@@ -55,6 +46,18 @@ namespace argos {
 
 	AutoMoDeConditionProbColor* AutoMoDeConditionProbColor::Clone() {
 		return new AutoMoDeConditionProbColor(this);
+	}
+
+	/****************************************/
+	/****************************************/
+
+	const std::string AutoMoDeConditionProbColor::GetDOTDescription() {
+		std::stringstream ss;
+		ss << m_strLabel << std::endl;
+		ss << "t=" << m_eTriggerType << std::endl;
+		ss << "l=" << m_cColorParameter << std::endl;
+		ss << "p=" << m_fProbability << std::endl;
+		return ss.str();
 	}
 
 	/****************************************/

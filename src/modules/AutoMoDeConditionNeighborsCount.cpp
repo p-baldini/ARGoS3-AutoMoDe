@@ -27,13 +27,9 @@ namespace argos {
 	/****************************************/
 	/****************************************/
 
-	AutoMoDeConditionNeighborsCount::AutoMoDeConditionNeighborsCount(AutoMoDeConditionNeighborsCount* pc_condition) {
-		m_strLabel = pc_condition->GetLabel();
-		m_unIndex = pc_condition->GetIndex();
-		m_unIdentifier = pc_condition->GetIndex();
-		m_unFromBehaviourIndex = pc_condition->GetOrigin();
-		m_unToBehaviourIndex = pc_condition->GetExtremity();
-		m_mapParameters = pc_condition->GetParameters();
+	AutoMoDeConditionNeighborsCount::AutoMoDeConditionNeighborsCount(
+		AutoMoDeConditionNeighborsCount* pc_condition
+	) : AutoMoDeCondition(pc_condition) {
 		Init();
 	}
 
@@ -42,6 +38,17 @@ namespace argos {
 
 	AutoMoDeConditionNeighborsCount* AutoMoDeConditionNeighborsCount::Clone() {
 		return new AutoMoDeConditionNeighborsCount(this);
+	}
+
+	/****************************************/
+	/****************************************/
+
+	const std::string AutoMoDeConditionNeighborsCount::GetDOTDescription() {
+		std::stringstream ss;
+		ss << m_strLabel << std::endl;
+		ss << "w=" << m_fParameterEta << std::endl;
+		ss << "p=" << m_unParameterXi << std::endl;
+		return ss.str();
 	}
 
 	/****************************************/
@@ -64,8 +71,8 @@ namespace argos {
 	/****************************************/
 
 	void AutoMoDeConditionNeighborsCount::Init() {
-		m_fParameterEta = FindParameter("w");
-		m_unParameterXi = FindParameter("p");
+		m_fParameterEta = m_Parameters->GetParameter<Real>("w", m_unFromBehaviourIndex, m_unIndex);
+		m_unParameterXi = m_Parameters->GetParameter<Real>("p", m_unFromBehaviourIndex, m_unIndex);
 	}
 
 	/****************************************/

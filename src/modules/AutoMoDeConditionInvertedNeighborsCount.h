@@ -25,6 +25,11 @@ namespace argos {
 			 * @see AutoMoDeCondition::Clone
 			 */
 			virtual AutoMoDeConditionInvertedNeighborsCount* Clone();
+		
+			/**
+			 * @see AutoMoDeCondition::GetDOTDescription
+			 */
+			virtual const std::string GetDOTDescription();
 
 			/**
 			 * @see AutoMoDeCondition::Verify

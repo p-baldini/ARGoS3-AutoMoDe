@@ -45,13 +45,9 @@ namespace argos {
 	/****************************************/
 	/****************************************/
 
-	AutoMoDeConditionWhiteFloor::AutoMoDeConditionWhiteFloor(AutoMoDeConditionWhiteFloor* pc_condition) {
-		m_strLabel = pc_condition->GetLabel();
-		m_unIndex = pc_condition->GetIndex();
-		m_unIdentifier = pc_condition->GetIndex();
-		m_unFromBehaviourIndex = pc_condition->GetOrigin();
-		m_unToBehaviourIndex = pc_condition->GetExtremity();
-		m_mapParameters = pc_condition->GetParameters();
+	AutoMoDeConditionWhiteFloor::AutoMoDeConditionWhiteFloor(
+		AutoMoDeConditionWhiteFloor* pc_condition
+	) : AutoMoDeCondition(pc_condition) {
 		Init();
 	}
 
@@ -65,9 +61,19 @@ namespace argos {
 	/****************************************/
 	/****************************************/
 
+	const std::string AutoMoDeConditionWhiteFloor::GetDOTDescription() {
+		std::stringstream ss;
+		ss << m_strLabel << std::endl;
+		ss << "p=" << m_fProbability << std::endl;
+		return ss.str();
+	}
+
+	/****************************************/
+	/****************************************/
+
 	void AutoMoDeConditionWhiteFloor::Init() {
-		m_fGroundThreshold = AutoMoDeValue(0.95);
-		m_fProbability = FindParameter("p");
+		m_fGroundThreshold = 0.95;
+		m_fProbability = m_Parameters->GetParameter<Real>("p", m_unFromBehaviourIndex, m_unIndex);
 	}
 
 	/****************************************/

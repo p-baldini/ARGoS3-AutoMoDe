@@ -42,6 +42,11 @@ namespace argos {
 			 * @see AutoMoDeCondition::Adapt
 			 */
 			virtual AutoMoDeConditionProbColor* Clone();
+		
+			/**
+			 * @see AutoMoDeCondition::GetDOTDescription
+			 */
+			virtual const std::string GetDOTDescription();
 
 			/**
 			 * @see AutoMoDeCondition::Adapt
@@ -62,17 +67,17 @@ namespace argos {
 			/**
 			 * The type of event the condition activates for. The value is a reference to the enum.
 			 */
-			AutoMoDeValue /* UInt8  */ m_eTriggerType;
+			AutoMoDeValue<UInt8> m_eTriggerType;
 
 			/**
 			 * The color the condition reacts to. The value is a reference to the color.
 			 */
-			AutoMoDeValue /* CColor */ m_cColorParameter;
+			AutoMoDeValue<CColor> m_cColorParameter;
 
 			/**
 			 * The probability of activating the transition when the condition holds.
 			 */
-			AutoMoDeValue /* Real   */ m_fProbability;
+			AutoMoDeValue<Real> m_fProbability;
 
 			/**
 			 * The minimum distance the color must be. I suppose it is to avoid perceiving the self

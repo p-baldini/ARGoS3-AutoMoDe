@@ -31,6 +31,11 @@ namespace argos {
 			 * @see AutoMoDeCondition::Clone
 			 */
 			virtual AutoMoDeConditionFloorColor* Clone();
+		
+			/**
+			 * @see AutoMoDeCondition::GetDOTDescription
+			 */
+			virtual const std::string GetDOTDescription();
 
 			/**
 			 * @see AutoMoDeCondition::Verify
@@ -53,19 +58,19 @@ namespace argos {
 			 * The type of perception that enables the transition. 0 means that the presence of the
 			 * color enables the transition, 1 that it is enabled by its absence.
 			 */
-			AutoMoDeValue /* UInt8  */ m_eType;
+			AutoMoDeValue<UInt8> m_eType;
 
 			/**
 			 * The average value of the ground color the transition is sensible to. The transition
 			 * is enabled if the perceived value is in m_fGroundColor +- 0.25.
 			 */
-			AutoMoDeValue /* Real   */ m_fGroundColor;
+			AutoMoDeValue<Real> m_fGroundColor;
 
 			/**
 			 * The probability of the transition to enable when the robot perceived the desired
 			 * ground color.
 			 */
-			AutoMoDeValue /* Real   */ m_fProbability;
+			AutoMoDeValue<Real> m_fProbability;
 	};
 }
 

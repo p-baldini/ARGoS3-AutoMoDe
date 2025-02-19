@@ -25,6 +25,11 @@ namespace argos {
 			 * @see AutoMoDeCondition::Clone
 			 */
 			virtual AutoMoDeConditionFixedProbability* Clone();
+		
+			/**
+			 * @see AutoMoDeCondition::GetDOTDescription
+			 */
+			virtual const std::string GetDOTDescription();
 
 			/**
 			 * @see AutoMoDeCondition::Verify
@@ -45,7 +50,7 @@ namespace argos {
 			/**
 			 * The probability for the transition to enable.
 			 */
-			AutoMoDeValue /* Real */ m_fProbability;
+			AutoMoDeValue<Real> m_fProbability;
 	};
 }
 
