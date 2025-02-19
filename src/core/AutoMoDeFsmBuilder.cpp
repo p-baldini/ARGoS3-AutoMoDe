@@ -118,7 +118,7 @@ namespace argos {
 		cFiniteStateMachine->AddBehaviour(newBehavior);
 
 		// get the number of outgoing transition from the state and instantiate them
-		UInt8 outgoingTransitions = cFiniteStateMachine->GetParameters()->GetParameter<UInt32>("n", state_id);
+		UInt8 outgoingTransitions = cFiniteStateMachine->GetParameters()->GetParameter<UInt32>("n", state_id, "0");
 		for (UInt8 condition_id = 0; condition_id < outgoingTransitions; condition_id++) {
 			HandleTransition(state_id, condition_id);
 		}
