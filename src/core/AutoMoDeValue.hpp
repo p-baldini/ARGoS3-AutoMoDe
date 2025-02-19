@@ -10,118 +10,107 @@
 #ifndef AUTOMODE_VALUE_HPP
 #define AUTOMODE_VALUE_HPP
 
-#include <argos3/core/utility/datatypes/color.h>
+#include "AutoMoDeObservers.hpp"
 
 namespace argos {
 	/**
-	 * This class acts as a wrapper to a basic data type. Its utility consists in the smooth
-	 * access to a value managed by an external class, without the need for a direct referencing.
-	 * As the AutoMoDe FSM parser converts string-values into doubles, all the data will be stored
-	 * in that format and converted at need to the desired type.
+	 * This class acts as a wrapper to a basic data type. Its utility consists in the automatic
+	 * update of the value when it changes. This is implemented through the Observer pattern of
+	 * oop, in which this class is an observer entity. The AutoMoDeValue can assume different basic
+	 * types, and it will convert the string representation passed by the observable to the correct
+	 * one when updating.
 	 */
-	class AutoMoDeValue {
+	template <typename T>
+	class AutoMoDeValue : public AutoMoDeObserver {
 		public:
 			/**
-			 * Empty class constructor. It uses a default value of 0.
+			 * Dummy constructor for a useless object.
 			 */
-			AutoMoDeValue();
+			AutoMoDeValue() : AutoMoDeObserver() { };
 
 			/**
-			 * Static value constructor. Asking for the value will always return the specified one.
+			 * Subscription constructor. At creation the object subscribes to the update of the
+			 * given parameter. The initial value is not set, and should be set by the observable.
 			 * 
-			 * @param[in] value The fixed value of the parameter.
+			 * @param[in] observable The object managing the FSM values.
+			 * @param[in] parameter The name of the parameter that this object is interested in.
 			 */
-			AutoMoDeValue(Real value);
+			AutoMoDeValue(AutoMoDeObservable* observable, const std::string parameter) {
+				m_Observable = observable;
+				m_Parameter = parameter;
+				m_Observable->Subscribe(this, m_Parameter);
+			}
 
 			/**
-			 * Dynamic value constructor. Asking for the value possibly returns a different value
-			 * each time.
-			 * 
-			 * @param[in] value The pointer to the variable containing the value of the parameter.
-			 */
-			AutoMoDeValue(Real* value);
-
-			/**
-			 * Copy constructor. Create a new object that is the copy of the passed one.
+			 * Copy constructor. Create a new object that is the copy of the passed one. At
+			 * creation, it subscribes to the observable.
 			 * 
 			 * @param[in] other The object to copy.
 			 */
-			AutoMoDeValue(const AutoMoDeValue& other);
+			AutoMoDeValue(const AutoMoDeValue<T>& other) {
+				m_Observable = other.m_Observable;
+				m_Parameter = other.m_Parameter;
+				m_Observable->Subscribe(this, m_Parameter);
+			}
 
 			/**
-			 * Copy the value of another object into this.
+			 * Class destructor. It un-subscribes to the observable.
+			 */
+			~AutoMoDeValue() {
+				m_Observable->Unsubscribe(this, m_Parameter);
+			}
+
+			/**
+			 * Called when the parameter (event) value change. It parse the value to the desired
+			 * data type.
+			 * 
+			 * @param[in] event The name of the changed parameter.
+			 * @param[in] value The new value of the parameter. 
+			 */
+			virtual void Update(const std::string& event, const std::string& value);
+
+			/**
+			 * Copy the value of another object into this. It needs to unsubscribe to previous
+			 * parameter and to subscribe the new one, so you need to use it carefully to avoid too
+			 * much time waste.
 			 * 
 			 * @param[in] other The object to copy.
 			 * @return The copy of the passed object.
 			 */
-			AutoMoDeValue& operator = (const AutoMoDeValue& other);
+			AutoMoDeValue<T>& operator = (const AutoMoDeValue<T>& other) {
+				// make sure this object is not subscribed anymore to its previous parameter
+				if (m_Observable != NULL) {
+					m_Observable->Unsubscribe(this, m_Parameter);
+				}
+
+				// copy the data and subscribe for the parameter update
+				m_Parameter = other.m_Parameter;
+				m_Value = other.m_Value;
+				m_Observable = other.m_Observable;
+				m_Observable->Subscribe(this, m_Parameter);
+
+				return *this;
+			}
 
 			/**
-			 * The cast operator, converting the value wrapped by this class to the desired one.
+			 * The cast operator, converting this object to the desired value type.
 			 * 
 			 * @return The value casted to the desired type.
 			 */
-			operator Real () const;
-
-			/**
-			 * The cast operator, converting the value wrapped by this class to the desired one.
-			 * 
-			 * @return The value casted to the desired type.
-			 */
-			operator UInt8 () const;
-
-			/**
-			 * The cast operator, converting the value wrapped by this class to the desired one.
-			 * 
-			 * @return The value casted to the desired type.
-			 */
-			operator UInt16 () const;
-
-			/**
-			 * The cast operator, converting the value wrapped by this class to the desired one.
-			 * 
-			 * @return The value casted to the desired type.
-			 */
-			operator UInt32 () const;
-
-			/**
-			 * The cast operator, converting the value wrapped by this class to the desired one.
-			 * 
-			 * @return The value casted to the desired type.
-			 */
-			operator SInt8 () const;
-
-			/**
-			 * The cast operator, converting the value wrapped by this class to the desired one.
-			 * 
-			 * @return The value casted to the desired type.
-			 */
-			operator SInt16 () const;
-
-			/**
-			 * The cast operator, converting the value wrapped by this class to the desired one.
-			 * 
-			 * @return The value casted to the desired type.
-			 */
-			operator SInt32 () const;
-
-			/**
-			 * The cast operator, converting the value wrapped by this class to the desired one.
-			 * 
-			 * @return The value casted to the desired type.
-			 */
-			operator CColor () const;
+			operator T () const {
+				return m_Value;
+			}
 
 		private:
 			/**
-			 * The pointer to the variable containing the value of the parameter.
+			 * The name of the parameter this object is interested in.
 			 */
-			Real* m_rValue;
+			std::string m_Parameter;
 
 			/**
-			 * The default and fixed value of the parameter.
+			 * The current value of the parameter.
 			 */
-			Real  m_uDefaultValue;
+			T  m_Value;
 	};
 }
 

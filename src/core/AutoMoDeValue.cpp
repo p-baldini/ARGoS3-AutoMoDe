@@ -9,130 +9,79 @@
  */
 #include "AutoMoDeValue.hpp"
 
+#include <argos3/core/utility/datatypes/color.h>
+
 namespace argos {
 
 	/****************************************/
 	/****************************************/
 
-	AutoMoDeValue::AutoMoDeValue() {
-		m_uDefaultValue = { };
-		m_rValue = &m_uDefaultValue;
+	template <>
+	void AutoMoDeValue<std::string>::Update(const std::string& event, const std::string& value) {
+		m_Value = value;
 	}
 
-	/****************************************/
-	/****************************************/
-
-	AutoMoDeValue::AutoMoDeValue(Real value) : AutoMoDeValue() {
-		m_uDefaultValue = value;
+	template <>
+		void AutoMoDeValue<Real>::Update(const std::string& event, const std::string& value) {
+		m_Value = std::strtod(value.c_str(), NULL);
 	}
 
-	/****************************************/
-	/****************************************/
-
-	AutoMoDeValue::AutoMoDeValue(Real* value) : AutoMoDeValue() {
-		m_rValue = value;
+	template <>
+	void AutoMoDeValue<UInt8>::Update(const std::string& event, const std::string& value) {
+		m_Value = std::strtoul(value.c_str(), NULL, 10);
 	}
 
-	/****************************************/
-	/****************************************/
-
-	AutoMoDeValue::AutoMoDeValue(const AutoMoDeValue& other) : AutoMoDeValue() {
-		// if the pointer is dummy, copy the default value and ignore the pointer
-		if (other.m_rValue == &other.m_uDefaultValue) {
-			m_uDefaultValue = other.m_uDefaultValue;
-		}
-		// if the pointer is meaningful, copy it in the new object
-		else {
-			m_rValue = other.m_rValue;
-		}
+	template <>
+	void AutoMoDeValue<UInt16>::Update(const std::string& event, const std::string& value) {
+		m_Value = std::strtoul(value.c_str(), NULL, 10);
 	}
 
-	/****************************************/
-	/****************************************/
-
-	AutoMoDeValue& AutoMoDeValue::operator = (const AutoMoDeValue& other) {
-		// if the pointer is dummy, copy the default value and ignore the pointer
-		if (other.m_rValue == &other.m_uDefaultValue) {
-			m_uDefaultValue = other.m_uDefaultValue;
-			m_rValue = &m_uDefaultValue;
-		}
-		// if the pointer is meaningful, copy it in the new object
-		else {
-			m_uDefaultValue = { };
-			m_rValue = other.m_rValue;
-		}
-		return *this;
+	template <>
+	void AutoMoDeValue<UInt32>::Update(const std::string& event, const std::string& value) {
+		m_Value = std::strtoul(value.c_str(), NULL, 10);
 	}
 
-	/****************************************/
-	/****************************************/
-
-	AutoMoDeValue::operator Real () const {
-		return *m_rValue;
+	template <>
+	void AutoMoDeValue<SInt8>::Update(const std::string& event, const std::string& value) {
+		m_Value = std::strtol(value.c_str(), NULL, 10);
 	}
 
-	/****************************************/
-	/****************************************/
-
-	AutoMoDeValue::operator UInt8 () const {
-		return (UInt8) *m_rValue;
+	template <>
+	void AutoMoDeValue<SInt16>::Update(const std::string& event, const std::string& value) {
+		m_Value = std::strtol(value.c_str(), NULL, 10);
 	}
 
-	/****************************************/
-	/****************************************/
-
-	AutoMoDeValue::operator UInt16 () const {
-		return (UInt16) *m_rValue;
+	template <>
+	void AutoMoDeValue<SInt32>::Update(const std::string& event, const std::string& value) {
+		m_Value = std::strtol(value.c_str(), NULL, 10);
 	}
 
-	/****************************************/
-	/****************************************/
-
-	AutoMoDeValue::operator UInt32 () const {
-		return (UInt32) *m_rValue;
-	}
-
-	/****************************************/
-	/****************************************/
-
-	AutoMoDeValue::operator SInt8 () const {
-		return (SInt8) *m_rValue;
-	}
-
-	/****************************************/
-	/****************************************/
-
-	AutoMoDeValue::operator SInt16 () const {
-		return (SInt16) *m_rValue;
-	}
-
-	/****************************************/
-	/****************************************/
-
-	AutoMoDeValue::operator SInt32 () const {
-		return (SInt32) *m_rValue;
-	}
-
-	/****************************************/
-	/****************************************/
-
-	AutoMoDeValue::operator CColor () const {
-		switch ((SInt8) *m_rValue) {
+	template <>
+	void AutoMoDeValue<CColor>::Update(const std::string& event, const std::string& value) {
+		switch (std::strtoul(value.c_str(), NULL, 10)) {
 			case 0:
-				return CColor::BLACK;
+				m_Value = CColor::BLACK;
+				break;
 			case 1:
-				return CColor::GREEN;
+				m_Value = CColor::GREEN;
+				break;
 			case 2:
-				return CColor::BLUE;
+				m_Value = CColor::BLUE;
+				break;
 			case 3:
-				return CColor::RED;
+				m_Value = CColor::RED;
+				break;
 			case 4:
-				return CColor(250,80,0);
+				m_Value = CColor(250,80,0);
+				break;
 			case 5:
-				return CColor(150,0,60);
+				m_Value = CColor(150,0,60);
+				break;
 			case 6:
-				return CColor(0,200,50);
+				m_Value = CColor(0,200,50);
+				break;
+			default:
+				m_Value = CColor::BLACK;
 		}
-		return CColor::BLACK;
 	}
 }
