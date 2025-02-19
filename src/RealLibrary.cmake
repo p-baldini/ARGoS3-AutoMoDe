@@ -9,6 +9,8 @@ set(AUTOMODE_HEADERS
 	core/AutoMoDeFiniteStateMachine.h
 	core/AutoMoDeFsmBuilder.h
 	core/AutoMoDeFsmHistory.h
+	core/AutoMoDeObservers.hpp
+	core/AutoMoDeParameters.hpp
 	core/AutoMoDeValue.hpp
 	# Behaviours
 	evaluators/AutoMoDeEvaluator.hpp
@@ -43,6 +45,8 @@ set(AUTOMODE_SOURCES
 	core/AutoMoDeFiniteStateMachine.cpp
 	core/AutoMoDeFsmBuilder.cpp
 	core/AutoMoDeFsmHistory.cpp
+	core/AutoMoDeObservers.cpp
+	core/AutoMoDeParameters.cpp
 	core/AutoMoDeValue.cpp
 	# Behaviours
 	evaluators/AutoMoDeEvaluator.cpp
