@@ -1,6 +1,7 @@
 #include "AutoMoDeParameters.hpp"
 
 #include <iterator>
+#include <limits>
 
 namespace argos {
 
@@ -46,7 +47,7 @@ namespace argos {
 	/****************************************/
 	/****************************************/
 
-	AutoMoDeParameters::AutoMoDeParameters(const std::string& fsm) {
+	AutoMoDeParameters::AutoMoDeParameters(const std::string& fsm) : AutoMoDeAdapter() {
 		// split the string into tokens separated by spaces
 		std::istringstream iss(fsm);
 		std::vector<std::string> fsm_tokens;
@@ -55,14 +56,29 @@ namespace argos {
 			std::istream_iterator<std::string>(),
 			std::back_inserter(fsm_tokens)
 		);
+
+		// parse the fsm parameters
 		ParseFSMParameters(fsm_tokens);
+
+		// set the evaluation time of the adaptation
+		SetEvaluationTime(GetParameter<UInt32>(
+			"evaluationsteps", std::to_string(std::numeric_limits<UInt32>::max())
+		));
 	}
 
 	/****************************************/
 	/****************************************/
 
-	AutoMoDeParameters::AutoMoDeParameters(const std::vector<std::string>& fsm_tokens) {
+	AutoMoDeParameters::AutoMoDeParameters(
+		const std::vector<std::string>& fsm_tokens
+	) : AutoMoDeAdapter() {
+		// parse the fsm parameters
 		ParseFSMParameters(fsm_tokens);
+
+		// set the evaluation time of the adaptation
+		SetEvaluationTime(GetParameter<UInt32>(
+			"evaluationsteps", std::to_string(std::numeric_limits<UInt32>::max())
+		));
 	};
 
 	/****************************************/
