@@ -88,7 +88,10 @@ namespace argos{
              */
             AutoMoDeFiniteStateMachine* m_pcFiniteStateMachine;
 
-            AutoMoDeEvaluator* m_pcEvaluator;   ///< The robot online evaluator.
+            /**
+             * The evaluator of the robot performance in time.
+             */
+            AutoMoDeEvaluator* m_pcEvaluator;
 
             /**
              * Pointer to the object representing the state of the robot. This object is
