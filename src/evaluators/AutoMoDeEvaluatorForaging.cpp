@@ -14,9 +14,7 @@ namespace argos {
     /****************************************/
     /****************************************/
 
-    AutoMoDeEvaluatorForaging::~AutoMoDeEvaluatorForaging() {
-        LOG << "cumulative performance: " << CumulativePerformance() << std::endl;
-    }
+    AutoMoDeEvaluatorForaging::~AutoMoDeEvaluatorForaging() { }
 
     /****************************************/
     /****************************************/
