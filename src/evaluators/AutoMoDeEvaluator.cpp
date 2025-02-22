@@ -43,13 +43,7 @@ namespace argos {
     /****************************************/
     /****************************************/
 
-    AutoMoDeEvaluator::~AutoMoDeEvaluator() {
-        // normally, "NewEvaluation" should be called before the destructor, summing the current
-        // performance to the cumulative one; if this does not happen, the last partial performance
-        // might get lost: to avoid it, just sum the current performance to the cumulative one
-        auto performance = CumulativePerformance() + CurrentPerformance();
-        LOG << "final cumulative performance: " << performance << std::endl;
-    }
+    AutoMoDeEvaluator::~AutoMoDeEvaluator() { }
 
     /****************************************/
     /****************************************/
