@@ -86,14 +86,14 @@ namespace argos {
 			sProxVectorSum = CVector2(m_pcRobotDAO->GetProximityReading().Value, m_pcRobotDAO->GetProximityReading().Angle);
 		}
 
-		if (sColVectorSum.Length() < 0.05) {
+		if (sColVectorSum.Length() < 0.03) {
 			sColVectorSum = CVector2();
 		}
-		if (sProxVectorSum.Length() < 0.05) {
+		if (sProxVectorSum.Length() < 0.03) {
 			sProxVectorSum = CVector2();
 		}
 
-		sResultVector = sColVectorSum - sProxVectorSum;
+		sResultVector = sColVectorSum - (1 - m_unDesireParameter) * sProxVectorSum;
 
 		// if the reaction strategy is flee (0 or 1), then goes in the opposite direction
 		if ((UInt8) m_iReactionType <= 1) {
@@ -116,7 +116,8 @@ namespace argos {
 
 	void AutoMoDeBehaviourReactToColor::Init() {
 		m_iReactionType = m_Parameters->GetParameter<UInt8>("crt", m_unIndex);
-		m_unReactionParameter = m_Parameters->GetParameter<Real>("vel", m_unIndex);
+		m_unReactionParameter = m_Parameters->GetParameter<Real>("vel", m_unIndex, "12");
+		m_unDesireParameter = m_Parameters->GetParameter<Real>("des", m_unIndex, "0");
 		m_cColorReceiverParameter = m_Parameters->GetParameter<CColor>("clr", m_unIndex);
 		m_cColorEmitterParameter = m_Parameters->GetParameter<CColor>("cle", m_unIndex, "0");
 	}

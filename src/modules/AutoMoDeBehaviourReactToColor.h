@@ -94,6 +94,11 @@ namespace argos {
 			AutoMoDeValue<Real> m_unReactionParameter;
 
 			/**
+			 * The will to ignore an obstacle while approaching or fleeing a color.
+			 */
+			AutoMoDeValue<Real> m_unDesireParameter;
+
+			/**
 			 * True if the robot can only analyze raw proximity data; False otherwise.
 			 */
 			bool m_bBasicPerceptionCapabilities;
